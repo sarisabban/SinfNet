@@ -1,5 +1,5 @@
 # Plankton Classifier
-This is a plankton image classifier.
+A neural network plankton image classifier.
 
 ## Requirements:
 
