@@ -22,7 +22,7 @@ def segment(filename, name):
 		for kernel in range(10):
 			box = (L, U, R, D)
 			region = img.crop(box)
-			region.save('{}/{}.jpeg'.format(name, count), 'JPEG')
+			region.save('{}/o{}.jpg'.format(name, count), 'JPEG')
 			count += 1
 			R += step
 			L += step
@@ -34,8 +34,27 @@ def segment(filename, name):
 def sort():
 	pass
 
-def augment():
-	pass
+def augment(directory):
+	for filename in os.listdir(directory):
+		# Original
+		img = Image.open('{}/{}'.format(directory, filename))
+		# Rotate original
+		img.rotate(90).save('{}/O90{}'.format(directory, filename))
+		img.rotate(180).save('{}/O180{}'.format(directory, filename))
+		img.rotate(270).save('{}/O270{}'.format(directory, filename))
+		# Flip
+		imgFLIP = img.transpose(Image.FLIP_TOP_BOTTOM)
+		imgFLIP.save('{}/F{}'.format(directory, filename))
+		# Rotate flipped
+		imgFLIP.rotate(90).save('{}/F90{}'.format(directory, filename))
+		imgFLIP.rotate(180).save('{}/F180{}'.format(directory, filename))
+		imgFLIP.rotate(270).save('{}/F270{}'.format(directory, filename))
+	# Rename images
+	count = 1
+	for image in os.listdir(directory):
+		os.rename('{}/{}'.format(directory, image), '{}/{}.jpg'.format(directory, str(count)))
+		count += 1
+
 
 def dataset():
 	pass
@@ -54,8 +73,10 @@ def CNN():
 def main():
 	Microscope_Image = 'earth.jpg'
 	species_Name = 'earth'
-
 	segment(Microscope_Image, species_Name)
+	augment(species_Name)
+
+
 
 if __name__ == '__main__':
 	main()
