@@ -4,7 +4,7 @@ A neural network plankton image classifier.
 ## Requirements:
 This script work on GNU/Linux. To use this script you will need to update your system and install the following libraries:
 
-`sudo apt update && sudo apt full-upgrade && sudo apt install python3-pip python3-numpy python3-tensorflow && pip3 install keras`
+`sudo apt update && sudo apt full-upgrade && sudo apt install python3-pip python3-numpy python3-keras`
 
 ## Description:
 This is a script that uses a convolutional neural network to classify different species of plankton by simply providing a microscope image of the cell of interest.
