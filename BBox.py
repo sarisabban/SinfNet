@@ -23,7 +23,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-This script is used from https://github.com/xiaqunfeng/BBox-Label-Tool
+This script is modified from https://github.com/xiaqunfeng/BBox-Label-Tool
 which is in turn adopted from https://github.com/puzzledqs/BBox-Label-Tool
 
 BBox-Label-Tool

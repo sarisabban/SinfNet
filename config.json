@@ -2,12 +2,12 @@
 	"min_input_size":       288,
 	"max_input_size":       448,
 	"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
-	"labels":               ["Cell"]},
+	"labels":               ["RBC"]},
 "train":{
 	"train_image_folder":   "./dataset/images/",
 	"train_annot_folder":   "./dataset/annotations/",
 	"pretrained_weights":	"yolov3.weights",
-	"cache_name":           "protists.plk",
+	"cache_name":           "cell.plk",
 	"train_times":          8,
 	"batch_size":           16,
 	"learning_rate":        1e-4,
@@ -21,7 +21,7 @@
 	"xywh_scale":           1,
 	"class_scale":          1,
 	"tensorboard_dir":      "./logs",
-	"saved_weights_name":   "protists.h5",
+	"saved_weights_name":   "cell.h5",
 	"debug":                true},
 "valid":{
 	"valid_image_folder":   "",

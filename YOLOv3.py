@@ -6,7 +6,29 @@
 #!wget https://pjreddie.com/media/files/yolov3.weights
 
 '''
-Taken from: https://github.com/experiencor/keras-yolo3
+MIT License
+
+Copyright (c) 2017 Ngoc Anh Huynh
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+This script is modified from https://github.com/experiencor/keras-yolo3
 
 How To Use:
 1. Setup database
@@ -412,87 +434,86 @@ def get_color(label):
         print('Label {} has no color, returning default.'.format(label))
         return (0, 255, 0)
 
-colors = [
-    [31  , 0   , 255] ,
-    [0   , 159 , 255] ,
-    [255 , 95  , 0]   ,
-    [255 , 19  , 0]   ,
-    [255 , 0   , 0]   ,
-    [255 , 38  , 0]   ,
-    [0   , 255 , 25]  ,
-    [255 , 0   , 133] ,
-    [255 , 172 , 0]   ,
-    [108 , 0   , 255] ,
-    [0   , 82  , 255] ,
-    [0   , 255 , 6]   ,
-    [255 , 0   , 152] ,
-    [223 , 0   , 255] ,
-    [12  , 0   , 255] ,
-    [0   , 255 , 178] ,
-    [108 , 255 , 0]   ,
-    [184 , 0   , 255] ,
-    [255 , 0   , 76]  ,
-    [146 , 255 , 0]   ,
-    [51  , 0   , 255] ,
-    [0   , 197 , 255] ,
-    [255 , 248 , 0]   ,
-    [255 , 0   , 19]  ,
-    [255 , 0   , 38]  ,
-    [89  , 255 , 0]   ,
-    [127 , 255 , 0]   ,
-    [255 , 153 , 0]   ,
-    [0   , 255 , 255] ,
-    [0   , 255 , 216] ,
-    [0   , 255 , 121] ,
-    [255 , 0   , 248] ,
-    [70  , 0   , 255] ,
-    [0   , 255 , 159] ,
-    [0   , 216 , 255] ,
-    [0   , 6   , 255] ,
-    [0   , 63  , 255] ,
-    [31  , 255 , 0]   ,
-    [255 , 57  , 0]   ,
-    [255 , 0   , 210] ,
-    [0   , 255 , 102] ,
-    [242 , 255 , 0]   ,
-    [255 , 191 , 0]   ,
-    [0   , 255 , 63]  ,
-    [255 , 0   , 95]  ,
-    [146 , 0   , 255] ,
-    [184 , 255 , 0]   ,
-    [255 , 114 , 0]   ,
-    [0   , 255 , 235] ,
-    [255 , 229 , 0]   ,
-    [0   , 178 , 255] ,
-    [255 , 0   , 114] ,
-    [255 , 0   , 57]  ,
-    [0   , 140 , 255] ,
-    [0   , 121 , 255] ,
-    [12  , 255 , 0]   ,
-    [255 , 210 , 0]   ,
-    [0   , 255 , 44]  ,
-    [165 , 255 , 0]   ,
-    [0   , 25  , 255] ,
-    [0   , 255 , 140] ,
-    [0   , 101 , 255] ,
-    [0   , 255 , 82]  ,
-    [223 , 255 , 0]   ,
-    [242 , 0   , 255] ,
-    [89  , 0   , 255] ,
-    [165 , 0   , 255] ,
-    [70  , 255 , 0]   ,
-    [255 , 0   , 172] ,
-    [255 , 76  , 0]   ,
-    [203 , 255 , 0]   ,
-    [204 , 0   , 255] ,
-    [255 , 0   , 229] ,
-    [255 , 133 , 0]   ,
-    [127 , 0   , 255] ,
-    [0   , 235 , 255] ,
-    [0   , 255 , 197] ,
-    [255 , 0   , 191] ,
-    [0   , 44  , 255] ,
-    [50  , 255 , 0]]
+colors = 	[[31  , 0   , 255] ,
+			[0   , 159 , 255] ,
+			[255 , 95  , 0]   ,
+			[255 , 19  , 0]   ,
+			[255 , 0   , 0]   ,
+			[255 , 38  , 0]   ,
+			[0   , 255 , 25]  ,
+			[255 , 0   , 133] ,
+			[255 , 172 , 0]   ,
+			[108 , 0   , 255] ,
+			[0   , 82  , 255] ,
+			[0   , 255 , 6]   ,
+			[255 , 0   , 152] ,
+			[223 , 0   , 255] ,
+			[12  , 0   , 255] ,
+			[0   , 255 , 178] ,
+			[108 , 255 , 0]   ,
+			[184 , 0   , 255] ,
+			[255 , 0   , 76]  ,
+			[146 , 255 , 0]   ,
+			[51  , 0   , 255] ,
+			[0   , 197 , 255] ,
+			[255 , 248 , 0]   ,
+			[255 , 0   , 19]  ,
+			[255 , 0   , 38]  ,
+			[89  , 255 , 0]   ,
+			[127 , 255 , 0]   ,
+			[255 , 153 , 0]   ,
+			[0   , 255 , 255] ,
+			[0   , 255 , 216] ,
+			[0   , 255 , 121] ,
+			[255 , 0   , 248] ,
+			[70  , 0   , 255] ,
+			[0   , 255 , 159] ,
+			[0   , 216 , 255] ,
+			[0   , 6   , 255] ,
+			[0   , 63  , 255] ,
+			[31  , 255 , 0]   ,
+			[255 , 57  , 0]   ,
+			[255 , 0   , 210] ,
+			[0   , 255 , 102] ,
+			[242 , 255 , 0]   ,
+			[255 , 191 , 0]   ,
+			[0   , 255 , 63]  ,
+			[255 , 0   , 95]  ,
+			[146 , 0   , 255] ,
+			[184 , 255 , 0]   ,
+			[255 , 114 , 0]   ,
+			[0   , 255 , 235] ,
+			[255 , 229 , 0]   ,
+			[0   , 178 , 255] ,
+			[255 , 0   , 114] ,
+			[255 , 0   , 57]  ,
+			[0   , 140 , 255] ,
+			[0   , 121 , 255] ,
+			[12  , 255 , 0]   ,
+			[255 , 210 , 0]   ,
+			[0   , 255 , 44]  ,
+			[165 , 255 , 0]   ,
+			[0   , 25  , 255] ,
+			[0   , 255 , 140] ,
+			[0   , 101 , 255] ,
+			[0   , 255 , 82]  ,
+			[223 , 255 , 0]   ,
+			[242 , 0   , 255] ,
+			[89  , 0   , 255] ,
+			[165 , 0   , 255] ,
+			[70  , 255 , 0]   ,
+			[255 , 0   , 172] ,
+			[255 , 76  , 0]   ,
+			[203 , 255 , 0]   ,
+			[204 , 0   , 255] ,
+			[255 , 0   , 229] ,
+			[255 , 133 , 0]   ,
+			[127 , 0   , 255] ,
+			[0   , 235 , 255] ,
+			[0   , 255 , 197] ,
+			[255 , 0   , 191] ,
+			[0   , 44  , 255] ,
+			[50  , 255 , 0]]
 
 class BoundBox:
     def __init__(self, xmin, ymin, xmax, ymax, c = None, classes = None):
