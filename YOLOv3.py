@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 
-#!pip3 install scipy numpy tensorflow keras
-#!git clone https://github.com/experiencor/BCCD_Dataset.git
-#!wget '''wget https://onedrive.live.com/download.aspx?cid=5FDEBAB7450CDD92&authKey=!AO4VWYpzRLRXp3w&resid=5FDEBAB7450CDD92!136&ithint=.h5''' && mv *.h5 rbc.h5
-#!wget https://pjreddie.com/media/files/yolov3.weights
-
 '''
 MIT License
 
@@ -29,14 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 This script is modified from https://github.com/experiencor/keras-yolo3
-
-How To Use:
-1. Setup database
-2. Download yolov3.weights
-3. Download .h5 file
-4. Setup config.json file
-5. To train: python3 YOLOv3.py -t
-6. To predict: python3 YOLOv3.py -p FILENAME.jpg
 '''
 
 import os

@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-#!pip3 install imgaug openvc-python matplotlib keras
-#!wget https://pjreddie.com/media/files/yolov2.weights
-#!git clone https://github.com/cosmicad/dataset.git
-
 '''
 MIT License
 
@@ -607,7 +603,7 @@ optimizer = Adam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0)
 #optimizer = RMSprop(lr=1e-5, rho=0.9, epsilon=1e-08, decay=0.0)
 model.compile(loss=custom_loss, optimizer=optimizer)
 
-if sys.argv[1] == 'train':
+if sys.argv[1] == '-t':
 	model.fit_generator(generator		= train_batch,
 						steps_per_epoch	= len(train_batch),
 						epochs			= 100,
@@ -617,7 +613,7 @@ if sys.argv[1] == 'train':
 						callbacks		= [early_stop, checkpoint, tensorboard],
 						max_queue_size	= 3)
 
-elif sys.argv[1] == 'detect':
+elif sys.argv[1] == '-d':
 	model.load_weights('weights.h5')
 	dummy_array = np.zeros((1, 1, 1, 1, TRUE_BOX_BUFFER, 4))
 	image = cv2.imread(sys.argv[2])
