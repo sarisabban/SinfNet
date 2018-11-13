@@ -105,7 +105,7 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 13. If you are confident that your annotations are good choose `yes` to delete the text files and keep only the XML files.
 
 ### Training the neural network
-For YOLOv2:
+#### For YOLOv2:
 1. On line 48 of the YOLOv2.py file add all your labels in a list as such ["label 1", "label 2", "label 3"].
 2. Download the YOLOv2 pre-trained weights using the following command:
 
@@ -122,27 +122,23 @@ For YOLOv2:
 
 6. The weights.h5 file is the weights file used for image detection.
 
-For YOLOv3:
+#### For YOLOv3:
 1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"].
 2. Download the YOLOv3 pre-trained weights using the following command:
 
 `wget https://pjreddie.com/media/files/yolov3.weights`
 
-3. Download the RBC pre-trained weights using the following command:
-
-`wget '''wget https://onedrive.live.com/download.aspx?cid=5FDEBAB7450CDD92&authKey=!AO4VWYpzRLRXp3w&resid=5FDEBAB7450CDD92!136&ithint=.h5''' && mv *.h5 rbc.h5`
-
-4. The network is resource heavy and required a GPU and 16GB RAM to run. Therefore ........................
-5. Run training using the following command:
+3. The network is resource heavy and required a GPU and 16GB RAM to run. Therefore some resources such as google's colaboratory may not work and a larger system is required.
+4. Run training using the following command:
 
 `python3 YOLOv3.py -t`
 
-6. If the neural network training does not go well, you will have to change the network hyperparameters which are found in the config.jason file.
-7. The logs directory contains the training logs. View the data using the following command:
+5. If the neural network training does not go well, you will have to change the network hyperparameters which are found in the config.jason file.
+6. The logs directory contains the training logs. View the data using the following command:
 
 `tensorboard --logdir=./logs`
 
-8. The protist.h5 file is the weights file used for image detection.
+7. The protist.h5 file is the weights file used for image detection.
 
 ### Detection
 1. Run an image detection using the following command:
