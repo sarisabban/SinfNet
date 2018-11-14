@@ -14,7 +14,7 @@ def translate(texts, images):
 			img = Image.open('{}{}.jpg'.format(images, filename))
 			W, H = img.size
 			f.write('<annotation>\n')
-			f.write('\t<filename>{}</filename>\n'.format(filename))
+			f.write('\t<filename>{}.jpg</filename>\n'.format(filename))
 			f.write('\t<source>{}</source>\n'.format(source))
 			f.write('\t<path>../dataset/images/{}.jpg</path>'.format(filename))
 			f.write('\t<size>\n')

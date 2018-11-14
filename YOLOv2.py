@@ -394,7 +394,7 @@ class BatchGenerator(keras.utils.Sequence):
 		return(image, all_objs)
 
 all_imgs, seen_labels = parse_annotation(annot_path, image_path)
-for img in all_imgs: img['filename'] = img['filename'] + '.jpg'
+for img in all_imgs: img['filename'] = img['filename']# + '.jpg'
 batches = BatchGenerator(all_imgs, GenConf)
 image = batches[0][0][0][0]
 train_valid_split = int(0.8*len(all_imgs))
