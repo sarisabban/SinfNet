@@ -594,7 +594,7 @@ def custom_loss(y_true, y_pred):
 	loss = tf.Print(loss, [total_recall/seen], message='Average Recall \t', summarize=1000)
 	return(loss)
 
-early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.001, patience=3, mode='min', verbose=1)
+early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', min_delta=0.001, patience=10, mode='min', verbose=1)
 checkpoint = keras.callbacks.ModelCheckpoint('weights.h5', monitor='val_loss', verbose=1, save_best_only=True, mode='min', period=1)
 tb_counter = len([log for log in os.listdir(os.path.expanduser('./logs/')) if 'cell' in log]) + 1
 tensorboard = keras.callbacks.TensorBoard(log_dir=os.path.expanduser ('./logs/') + 'cell' + '_' + str(tb_counter), histogram_freq=0, write_graph=True, write_images=False)
@@ -606,7 +606,7 @@ model.compile(loss=custom_loss, optimizer=optimizer)
 if sys.argv[1] == '-t':
 	model.fit_generator(generator		= train_batch,
 						steps_per_epoch	= len(train_batch),
-						epochs			= 100,
+						epochs			= 1000,
 						verbose			= 1,
 						validation_data	= valid_batch,
 						validation_steps= len(valid_batch),
