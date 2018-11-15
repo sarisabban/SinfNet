@@ -106,21 +106,17 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 
 ### Training the neural network
 #### For YOLOv2:
-1. On line 48 of the YOLOv2.py file add all your labels in a list as such ["label 1", "label 2", "label 3"].
-2. Download the YOLOv2 pre-trained weights using the following command:
-
-`wget https://pjreddie.com/media/files/yolov2.weights`
-
-3. Run training using the following command:
+1. On line 46-71 of the YOLOv2.py script add all your labels in a list as such ["label 1", "label 2", "label 3"] and adjust the location of the dataset and the names of your weights.
+2. Run training using the following command:
 
 `python3 YOLOv2.py -t`
 
-4. If the neural network training does not go well, you will have to change the network hyperparameters which are found on lines 49-63.
-5. The logs directory contains the training logs. View the data using the following command:
+3. If the neural network training does not go well, you will have to change the network hyperparameters which are found on lines 46-71.
+4. The logs directory contains the training logs. View the data using the following command:
 
 `tensorboard --logdir=./logs`
 
-6. The weights.h5 file is the weights file used for image detection.
+5. The .h5 file is the weights file used for image detection.
 
 #### For YOLOv3:
 1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"].
