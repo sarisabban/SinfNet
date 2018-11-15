@@ -124,7 +124,7 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 
 `wget https://pjreddie.com/media/files/yolov3.weights`
 
-3. The network is resource heavy and required a GPU and 16GB RAM to run. Therefore some resources such as google's colaboratory may not work and a larger system is required.
+3. The network is resource heavy and required a GPU and 16GB RAM to run. Therefore some cloud GPU services may not work and a larger system is required.
 4. Run training using the following command:
 
 `python3 YOLOv3.py -t`
@@ -146,4 +146,4 @@ or
 `python3 YOLOv2.py -d FILENAME.jpg`
 
 ### Jupyter notebooks
-The Jupyter notebooks are provided for YOLOv2 and YOLOv3 to be able to quickly implemnet these scripts in Google's Colaboratory to access a free GPU.
+The Jupyter notebooks are provided for YOLOv2 and YOLOv3 to be able to quickly implemnet these scripts on cloud GPUs.

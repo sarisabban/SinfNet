@@ -56,7 +56,7 @@ config = {"model":{
 			"batch_size":           16,
 			"learning_rate":        1e-4,
 			"nb_epochs":            1000,
-			"warmup_epochs":        3,
+			"warmup_epochs":        0,
 			"object_scale":         5.0 ,
 			"no_object_scale":      1.0,
 			"coord_scale":          1.0,
