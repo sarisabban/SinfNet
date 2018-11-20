@@ -603,13 +603,13 @@ class YOLO(object):
 			nb_pred_box = tf.reduce_sum(tf.to_float(true_box_conf > 0.5) * tf.to_float(pred_box_conf > 0.3))
 			current_recall = nb_pred_box/(nb_true_box + 1e-6)
 			total_recall = tf.assign_add(total_recall, current_recall)
-			loss = tf.print(loss, [loss_xy], message='Loss XY \t', summarize=1000)
-			loss = tf.print(loss, [loss_wh], message='Loss WH \t', summarize=1000)
-			loss = tf.print(loss, [loss_conf], message='Loss Conf \t', summarize=1000)
-			loss = tf.print(loss, [loss_class], message='Loss Class \t', summarize=1000)
-			loss = tf.print(loss, [loss], message='Total Loss \t', summarize=1000)
-			loss = tf.print(loss, [current_recall], message='Current Recall \t', summarize=1000)
-			loss = tf.print(loss, [total_recall/seen], message='Average Recall \t', summarize=1000)
+			loss = tf.Print(loss, [loss_xy], message='Loss XY \t', summarize=1000)
+			loss = tf.Print(loss, [loss_wh], message='Loss WH \t', summarize=1000)
+			loss = tf.Print(loss, [loss_conf], message='Loss Conf \t', summarize=1000)
+			loss = tf.Print(loss, [loss_class], message='Loss Class \t', summarize=1000)
+			loss = tf.Print(loss, [loss], message='Total Loss \t', summarize=1000)
+			loss = tf.Print(loss, [current_recall], message='Current Recall \t', summarize=1000)
+			loss = tf.Print(loss, [total_recall/seen], message='Average Recall \t', summarize=1000)
 		
 		return loss
 	def load_weights(self, weight_path):
@@ -686,7 +686,7 @@ class YOLO(object):
 		self.model.fit_generator(generator         = train_generator,
 								steps_per_epoch    = len(train_generator) * train_times,
 								epochs             = warmup_epochs + nb_epochs,
-								verbose            = 2,
+								verbose            = 1,
 								validation_data    = valid_generator,
 								validation_steps   = len(valid_generator) * valid_times,
 								callbacks          = [early_stop, checkpoint, tensorboard],
