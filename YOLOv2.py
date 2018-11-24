@@ -33,6 +33,7 @@ import copy
 import numpy as np
 import imgaug as ia
 import tensorflow as tf
+import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 from imgaug import augmenters as iaa
 from keras.models import Model
@@ -877,6 +878,12 @@ def predict(h5weights, TheImage):
 		image = draw_boxes(image, boxes, config['model']['labels'])
 		print(len(boxes), 'boxes are found')
 		cv2.imwrite(image_path[:-4] + '_detected' + image_path[-4:], image)
+		# Show image and boxes
+#		plt.figure(figsize=(10,10))
+#		input_image = cv2.resize(image, (416, 416))
+#		input_image = input_image / 255.
+#		input_image = input_image[:,:,::-1]
+#		plt.imshow(image[:,:,::-1]); plt.show()
 
 def main():
 	if sys.argv[1] == '-t':
