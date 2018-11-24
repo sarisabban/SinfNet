@@ -110,7 +110,7 @@ class LabelTool():
 		self.svSourcePath = StringVar()
 		self.entrySrc = Entry(self.frame, textvariable=self.svSourcePath)
 		self.entrySrc.grid(row=0, column=1, sticky=W+E)
-		self.svSourcePath.set(os.getcwd())
+		self.svSourcePath.set(os.path.join(os.getcwd(),"dataset/images"))
 
 		# load button
 		self.ldBtn = Button(self.frame, text="Load Dir", command=self.loadDir)
@@ -127,7 +127,7 @@ class LabelTool():
 		self.svDestinationPath = StringVar()
 		self.entryDes = Entry(self.frame, textvariable=self.svDestinationPath)
 		self.entryDes.grid(row=1, column=1, sticky=W+E)
-		self.svDestinationPath.set(os.path.join(os.getcwd(),"Labels"))
+		self.svDestinationPath.set(os.path.join(os.getcwd(),"dataset/annotations"))
 
 		# main panel for labeling
 		self.mainPanel = Canvas(self.frame, cursor='tcross')
@@ -270,7 +270,7 @@ class LabelTool():
 		imagepath = self.imageList[self.cur - 1]
 		self.img = Image.open(imagepath)
 		size = self.img.size
-		self.factor = max(size[0]/1000, size[1]/1000., 1.)
+		self.factor = max(size[0]/700, size[1]/700., 1.)
 		self.img = self.img.resize((int(size[0]/self.factor), \
 													int(size[1]/self.factor)))
 		self.tkimg = ImageTk.PhotoImage(self.img)
