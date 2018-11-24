@@ -1,4 +1,4 @@
-# Protist Classifier
+# Protist Image Classifier
 A neural network for protists image classification.
 
 ## Description:
@@ -89,12 +89,13 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 
 4. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/images).
 5. Click "Label Output Folder" on the top left to choose the directory that will save the lables (./dataset/annotations).
-6. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths: ./dataset/images ./dataset/annotations ./dataset/check otherwise you will have to changes to different paths from within the code in some scripts. The image may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 1000) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
-7. Use the mouse to generate a bounding box arround your object of interest.
-8. Click "Next >>" on the bottom to load the first image.
-9. Label images with boxes.
-10. Click "Next >>" to save labels and move on to the next image.
-11. Check to make sure that your annotations are correct by using the following command:
+6. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths: ./dataset/images ./dataset/annotations ./dataset/check otherwise you will have to changes to different paths from within the code in some scripts. The image may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
+7. You must click "Next" to load the images (but it will skip the first image, so go back to it).
+8. Use the mouse to generate a bounding box arround your object of interest.
+9. Click "Next >>" on the bottom to load the first image.
+10. Label images with boxes.
+11. Click "Next >>" to save labels and move on to the next image.
+12. Check to make sure that your annotations are correct by using the following command:
 
 `python3 txt-xml+check.py -cd ./dataset`
 
