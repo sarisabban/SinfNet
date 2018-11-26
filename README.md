@@ -160,4 +160,4 @@ or
 `python3 YOLOv2.py -d WEIGHTS.h5 IMAGE.jpg`
 
 ### Jupyter notebooks
-The Jupyter notebooks are provided for YOLOv2 and YOLOv3 to be able to quickly implemnet these scripts on cloud GPUs.
+A Jupyter notebook is provided only for YOLOv2 to be able to quickly implemnet this scripts on a cloud GPU (the YOLOv3 script is too big for free cloud GPUs and requires a dedicated large system).
