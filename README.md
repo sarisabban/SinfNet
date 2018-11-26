@@ -2,68 +2,13 @@
 A neural network for protists image classification.
 
 ## Description:
-This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to classify different species of protists from a microscope image, or count the number of cells present in an image. Provided here are all the nessessary scripts to develop a database, train the YOLOv3 network, and perform a detection. Pre-trained weights are also available where we trained this neural network to count cells or to classify the following species within an image:
+This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to count the number of cells present in an image, or classify different species of protists from a microscope image. Provided here are all the nessessary scripts to develop a database, train the YOLOv2 or YOLOv3 networks, and perform a detection. Microscope image datasets and pre-trained weights are also available where we trained this neural network to count cells or to classify the following species within an image:
 
-1. *Akashiwo sanguineae*
-2. *Bysmatrum subsalsum*
-3. *Durinskia baltica*
-4. *Fukuyoa reutzleri*
-5. *Gymnodinium aureolum*
-6. *Gymnodinium impudicum*
-7. *Heterocapsa sp.*
-8. *Karlodinium arminger*
-9. *Kryptoperidinium foliaceum*
-10. *Levanderina fissa*
-11. *Lingulodinium polyedrum*
-12. *Margalefidinium polykrikoides*
-13. *Pyrodinium bahamense*
-14. *Scrippsiella sp*
-15. *Scrippsiella trochoidea*
-16. *Takayama tasmanica*
-17. *Vulcanodinium sp.*
-18. *Alexandrium affine*
-19. *Alexandrium andersonii*
-20. *Alexandrium fundyense*
-21. *Alexandrium hiranoi*
-22. *Alexandrium leei*
-23. *Alexandrium monilatum*
-24. *Alexandrium ostenfeldii*
-25. *Coolia malayensis*
-26. *Coolia monotis*
-27. *Coolia palmyrensis*
-28. *Coolia santacroce*
-29. *Gambierdiscus belizeanus*
-30. *Gambierdiscus caribaeus*
-31. *Gambierdiscus caribeaus*
-32. *Gambierdiscus carolinianus*
-33. *Gambierdiscus carpenteri*
-34. *Gambierdiscus pacificus*
-35. *Karenia brevis*
-36. *Karenia mikimotoi*
-37. *Karenia papilionaceae*
-38. *Karenia selliformis*
-39. *Prorocentrum belizeanum*
-40. *Prorocentrum cordatum*
-41. *Prorocentrum elegans*
-42. *Prorocentrum hoffmannianum*
-43. *Prorocentrum lima*
-44. *Prorocentrum micans*
-45. *Prorocentrum rhathymum*
-46. *Prorocentrum texanum*
-47. *Prorocentrum triestinum*
-48. *Amphidinium carterae*
-49. *Amphidinium cf. thermaeum*
-50. *Amphidinium cf. massartii*
-51. *Amphidinium fijiensis*
-52. *Amphidinium gibbossum*
-53. *Amphidinium magnum*
-54. *Amphidinium massartii*
-55. *Amphidinium paucianulatum*
-56. *Amphidinium pseudomassartii*
-57. *Amphidinium theodori*
-58. *Amphidinium thermaeum*
-59. *Amphidinium tomasii*
-60. *Amphidinium trulla*
+Protist datase - 60 species:
+
+<sub>*Akashiwo sanguineae, Bysmatrum subsalsum, Durinskia baltica, Fukuyoa reutzleri, Gymnodinium aureolum, Gymnodinium impudicum, Heterocapsa sp., Karlodinium arminger, Kryptoperidinium foliaceum, Levanderina fissa, Lingulodinium polyedrum, Margalefidinium polykrikoides, Pyrodinium bahamense, Scrippsiella sp, Scrippsiella trochoidea, Takayama tasmanica, Vulcanodinium sp., Alexandrium affine, Alexandrium andersonii, Alexandrium fundyense, Alexandrium hiranoi, Alexandrium leei, Alexandrium monilatum, Alexandrium ostenfeldii, Coolia malayensis, Coolia monotis, Coolia palmyrensis, Coolia santacroce, Gambierdiscus belizeanus, Gambierdiscus caribaeus, Gambierdiscus caribeaus, Gambierdiscus carolinianus, Gambierdiscus carpenteri, Gambierdiscus pacificus, Karenia brevis, Karenia mikimotoi, Karenia papilionaceae, Karenia selliformis, Prorocentrum belizeanum, Prorocentrum cordatum, Prorocentrum elegans, Prorocentrum hoffmannianum, Prorocentrum lima, Prorocentrum micans, Prorocentrum rhathymum, Prorocentrum texanum, Prorocentrum triestinum, Amphidinium carterae, Amphidinium cf. thermaeum, Amphidinium cf. massartii, Amphidinium fijiensis, Amphidinium gibbossum, Amphidinium magnum, Amphidinium massartii, Amphidinium paucianulatum, Amphidinium pseudomassartii, Amphidinium theodori, Amphidinium thermaeum, Amphidinium tomasii, Amphidinium trulla*</sub>
+
+The cell counting setup it mainly used to construct the protist dataset, since each protist species require at least 1000 annotated images, the cell counting detection neural network is use to auto annotate microscope cell images and construct a dataset, that is why it is provided here.
 
 ## How to use:
 This is a [Video]() on how to use this setup.
