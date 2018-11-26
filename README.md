@@ -30,7 +30,7 @@ You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm
 If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-2. In the BBox.py script file named add the labels (classes) of each item the list in line 61 and save the file.
+2. In the BBox.py script file named add the labels (classes) of each item the list in line 63 and save the file.
 3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Images*
@@ -81,7 +81,7 @@ This will generate a new directory called ./dataset/Annotations and this directo
 5. The .h5 file is the weights file used for image detection.
 
 #### For YOLOv3:
-1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"], and on line 10 chnage your output weights file name.
+1. On line 52 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on line 57 and 58 change your output file names.
 2. The network is resource heavy and required a large GPU and more than 16GB of RAM to run. Therefore some cloud GPU cloud services may not work and a larger system is required.
 3. Run training using the following command:
 
