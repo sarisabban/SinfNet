@@ -87,93 +87,72 @@ class FullYoloFeature(BaseFeatureExtractor):
 		input_image = Input(shape=(input_size, input_size, 3))
 		def space_to_depth_x2(x):
 			return tf.space_to_depth(x, block_size=2)
-		# Layer 1
 		x = Conv2D(32, (3,3), strides=(1,1), padding='same', name='conv_1', use_bias=False)(input_image)
 		x = BatchNormalization(name='norm_1')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		x = MaxPooling2D(pool_size=(2, 2))(x)
-		# Layer 2
 		x = Conv2D(64, (3,3), strides=(1,1), padding='same', name='conv_2', use_bias=False)(x)
 		x = BatchNormalization(name='norm_2')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		x = MaxPooling2D(pool_size=(2, 2))(x)
-		# Layer 3
 		x = Conv2D(128, (3,3), strides=(1,1), padding='same', name='conv_3', use_bias=False)(x)
 		x = BatchNormalization(name='norm_3')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 4
 		x = Conv2D(64, (1,1), strides=(1,1), padding='same', name='conv_4', use_bias=False)(x)
 		x = BatchNormalization(name='norm_4')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 5
 		x = Conv2D(128, (3,3), strides=(1,1), padding='same', name='conv_5', use_bias=False)(x)
 		x = BatchNormalization(name='norm_5')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		x = MaxPooling2D(pool_size=(2, 2))(x)
-		# Layer 6
 		x = Conv2D(256, (3,3), strides=(1,1), padding='same', name='conv_6', use_bias=False)(x)
 		x = BatchNormalization(name='norm_6')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 7
 		x = Conv2D(128, (1,1), strides=(1,1), padding='same', name='conv_7', use_bias=False)(x)
 		x = BatchNormalization(name='norm_7')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 8
 		x = Conv2D(256, (3,3), strides=(1,1), padding='same', name='conv_8', use_bias=False)(x)
 		x = BatchNormalization(name='norm_8')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		x = MaxPooling2D(pool_size=(2, 2))(x)
-		# Layer 9
 		x = Conv2D(512, (3,3), strides=(1,1), padding='same', name='conv_9', use_bias=False)(x)
 		x = BatchNormalization(name='norm_9')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 10
 		x = Conv2D(256, (1,1), strides=(1,1), padding='same', name='conv_10', use_bias=False)(x)
 		x = BatchNormalization(name='norm_10')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 11
 		x = Conv2D(512, (3,3), strides=(1,1), padding='same', name='conv_11', use_bias=False)(x)
 		x = BatchNormalization(name='norm_11')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 12
 		x = Conv2D(256, (1,1), strides=(1,1), padding='same', name='conv_12', use_bias=False)(x)
 		x = BatchNormalization(name='norm_12')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 13
 		x = Conv2D(512, (3,3), strides=(1,1), padding='same', name='conv_13', use_bias=False)(x)
 		x = BatchNormalization(name='norm_13')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		skip_connection = x
 		x = MaxPooling2D(pool_size=(2, 2))(x)
-		# Layer 14
 		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_14', use_bias=False)(x)
 		x = BatchNormalization(name='norm_14')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 15
 		x = Conv2D(512, (1,1), strides=(1,1), padding='same', name='conv_15', use_bias=False)(x)
 		x = BatchNormalization(name='norm_15')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 16
 		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_16', use_bias=False)(x)
 		x = BatchNormalization(name='norm_16')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 17
 		x = Conv2D(512, (1,1), strides=(1,1), padding='same', name='conv_17', use_bias=False)(x)
 		x = BatchNormalization(name='norm_17')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 18
 		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_18', use_bias=False)(x)
 		x = BatchNormalization(name='norm_18')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 19
 		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_19', use_bias=False)(x)
 		x = BatchNormalization(name='norm_19')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 20
 		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_20', use_bias=False)(x)
 		x = BatchNormalization(name='norm_20')(x)
 		x = LeakyReLU(alpha=0.1)(x)
-		# Layer 21
 		skip_connection = Conv2D(64, (1,1),
 								strides=(1,1),
 								padding='same',
@@ -183,9 +162,7 @@ class FullYoloFeature(BaseFeatureExtractor):
 		skip_connection = LeakyReLU(alpha=0.1)(skip_connection)
 		skip_connection = Lambda(space_to_depth_x2)(skip_connection)
 		x = concatenate([skip_connection, x])
-		# Layer 22
-		x = Conv2D(1024, (3,3), strides=(1,1),
-					padding='same', name='conv_22', use_bias=False)(x)
+		x = Conv2D(1024, (3,3), strides=(1,1), padding='same', name='conv_22', use_bias=False)(x)
 		x = BatchNormalization(name='norm_22')(x)
 		x = LeakyReLU(alpha=0.1)(x)
 		self.feature_extractor = Model(input_image, x)
@@ -526,9 +503,6 @@ class YOLO(object):
 		self.class_wt = np.ones(self.nb_class, dtype='float32')
 		self.anchors = anchors
 		self.max_box_per_image = max_box_per_image
-		##########################
-		# Make the model
-		##########################
 		input_image = Input(shape=(self.input_size, self.input_size, 3))
 		self.true_boxes = Input(shape=(1, 1, 1, max_box_per_image , 4))
 		self.feature_extractor = FullYoloFeature(self.input_size)
@@ -565,18 +539,12 @@ class YOLO(object):
 		class_mask = tf.zeros(mask_shape)
 		seen = tf.Variable(0.)
 		total_recall = tf.Variable(0.)
-		###############################
-		# Adjust prediction
-		###############################
 		pred_box_xy = tf.sigmoid(y_pred[..., :2]) + cell_grid
 		pred_box_wh = tf.exp(y_pred[..., 2:4]) * np.reshape(self.anchors,
 															[1,1,1,
 															self.nb_box,2])
 		pred_box_conf = tf.sigmoid(y_pred[..., 4])
 		pred_box_class = y_pred[..., 5:]
-		###############################
-		# Adjust ground truth
-		###############################
 		true_box_xy = y_true[..., 0:2]
 		true_box_wh = y_true[..., 2:4]
 		true_wh_half = true_box_wh / 2.
@@ -595,9 +563,6 @@ class YOLO(object):
 		iou_scores = tf.truediv(intersect_areas, union_areas)
 		true_box_conf = iou_scores * y_true[..., 4]
 		true_box_class = tf.argmax(y_true[..., 5:], -1)
-		###############################
-		# Determine the masks
-		###############################
 		coord_mask = tf.expand_dims(y_true[..., 4], axis=-1) * self.coord_scale
 		true_xy = self.true_boxes[..., 0:2]
 		true_wh = self.true_boxes[..., 2:4]
@@ -623,9 +588,6 @@ class YOLO(object):
 		conf_mask = conf_mask + y_true[..., 4] * self.object_scale
 		class_mask = y_true[..., 4] *\
 					tf.gather(self.class_wt, true_box_class) * self.class_scale
-		###############################
-		# Warm-up training
-		###############################
 		no_boxes_mask = tf.to_float(coord_mask < self.coord_scale/2.)
 		seen = tf.assign_add(seen, 1.)
 		true_box_xy, true_box_wh, coord_mask = tf.cond(tf.less(seen,
@@ -640,9 +602,6 @@ class YOLO(object):
 							lambda: [true_box_xy,
 									true_box_wh,
 									coord_mask])
-		###############################
-		# Finalize the loss
-		###############################
 		nb_coord_box = tf.reduce_sum(tf.to_float(coord_mask > 0.0))
 		nb_conf_box = tf.reduce_sum(tf.to_float(conf_mask  > 0.0))
 		nb_class_box = tf.reduce_sum(tf.to_float(class_mask > 0.0))
@@ -703,9 +662,6 @@ class YOLO(object):
 		self.coord_scale = coord_scale
 		self.class_scale = class_scale
 		self.debug = debug
-		############################################
-		# Make train and validation generators
-		############################################
 		generator_config = {
 			'IMAGE_H': self.input_size,
 			'IMAGE_W': self.input_size,
@@ -726,18 +682,12 @@ class YOLO(object):
 										jitter=False)
 		self.warmup_batches  = warmup_epochs *\
 		(train_times*len(train_generator) + valid_times*len(valid_generator))
-		############################################
-		# Compile the model
-		############################################
 		optimizer = Adam(lr=learning_rate,
 						beta_1=0.9,
 						beta_2=0.999,
 						epsilon=1e-08,
 						decay=0.0)
 		self.model.compile(loss=self.custom_loss, optimizer=optimizer)
-		############################################
-		# Make a few callbacks
-		############################################
 		early_stop = EarlyStopping(monitor='val_loss',
 									min_delta=0.001,
 									patience=10,
@@ -751,12 +701,8 @@ class YOLO(object):
 									period=1)
 		tensorboard = TensorBoard(log_dir=os.path.expanduser('./logs/'),
 									histogram_freq=0,
-									#write_batch_performance=True,
 									write_graph=True,
 									write_images=False)
-		############################################
-		# Start the training process
-		############################################
 		self.model.fit_generator(generator = train_generator,
 								steps_per_epoch = len(train_generator)\
 																* train_times,
@@ -768,11 +714,7 @@ class YOLO(object):
 								callbacks = [early_stop,checkpoint,tensorboard],
 								workers = 3,
 								max_queue_size = 8)
-		############################################
-		# Compute mAP on the validation set
-		############################################
 		average_precisions = self.evaluate(valid_generator)
-		# print evaluation
 		for label, average_precision in average_precisions.items():
 			print(self.labels[label], '{:.4f}'.format(average_precision))
 		print('mAP: {:.4f}'.format(sum(average_precisions.values()) /\
@@ -783,7 +725,6 @@ class YOLO(object):
 				score_threshold=0.3,
 				max_detections=100,
 				save_path=None):
-		# gather all detections and annotations
 		all_detections = [[None for i in range(generator.num_classes())] for\
 												j in range(generator.size())]
 		all_annotations = [[None for i in range(generator.num_classes())] for\
@@ -791,7 +732,6 @@ class YOLO(object):
 		for i in range(generator.size()):
 			raw_image = generator.load_image(i)
 			raw_height, raw_width, raw_channels = raw_image.shape
-			# make the boxes and the labels
 			pred_boxes = self.predict(raw_image)
 			score = np.array([box.score for box in pred_boxes])
 			pred_labels = np.array([box.label for box in pred_boxes])
@@ -803,19 +743,15 @@ class YOLO(object):
 										box.score] for box in pred_boxes])
 			else:
 				pred_boxes = np.array([[]])
-			# sort the boxes and the labels according to scores
 			score_sort = np.argsort(-score)
 			pred_labels = pred_labels[score_sort]
 			pred_boxes = pred_boxes[score_sort]
-			# copy detections to all_detections
 			for label in range(generator.num_classes()):
 				all_detections[i][label] = pred_boxes[pred_labels == label, :]
 			annotations = generator.load_annotation(i)
-			# copy detections to all_annotations
 			for label in range(generator.num_classes()):
 				all_annotations[i][label] = annotations[annotations[:, 4] ==\
 															label, :4].copy()
-		# compute mAP by comparing all detections and all annotations
 		average_precisions = {}
 		for label in range(generator.num_classes()):
 			false_positives = np.zeros((0,))
@@ -845,22 +781,17 @@ class YOLO(object):
 					else:
 						false_positives = np.append(false_positives, 1)
 						true_positives = np.append(true_positives, 0)
-			# no annotations -> AP for this class is 0 (is this correct?)
 			if num_annotations == 0:
 				average_precisions[label] = 0
 				continue
-			# sort by score
 			indices = np.argsort(-scores)
 			false_positives = false_positives[indices]
 			true_positives = true_positives[indices]
-			# compute false positives and true positives
 			false_positives = np.cumsum(false_positives)
 			true_positives = np.cumsum(true_positives)
-			# compute recall and precision
 			recall = true_positives / num_annotations
 			precision = true_positives / np.maximum(true_positives +\
 									false_positives, np.finfo(np.float64).eps)
-			# compute average precision
 			average_precision = compute_ap(recall, precision)
 			average_precisions[label] = average_precision
 		return average_precisions
@@ -876,9 +807,6 @@ class YOLO(object):
 		return boxes
 
 def train():
-	###############################
-	# Parse the annotations
-	###############################
 	train_imgs, train_labels = parse_annotation(config['train']\
 												['train_annot_folder'],
 												config['train']\
@@ -909,16 +837,10 @@ def train():
 	else:
 		print('No labels are provided. Train on all seen labels.')
 		config['model']['labels'] = train_labels.keys()
-	###############################
-	# Construct the model
-	###############################
 	yolo = YOLO(input_size = config['model']['input_size'],
 				labels = config['model']['labels'],
 				max_box_per_image = config['model']['max_box_per_image'],
 				anchors = config['model']['anchors'])
-	###############################
-	# Start the training process
-	###############################
 	yolo.train(train_imgs = train_imgs,
 				valid_imgs = valid_imgs,
 				train_times = config['train']['train_times'],
@@ -937,20 +859,11 @@ def train():
 def predict(h5weights, TheImage):
 	weights_path = h5weights
 	image_path = TheImage
-	###############################
-	# Make the model
-	###############################
 	yolo = YOLO(input_size = config['model']['input_size'],
 				labels = config['model']['labels'],
 				max_box_per_image = config['model']['max_box_per_image'],
 				anchors = config['model']['anchors'])
-	###############################
-	# Load trained weights
-	###############################
 	yolo.load_weights(weights_path)
-	###############################
-	# Predict bounding boxes
-	###############################
 	if image_path[-4:] == '.mp4':
 		video_out = image_path[:-4] + '_detected' + image_path[-4:]
 		video_reader = cv2.VideoCapture(image_path)
@@ -983,7 +896,6 @@ def main():
 	if sys.argv[1] == '-t':
 		train()
 	elif sys.argv[1] == '-d':
-				# Weights path	#Image path
 		predict(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()

@@ -61,7 +61,7 @@ config = {"model":{
 			"batch_size":           16,
 			"learning_rate":        1e-4,
 			"nb_epochs":            1000,
-			"warmup_epochs":        3,
+			"warmup_epochs":        0,
 			"ignore_thresh":        0.5,
 			"gpus":                 "0,1",
 			"grid_scales":          [1,1,1],
