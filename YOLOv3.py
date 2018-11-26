@@ -1333,7 +1333,7 @@ def main_predict(FILENAME):
 if __name__ == '__main__':
 	if sys.argv[1] == '-t':
 	    main_train()
-	elif sys.argv[1] == '-p':
+	elif sys.argv[1] == '-d':
 		main_predict(sys.argv[2])
 	else:
 		print('Error in command')
