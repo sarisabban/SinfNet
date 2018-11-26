@@ -30,7 +30,7 @@ You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm
 If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-2. In the file named *class.txt* add the labels (classes) of each item that you want to classify, each label in a new line.
+2. In the BBox.py script file named add the labels (classes) of each item the list in line 61 and save the file.
 3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Images*
@@ -45,24 +45,24 @@ It is best to stick to this structure with these names exactly, otherwise you wi
 
 4. Open the GUI annotation tool using the following command:
 
-`python3 BBox.py`
+`python3 Label.py -BBox`
 
 5. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
 6. Click "Label Output Folder" on the top left to choose the directory that will save the lables (./dataset/BBox_Annotations).
 7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3, otherwise you will have to changes to different paths from within the code in some scripts. The images may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
 8. You must click "Next" to load the images (but it will skip the first image, so go back to it).
 9. Use the mouse to generate a bounding box arround each object of interest.
-10. Label each box with the labels from the drop down menu on the right.
+10. Label each box with the labels from the drop down menu on the right and clicking "Confirm Class".
 11. Click "Next >>" to save the labels and move on to the next image (images are not loaded by filename order).
 12. Once finished, check to make sure that your annotations are correct by using the following command:
 
-`python3 txt-xml+check.py -cd`
+`python3 Label.py -check`
 
 This will generate a new directory called ./dataset/Check with the images showing their annotations.
 
 13. The annotations are in text (.txt) file format and they need to be in XML format, to convert run the following command:
 
-`python3 txt-xml+check.py -t`
+`python3 Label.py -translate`
 
 This will generate a new directory called ./dataset/Annotations and this directory will be used in the neural network.
 

@@ -45,17 +45,48 @@ from keras.layers.merge import add, concatenate
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Lambda, concatenate, ZeroPadding2D, UpSampling2D, Lambda, Conv2D, Input, BatchNormalization, LeakyReLU
 
+config = {"model":{
+			"min_input_size":       288,
+			"max_input_size":       448,
+			"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
+			"labels":               ["Cell"]},
+		"train":{
+			"train_image_folder":   "./dataset/Images/",
+			"train_annot_folder":   "./dataset/Annotations/",
+			"tensorboard_dir":      "./logs",
+			"saved_weights_name":   "cell.h5",
+			"cache_name":           "cell.plk",
+			"pretrained_weights":   "",
+			"train_times":          8,
+			"batch_size":           16,
+			"learning_rate":        1e-4,
+			"nb_epochs":            1000,
+			"warmup_epochs":        3,
+			"ignore_thresh":        0.5,
+			"gpus":                 "0,1",
+			"grid_scales":          [1,1,1],
+			"obj_scale":            5,
+			"noobj_scale":          1,
+			"xywh_scale":           1,
+			"class_scale":          1,
+			"debug":                True},
+		"valid":{
+			"valid_image_folder":   "",
+			"valid_annot_folder":   "",
+			"cache_name":           "",
+			"valid_times":          1}}
+
 class YoloLayer(Layer):
 	def __init__(self, anchors, max_grid, batch_size, warmup_batches, ignore_thresh, grid_scale, obj_scale, noobj_scale, xywh_scale, class_scale, **kwargs):
 		# make the model settings persistent
-		self.ignore_thresh	= ignore_thresh
-		self.warmup_batches	= warmup_batches
-		self.anchors		= tf.constant(anchors, dtype='float', shape=[1,1,1,3,2])
-		self.grid_scale		= grid_scale
-		self.obj_scale		= obj_scale
-		self.noobj_scale	= noobj_scale
-		self.xywh_scale		= xywh_scale
-		self.class_scale	= class_scale
+		self.ignore_thresh  = ignore_thresh
+		self.warmup_batches = warmup_batches
+		self.anchors        = tf.constant(anchors, dtype='float', shape=[1,1,1,3,2])
+		self.grid_scale     = grid_scale
+		self.obj_scale      = obj_scale
+		self.noobj_scale    = noobj_scale
+		self.xywh_scale     = xywh_scale
+		self.class_scale    = class_scale
 		# make a persistent mesh grid
 		max_grid_h, max_grid_w = max_grid
 		cell_x = tf.to_float(tf.reshape(tf.tile(tf.range(max_grid_w), [max_grid_h]), (1, max_grid_h, max_grid_w, 1, 1)))
@@ -69,115 +100,115 @@ class YoloLayer(Layer):
 		# adjust the shape of the y_predict [batch, grid_h, grid_w, 3, 4+1+nb_class]
 		y_pred = tf.reshape(y_pred, tf.concat([tf.shape(y_pred)[:3], tf.constant([3, -1])], axis=0))
 		# initialize the masks
-		object_mask		= tf.expand_dims(y_true[..., 4], 4)
+		object_mask     = tf.expand_dims(y_true[..., 4], 4)
 		# the variable to keep track of number of batches processed
 		batch_seen = tf.Variable(0.)
 		# compute grid factor and net factor
-		grid_h			= tf.shape(y_true)[1]
-		grid_w			= tf.shape(y_true)[2]
-		grid_factor		= tf.reshape(tf.cast([grid_w, grid_h], tf.float32), [1,1,1,1,2])
-		net_h			= tf.shape(input_image)[1]
-		net_w			= tf.shape(input_image)[2]
-		net_factor		= tf.reshape(tf.cast([net_w, net_h], tf.float32), [1,1,1,1,2])
+		grid_h          = tf.shape(y_true)[1]
+		grid_w          = tf.shape(y_true)[2]
+		grid_factor     = tf.reshape(tf.cast([grid_w, grid_h], tf.float32), [1,1,1,1,2])
+		net_h           = tf.shape(input_image)[1]
+		net_w           = tf.shape(input_image)[2]
+		net_factor      = tf.reshape(tf.cast([net_w, net_h], tf.float32), [1,1,1,1,2])
 		'''
 		Adjust prediction
 		'''
-		pred_box_xy		= (self.cell_grid[:,:grid_h,:grid_w,:,:] + tf.sigmoid(y_pred[..., :2])) # sigma(t_xy) + c_xy
-		pred_box_wh		= y_pred[..., 2:4] # t_wh
-		pred_box_conf	= tf.expand_dims(tf.sigmoid(y_pred[..., 4]), 4) # adjust confidence
-		pred_box_class	= y_pred[..., 5:] # adjust class probabilities
+		pred_box_xy     = (self.cell_grid[:,:grid_h,:grid_w,:,:] + tf.sigmoid(y_pred[..., :2])) # sigma(t_xy) + c_xy
+		pred_box_wh     = y_pred[..., 2:4] # t_wh
+		pred_box_conf   = tf.expand_dims(tf.sigmoid(y_pred[..., 4]), 4) # adjust confidence
+		pred_box_class  = y_pred[..., 5:] # adjust class probabilities
 		'''
 		Adjust ground truth
 		'''
-		true_box_xy		= y_true[..., 0:2] # (sigma(t_xy) + c_xy)
-		true_box_wh		= y_true[..., 2:4] # t_wh
-		true_box_conf	= tf.expand_dims(y_true[..., 4], 4)
-		true_box_class	= tf.argmax(y_true[..., 5:], -1)
+		true_box_xy     = y_true[..., 0:2] # (sigma(t_xy) + c_xy)
+		true_box_wh     = y_true[..., 2:4] # t_wh
+		true_box_conf   = tf.expand_dims(y_true[..., 4], 4)
+		true_box_class  = tf.argmax(y_true[..., 5:], -1)
 		'''
 		Compare each predicted box to all true boxes
 		'''
 		# initially, drag all objectness of all boxes to 0
-		conf_delta		= pred_box_conf - 0
+		conf_delta      = pred_box_conf - 0
 		# then, ignore the boxes which have good overlap with some true box
-		true_xy			= true_boxes[..., 0:2] / grid_factor
-		true_wh			= true_boxes[..., 2:4] / net_factor
-		true_wh_half	= true_wh / 2.
-		true_mins		= true_xy - true_wh_half
-		true_maxes		= true_xy + true_wh_half
-		pred_xy			= tf.expand_dims(pred_box_xy / grid_factor, 4)
-		pred_wh			= tf.expand_dims(tf.exp(pred_box_wh) * self.anchors / net_factor, 4)
-		pred_wh_half	= pred_wh / 2.
-		pred_mins		= pred_xy - pred_wh_half
-		pred_maxes		= pred_xy + pred_wh_half
-		intersect_mins	= tf.maximum(pred_mins,  true_mins)
-		intersect_maxes	= tf.minimum(pred_maxes, true_maxes)
-		intersect_wh	= tf.maximum(intersect_maxes - intersect_mins, 0.)
-		intersect_areas	= intersect_wh[..., 0] * intersect_wh[..., 1]
-		true_areas		= true_wh[..., 0] * true_wh[..., 1]
-		pred_areas		= pred_wh[..., 0] * pred_wh[..., 1]
-		union_areas		= pred_areas + true_areas - intersect_areas
-		iou_scores		= tf.truediv(intersect_areas, union_areas)
-		best_ious		= tf.reduce_max(iou_scores, axis=4)
-		conf_delta		*= tf.expand_dims(tf.to_float(best_ious < self.ignore_thresh), 4)
+		true_xy         = true_boxes[..., 0:2] / grid_factor
+		true_wh         = true_boxes[..., 2:4] / net_factor
+		true_wh_half    = true_wh / 2.
+		true_mins       = true_xy - true_wh_half
+		true_maxes      = true_xy + true_wh_half
+		pred_xy         = tf.expand_dims(pred_box_xy / grid_factor, 4)
+		pred_wh         = tf.expand_dims(tf.exp(pred_box_wh) * self.anchors / net_factor, 4)
+		pred_wh_half    = pred_wh / 2.
+		pred_mins       = pred_xy - pred_wh_half
+		pred_maxes      = pred_xy + pred_wh_half
+		intersect_mins  = tf.maximum(pred_mins,  true_mins)
+		intersect_maxes = tf.minimum(pred_maxes, true_maxes)
+		intersect_wh    = tf.maximum(intersect_maxes - intersect_mins, 0.)
+		intersect_areas = intersect_wh[..., 0] * intersect_wh[..., 1]
+		true_areas      = true_wh[..., 0] * true_wh[..., 1]
+		pred_areas      = pred_wh[..., 0] * pred_wh[..., 1]
+		union_areas     = pred_areas + true_areas - intersect_areas
+		iou_scores      = tf.truediv(intersect_areas, union_areas)
+		best_ious       = tf.reduce_max(iou_scores, axis=4)
+		conf_delta     *= tf.expand_dims(tf.to_float(best_ious < self.ignore_thresh), 4)
 		'''
 		Compute some online statistics
 		'''
-		true_xy			= true_box_xy / grid_factor
-		true_wh			= tf.exp(true_box_wh) * self.anchors / net_factor
-		true_wh_half	= true_wh / 2.
-		true_mins		= true_xy - true_wh_half
-		true_maxes		= true_xy + true_wh_half
-		pred_xy			= pred_box_xy / grid_factor
-		pred_wh			= tf.exp(pred_box_wh) * self.anchors / net_factor
-		pred_wh_half	= pred_wh / 2.
-		pred_mins		= pred_xy - pred_wh_half
-		pred_maxes		= pred_xy + pred_wh_half
-		intersect_mins	= tf.maximum(pred_mins,  true_mins)
-		intersect_maxes	= tf.minimum(pred_maxes, true_maxes)
-		intersect_wh	= tf.maximum(intersect_maxes - intersect_mins, 0.)
-		intersect_areas	= intersect_wh[..., 0] * intersect_wh[..., 1]
-		true_areas		= true_wh[..., 0] * true_wh[..., 1]
-		pred_areas		= pred_wh[..., 0] * pred_wh[..., 1]
-		union_areas		= pred_areas + true_areas - intersect_areas
-		iou_scores		= tf.truediv(intersect_areas, union_areas)
-		iou_scores		= object_mask * tf.expand_dims(iou_scores, 4)
-		count			= tf.reduce_sum(object_mask)
-		count_noobj		= tf.reduce_sum(1 - object_mask)
-		detect_mask		= tf.to_float((pred_box_conf*object_mask) >= 0.5)
-		class_mask		= tf.expand_dims(tf.to_float(tf.equal(tf.argmax(pred_box_class, -1), true_box_class)), 4)
-		recall50		= tf.reduce_sum(tf.to_float(iou_scores >= 0.5 ) * detect_mask  * class_mask) / (count + 1e-3)
-		recall75		= tf.reduce_sum(tf.to_float(iou_scores >= 0.75) * detect_mask  * class_mask) / (count + 1e-3)
-		avg_iou			= tf.reduce_sum(iou_scores) / (count + 1e-3)
-		avg_obj			= tf.reduce_sum(pred_box_conf  * object_mask)  / (count + 1e-3)
-		avg_noobj		= tf.reduce_sum(pred_box_conf  * (1-object_mask))  / (count_noobj + 1e-3)
-		avg_cat			= tf.reduce_sum(object_mask * class_mask) / (count + 1e-3)
+		true_xy         = true_box_xy / grid_factor
+		true_wh         = tf.exp(true_box_wh) * self.anchors / net_factor
+		true_wh_half    = true_wh / 2.
+		true_mins       = true_xy - true_wh_half
+		true_maxes      = true_xy + true_wh_half
+		pred_xy         = pred_box_xy / grid_factor
+		pred_wh         = tf.exp(pred_box_wh) * self.anchors / net_factor
+		pred_wh_half    = pred_wh / 2.
+		pred_mins       = pred_xy - pred_wh_half
+		pred_maxes      = pred_xy + pred_wh_half
+		intersect_mins  = tf.maximum(pred_mins,  true_mins)
+		intersect_maxes = tf.minimum(pred_maxes, true_maxes)
+		intersect_wh    = tf.maximum(intersect_maxes - intersect_mins, 0.)
+		intersect_areas = intersect_wh[..., 0] * intersect_wh[..., 1]
+		true_areas      = true_wh[..., 0] * true_wh[..., 1]
+		pred_areas      = pred_wh[..., 0] * pred_wh[..., 1]
+		union_areas     = pred_areas + true_areas - intersect_areas
+		iou_scores      = tf.truediv(intersect_areas, union_areas)
+		iou_scores      = object_mask * tf.expand_dims(iou_scores, 4)
+		count           = tf.reduce_sum(object_mask)
+		count_noobj     = tf.reduce_sum(1 - object_mask)
+		detect_mask     = tf.to_float((pred_box_conf*object_mask) >= 0.5)
+		class_mask      = tf.expand_dims(tf.to_float(tf.equal(tf.argmax(pred_box_class, -1), true_box_class)), 4)
+		recall50        = tf.reduce_sum(tf.to_float(iou_scores >= 0.5 ) * detect_mask  * class_mask) / (count + 1e-3)
+		recall75        = tf.reduce_sum(tf.to_float(iou_scores >= 0.75) * detect_mask  * class_mask) / (count + 1e-3)
+		avg_iou         = tf.reduce_sum(iou_scores) / (count + 1e-3)
+		avg_obj         = tf.reduce_sum(pred_box_conf  * object_mask)  / (count + 1e-3)
+		avg_noobj       = tf.reduce_sum(pred_box_conf  * (1-object_mask))  / (count_noobj + 1e-3)
+		avg_cat         = tf.reduce_sum(object_mask * class_mask) / (count + 1e-3)
 		'''
 		Warm-up training
 		'''
-		batch_seen		= tf.assign_add(batch_seen, 1.)
+		batch_seen      = tf.assign_add(batch_seen, 1.)
 		true_box_xy, true_box_wh, xywh_mask = tf.cond(tf.less(batch_seen, self.warmup_batches+1), lambda: [true_box_xy + (0.5 + self.cell_grid[:,:grid_h,:grid_w,:,:]) * (1-object_mask), true_box_wh + tf.zeros_like(true_box_wh) * (1-object_mask), tf.ones_like(object_mask)], lambda: [true_box_xy, true_box_wh, object_mask])
 		'''
 		Compare each true box to all anchor boxes
 		'''
-		wh_scale		= tf.exp(true_box_wh) * self.anchors / net_factor
-		wh_scale		= tf.expand_dims(2 - wh_scale[..., 0] * wh_scale[..., 1], axis=4) # the smaller the box, the bigger the scale
-		xy_delta		= xywh_mask		* (pred_box_xy-true_box_xy) * wh_scale * self.xywh_scale
-		wh_delta		= xywh_mask		* (pred_box_wh-true_box_wh) * wh_scale * self.xywh_scale
-		conf_delta		= object_mask	* (pred_box_conf-true_box_conf) * self.obj_scale + (1-object_mask) * conf_delta * self.noobj_scale
-		class_delta		= object_mask	* tf.expand_dims(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=true_box_class, logits=pred_box_class), 4) * self.class_scale
-		loss_xy			= tf.reduce_sum(tf.square(xy_delta),		list(range(1,5)))
-		loss_wh			= tf.reduce_sum(tf.square(wh_delta),		list(range(1,5)))
-		loss_conf		= tf.reduce_sum(tf.square(conf_delta),		list(range(1,5)))
-		loss_class		= tf.reduce_sum(class_delta,				list(range(1,5)))
-		loss			= loss_xy + loss_wh + loss_conf + loss_class
-		loss			= tf.print(loss, [grid_h, avg_obj], message='avg_obj \t\t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, avg_noobj], message='avg_noobj \t\t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, avg_iou], message='avg_iou \t\t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, avg_cat], message='avg_cat \t\t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, recall50], message='recall50 \t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, recall75], message='recall75 \t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, count], message='count \t', summarize=1000)
-		loss			= tf.print(loss, [grid_h, tf.reduce_sum(loss_xy), tf.reduce_sum(loss_wh), tf.reduce_sum(loss_conf), tf.reduce_sum(loss_class)], message='loss xy, wh, conf, class: \t', summarize=1000)
+		wh_scale        = tf.exp(true_box_wh) * self.anchors / net_factor
+		wh_scale        = tf.expand_dims(2 - wh_scale[..., 0] * wh_scale[..., 1], axis=4) # the smaller the box, the bigger the scale
+		xy_delta        = xywh_mask     * (pred_box_xy-true_box_xy) * wh_scale * self.xywh_scale
+		wh_delta        = xywh_mask     * (pred_box_wh-true_box_wh) * wh_scale * self.xywh_scale
+		conf_delta      = object_mask   * (pred_box_conf-true_box_conf) * self.obj_scale + (1-object_mask) * conf_delta * self.noobj_scale
+		class_delta     = object_mask   * tf.expand_dims(tf.nn.sparse_softmax_cross_entropy_with_logits(labels=true_box_class, logits=pred_box_class), 4) * self.class_scale
+		loss_xy         = tf.reduce_sum(tf.square(xy_delta),        list(range(1,5)))
+		loss_wh         = tf.reduce_sum(tf.square(wh_delta),        list(range(1,5)))
+		loss_conf       = tf.reduce_sum(tf.square(conf_delta),      list(range(1,5)))
+		loss_class      = tf.reduce_sum(class_delta,                list(range(1,5)))
+		loss            = loss_xy + loss_wh + loss_conf + loss_class
+		loss            = tf.Print(loss, [grid_h, avg_obj], message='avg_obj \t\t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, avg_noobj], message='avg_noobj \t\t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, avg_iou], message='avg_iou \t\t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, avg_cat], message='avg_cat \t\t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, recall50], message='recall50 \t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, recall75], message='recall75 \t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, count], message='count \t', summarize=1000)
+		loss            = tf.Print(loss, [grid_h, tf.reduce_sum(loss_xy), tf.reduce_sum(loss_wh), tf.reduce_sum(loss_conf), tf.reduce_sum(loss_class)], message='loss xy, wh, conf, class: \t', summarize=1000)
 		return loss*self.grid_scale
 	def compute_output_shape(self, input_shape):
 		return [(None, 1)]
@@ -260,20 +291,20 @@ def _conv_block(inp, convs, do_skip=True):
 		if conv['stride'] > 1: x = ZeroPadding2D(((1,0),(1,0)))(x) # unlike tensorflow darknet prefer left and top paddings
 		x = Conv2D(conv['filter'],
 					conv['kernel'],
-					trides=conv['stride'],
-					adding='valid' if conv['stride'] > 1 else 'same', # unlike tensorflow darknet prefer left and top paddings
-					ame='conv_' + str(conv['layer_idx']),
-					se_bias=False if conv['bnorm'] else True)(x)
+					strides=conv['stride'],
+					padding='valid' if conv['stride'] > 1 else 'same', # unlike tensorflow darknet prefer left and top paddings
+					name='conv_' + str(conv['layer_idx']),
+					use_bias=False if conv['bnorm'] else True)(x)
 		if conv['bnorm']: x = BatchNormalization(epsilon=0.001, name='bnorm_' + str(conv['layer_idx']))(x)
 		if conv['leaky']: x = LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
 	return add([skip_connection, x]) if do_skip else x
 
 def create_yolov3_model(nb_class, anchors, max_box_per_image, max_grid, batch_size, warmup_batches, ignore_thresh, grid_scales, obj_scale, noobj_scale, xywh_scale, class_scale):
-	input_image		= Input(shape=(None, None, 3)) # net_h, net_w, 3
-	true_boxes		= Input(shape=(1, 1, 1, max_box_per_image, 4))
-	true_yolo_1		= Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
-	true_yolo_2		= Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
-	true_yolo_3		= Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
+	input_image     = Input(shape=(None, None, 3)) # net_h, net_w, 3
+	true_boxes      = Input(shape=(1, 1, 1, max_box_per_image, 4))
+	true_yolo_1     = Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
+	true_yolo_2     = Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
+	true_yolo_3     = Input(shape=(None, None, len(anchors)//6, 4+1+nb_class)) # grid_h, grid_w, nb_anchor, 5+nb_class
 	# Layer  0 => 4
 	x = _conv_block(input_image, [	{'filter': 32, 'kernel': 3, 'stride': 1, 'bnorm': True, 'leaky': True, 'layer_idx': 0},
 									{'filter': 64, 'kernel': 3, 'stride': 2, 'bnorm': True, 'leaky': True, 'layer_idx': 1},
@@ -577,20 +608,20 @@ def evaluate(model, generator, iou_threshold=0.5, obj_thresh=0.5, nms_thresh=0.4
 	Evaluate a given dataset using a given model.
 	code originally from https://github.com/fizyr/keras-retinanet
 	# Arguments
-		model			: The model to evaluate.
-		generator		: The generator that represents the dataset to evaluate.
-		iou_threshold	: The threshold used to consider when a detection is positive or negative.
-		obj_thresh		: The threshold used to distinguish between object and non-object
-		nms_thresh		: The threshold used to determine whether two detections are duplicates
-		net_h			: The height of the input image to the model, higher value results in better accuracy
-		net_w			: The width of the input image to the model
-		save_path		: The path to save images with visualized detections to.
+		model           : The model to evaluate.
+		generator       : The generator that represents the dataset to evaluate.
+		iou_threshold   : The threshold used to consider when a detection is positive or negative.
+		obj_thresh      : The threshold used to distinguish between object and non-object
+		nms_thresh      : The threshold used to determine whether two detections are duplicates
+		net_h           : The height of the input image to the model, higher value results in better accuracy
+		net_w           : The width of the input image to the model
+		save_path       : The path to save images with visualized detections to.
 	# Returns
 		A dict mapping class names to mAP scores.
 	'''
 	# gather all detections and annotations
-	all_detections		= [[None for i in range(generator.num_classes())] for j in range(generator.size())]
-	all_annotations		= [[None for i in range(generator.num_classes())] for j in range(generator.size())]
+	all_detections      = [[None for i in range(generator.num_classes())] for j in range(generator.size())]
+	all_annotations     = [[None for i in range(generator.num_classes())] for j in range(generator.size())]
 	for i in range(generator.size()):
 		raw_image = [generator.load_image(i)]
 		# make the boxes and the labels
@@ -602,61 +633,61 @@ def evaluate(model, generator, iou_threshold=0.5, obj_thresh=0.5, nms_thresh=0.4
 		else:
 			pred_boxes = np.array([[]])
 		# sort the boxes and the labels according to scores
-		score_sort	= np.argsort(-score)
-		pred_labels	= pred_labels[score_sort]
-		pred_boxes	= pred_boxes[score_sort]
+		score_sort  = np.argsort(-score)
+		pred_labels = pred_labels[score_sort]
+		pred_boxes  = pred_boxes[score_sort]
 		# copy detections to all_detections
 		for label in range(generator.num_classes()):
 			all_detections[i][label] = pred_boxes[pred_labels == label, :]
-		annotations	= generator.load_annotation(i)
+		annotations = generator.load_annotation(i)
 		# copy detections to all_annotations
 		for label in range(generator.num_classes()):
 			all_annotations[i][label] = annotations[annotations[:, 4] == label, :4].copy()
 	# compute mAP by comparing all detections and all annotations
 	average_precisions = {}
 	for label in range(generator.num_classes()):
-		false_positives	= np.zeros((0,))
-		true_positives	= np.zeros((0,))
-		scores			= np.zeros((0,))
-		num_annotations	= 0.0
+		false_positives = np.zeros((0,))
+		true_positives  = np.zeros((0,))
+		scores          = np.zeros((0,))
+		num_annotations = 0.0
 		for i in range(generator.size()):
-			detections				= all_detections[i][label]
-			annotations				= all_annotations[i][label]
-			num_annotations			+= annotations.shape[0]
-			detected_annotations	= []
+			detections              = all_detections[i][label]
+			annotations             = all_annotations[i][label]
+			num_annotations        += annotations.shape[0]
+			detected_annotations    = []
 			for d in detections:
 				scores = np.append(scores, d[4])
 				if annotations.shape[0] == 0:
-					false_positives	= np.append(false_positives, 1)
-					true_positives	= np.append(true_positives, 0)
+					false_positives = np.append(false_positives, 1)
+					true_positives  = np.append(true_positives, 0)
 					continue
-				overlaps			= compute_overlap(np.expand_dims(d, axis=0), annotations)
-				assigned_annotation	= np.argmax(overlaps, axis=1)
-				max_overlap			= overlaps[0, assigned_annotation]
+				overlaps            = compute_overlap(np.expand_dims(d, axis=0), annotations)
+				assigned_annotation = np.argmax(overlaps, axis=1)
+				max_overlap         = overlaps[0, assigned_annotation]
 				if max_overlap >= iou_threshold and assigned_annotation not in detected_annotations:
-					false_positives	= np.append(false_positives, 0)
-					true_positives	= np.append(true_positives, 1)
+					false_positives = np.append(false_positives, 0)
+					true_positives  = np.append(true_positives, 1)
 					detected_annotations.append(assigned_annotation)
 				else:
-					false_positives	= np.append(false_positives, 1)
-					true_positives	= np.append(true_positives, 0)
+					false_positives = np.append(false_positives, 1)
+					true_positives  = np.append(true_positives, 0)
 		# no annotations -> AP for this class is 0 (is this correct?)
 		if num_annotations == 0:
 			average_precisions[label] = 0
 			continue
 		# sort by score
-		indices			= np.argsort(-scores)
-		false_positives	= false_positives[indices]
-		true_positives	= true_positives[indices]
+		indices         = np.argsort(-scores)
+		false_positives = false_positives[indices]
+		true_positives  = true_positives[indices]
 		# compute false positives and true positives
-		false_positives	= np.cumsum(false_positives)
-		true_positives	= np.cumsum(true_positives)
+		false_positives = np.cumsum(false_positives)
+		true_positives  = np.cumsum(true_positives)
 		# compute recall and precision
-		recall			= true_positives / num_annotations
-		precision		= true_positives / np.maximum(true_positives + false_positives, np.finfo(np.float64).eps)
+		recall          = true_positives / num_annotations
+		precision       = true_positives / np.maximum(true_positives + false_positives, np.finfo(np.float64).eps)
 		# compute average precision
-		average_precision			= compute_ap(recall, precision)
-		average_precisions[label]	= average_precision
+		average_precision           = compute_ap(recall, precision)
+		average_precisions[label]   = average_precision
 	return average_precisions
 
 def correct_yolo_boxes(boxes, image_h, image_w, net_h, net_w):
@@ -695,10 +726,10 @@ def decode_netout(netout, anchors, obj_thresh, net_h, net_w):
 	netout = netout.reshape((grid_h, grid_w, nb_box, -1))
 	nb_class = netout.shape[-1] - 5
 	boxes = []
-	netout[..., :2]		= _sigmoid(netout[..., :2])
-	netout[..., 4]		= _sigmoid(netout[..., 4])
-	netout[..., 5:]		= netout[..., 4][..., np.newaxis] * _softmax(netout[..., 5:])
-	netout[..., 5:]		*= netout[..., 5:] > obj_thresh
+	netout[..., :2]     = _sigmoid(netout[..., :2])
+	netout[..., 4]      = _sigmoid(netout[..., 4])
+	netout[..., 5:]     = netout[..., 4][..., np.newaxis] * _softmax(netout[..., 5:])
+	netout[..., 5:]    *= netout[..., 5:] > obj_thresh
 	for i in range(grid_h*grid_w):
 		row = i // grid_w
 		col = i % grid_w
@@ -739,9 +770,9 @@ def normalize(image):
 	return image/255.
 
 def get_yolo_boxes(model, images, net_h, net_w, anchors, obj_thresh, nms_thresh):
-	image_h, image_w, _	= images[0].shape
-	nb_images			= len(images)
-	batch_input			= np.zeros((nb_images, net_h, net_w, 3))
+	image_h, image_w, _ = images[0].shape
+	nb_images           = len(images)
+	batch_input         = np.zeros((nb_images, net_h, net_w, 3))
 	# preprocess the input
 	for i in range(nb_images):
 		batch_input[i] = preprocess_input(images[i], net_h, net_w)
@@ -813,31 +844,31 @@ def _softmax(x, axis=-1):
 	return e_x / e_x.sum(axis, keepdims=True)
 
 class BatchGenerator(Sequence):
-	def __init__(self, 
-		instances, 
-		anchors, 
-		labels, 
+	def __init__(self,
+		instances,
+		anchors,
+		labels,
 		downsample=32, # ratio between network input's size and network output's size, 32 for YOLOv3
 		max_box_per_image=30,
 		batch_size=1,
 		min_net_size=320,
-		max_net_size=608, 
-		shuffle=True, 
-		jitter=True, 
+		max_net_size=608,
+		shuffle=True,
+		jitter=True,
 		norm=None):
-		self.instances			= instances
-		self.batch_size			= batch_size
-		self.labels				= labels
-		self.downsample			= downsample
-		self.max_box_per_image	= max_box_per_image
-		self.min_net_size		= (min_net_size // self.downsample) * self.downsample
-		self.max_net_size		= (max_net_size // self.downsample) * self.downsample
-		self.shuffle			= shuffle
-		self.jitter				= jitter
-		self.norm				= norm
-		self.anchors			= [BoundBox(0, 0, anchors[2*i], anchors[2*i+1]) for i in range(len(anchors)//2)]
-		self.net_h				= 416
-		self.net_w				= 416
+		self.instances          = instances
+		self.batch_size         = batch_size
+		self.labels             = labels
+		self.downsample         = downsample
+		self.max_box_per_image  = max_box_per_image
+		self.min_net_size       = (min_net_size // self.downsample) * self.downsample
+		self.max_net_size       = (max_net_size // self.downsample) * self.downsample
+		self.shuffle            = shuffle
+		self.jitter             = jitter
+		self.norm               = norm
+		self.anchors            = [BoundBox(0, 0, anchors[2*i], anchors[2*i+1]) for i in range(len(anchors)//2)]
+		self.net_h              = 416
+		self.net_w              = 416
 		if shuffle: np.random.shuffle(self.instances)
 	def __len__(self):
 		return int(np.ceil(float(len(self.instances))/self.batch_size))
@@ -869,17 +900,17 @@ class BatchGenerator(Sequence):
 			img, all_objs = self._aug_image(train_instance, net_h, net_w)
 			for obj in all_objs:
 				# find the best anchor box for this object
-				max_anchor	= None
-				max_index	= -1
-				max_iou		= -1
+				max_anchor  = None
+				max_index   = -1
+				max_iou     = -1
 				shifted_box = BoundBox(0, 0, obj['xmax']-obj['xmin'], obj['ymax']-obj['ymin'])
 				for i in range(len(self.anchors)):
-					anchor	= self.anchors[i]
-					iou		= bbox_iou(shifted_box, anchor)
+					anchor  = self.anchors[i]
+					iou     = bbox_iou(shifted_box, anchor)
 					if max_iou < iou:
-						max_anchor	= anchor
-						max_index	= i
-						max_iou		= iou
+						max_anchor  = anchor
+						max_index   = i
+						max_iou     = iou
 				# determine the yolo to be responsible for this bounding box
 				yolo = yolos[max_index//3]
 				grid_h, grid_w = yolo.shape[1:3]
@@ -1122,80 +1153,80 @@ def create_training_instances(train_annot_folder, train_image_folder, train_cach
 def create_callbacks(saved_weights_name, tensorboard_logs, model_to_save):
 	makedirs(tensorboard_logs)
 	early_stop = EarlyStopping(
-		monitor			= 'loss', 
-		min_delta		= 0.01, 
-		patience		= 5, 
-		mode			= 'min', 
-		verbose			= 1)
+		monitor         = 'loss',
+		min_delta       = 0.01,
+		patience        = 5,
+		mode            = 'min',
+		verbose         = 1)
 	checkpoint = CustomModelCheckpoint(
-		model_to_save	= model_to_save, 
-		filepath		= saved_weights_name,# + '{epoch:02d}.h5', 
-		monitor			= 'loss', 
-		verbose			= 1, 
-		save_best_only	= True, 
-		mode			= 'min', 
-		period			= 1)
+		model_to_save   = model_to_save,
+		filepath        = saved_weights_name,# + '{epoch:02d}.h5',
+		monitor         = 'loss',
+		verbose         = 1,
+		save_best_only  = True,
+		mode            = 'min',
+		period          = 1)
 	reduce_on_plateau = ReduceLROnPlateau(
-		monitor			= 'loss', 
-		factor			= .1, 
-		patience		= 2, 
-		verbose			= 1, 
-		mode			= 'min', 
-		epsilon			= 0.01, 
-		cooldown		= 0, 
-		min_lr			= 0)
+		monitor         = 'loss',
+		factor          = .1,
+		patience        = 2,
+		verbose         = 1,
+		mode            = 'min',
+		epsilon         = 0.01,
+		cooldown        = 0,
+		min_lr          = 0)
 	tensorboard = CustomTensorBoard(
-		log_dir			= tensorboard_logs, 
-		write_graph		= True, 
-		write_images	= True,)
+		log_dir         = tensorboard_logs,
+		write_graph     = True,
+		write_images    = True,)
 	return [early_stop, checkpoint, reduce_on_plateau, tensorboard]
 
 def create_model(
-	nb_class, 
-	anchors, 
-	max_box_per_image, 
-	max_grid, batch_size, 
-	warmup_batches, 
-	ignore_thresh, 
-	multi_gpu, 
-	saved_weights_name, 
-	lr, 
-	grid_scales, 
-	obj_scale, 
-	noobj_scale, 
-	xywh_scale, 
+	nb_class,
+	anchors,
+	max_box_per_image,
+	max_grid, batch_size,
+	warmup_batches,
+	ignore_thresh,
+	multi_gpu,
+	saved_weights_name,
+	lr,
+	grid_scales,
+	obj_scale,
+	noobj_scale,
+	xywh_scale,
 	class_scale):
 	if multi_gpu > 1:
 		with tf.device('/cpu:0'):
 			template_model, infer_model = create_yolov3_model(
-				nb_class			= nb_class, 
-				anchors				= anchors, 
-				max_box_per_image	= max_box_per_image, 
-				max_grid			= max_grid, 
-				batch_size			= batch_size//multi_gpu, 
-				warmup_batches		= warmup_batches, 
-				ignore_thresh		= ignore_thresh, 
-				grid_scales			= grid_scales, 
-				obj_scale			= obj_scale, 
-				noobj_scale			= noobj_scale, 
-				xywh_scale			= xywh_scale, 
-				class_scale			= class_scale)
+				nb_class            = nb_class,
+				anchors             = anchors,
+				max_box_per_image   = max_box_per_image,
+				max_grid            = max_grid,
+				batch_size          = batch_size//multi_gpu,
+				warmup_batches      = warmup_batches,
+				ignore_thresh       = ignore_thresh,
+				grid_scales         = grid_scales,
+				obj_scale           = obj_scale,
+				noobj_scale         = noobj_scale,
+				xywh_scale          = xywh_scale,
+				class_scale         = class_scale)
 	else:
 		template_model, infer_model = create_yolov3_model(
-			nb_class				= nb_class, 
-			anchors					= anchors, 
-			max_box_per_image		= max_box_per_image, 
-			max_grid				= max_grid, 
-			batch_size				= batch_size, 
-			warmup_batches			= warmup_batches, 
-			ignore_thresh			= ignore_thresh, 
-			grid_scales				= grid_scales, 
-			obj_scale				= obj_scale, 
-			noobj_scale				= noobj_scale, 
-			xywh_scale				= xywh_scale, 
-			class_scale				= class_scale)
+			nb_class                = nb_class,
+			anchors                 = anchors,
+			max_box_per_image       = max_box_per_image,
+			max_grid                = max_grid,
+			batch_size              = batch_size,
+			warmup_batches          = warmup_batches,
+			ignore_thresh           = ignore_thresh,
+			grid_scales             = grid_scales,
+			obj_scale               = obj_scale,
+			noobj_scale             = noobj_scale,
+			xywh_scale              = xywh_scale,
+			class_scale             = class_scale)
 	# load the pretrained weight if exists, otherwise load the backend weight only
-	if os.path.exists(saved_weights_name): 
+	if os.path.exists(saved_weights_name):
 		print('\nLoading pretrained weights.\n')
 		template_model.load_weights(saved_weights_name)
 	#else:
@@ -1209,48 +1240,48 @@ def create_model(
 	return train_model, infer_model
 
 def main_train():
-	config_path = './config.json'
-	with open(config_path) as config_buffer:
-		config = json.loads(config_buffer.read())
+#	config_path = config#'./config.json'
+#	with open(config_path) as config_buffer:
+#		config = json.loads(config_buffer.read())
 	'''
 	Parse the annotations
 	'''
 	train_ints, valid_ints, labels, max_box_per_image = create_training_instances(
-		config['train']['train_annot_folder'], 
-		config['train']['train_image_folder'], 
-		config['train']['cache_name'], 
-		config['valid']['valid_annot_folder'], 
-		config['valid']['valid_image_folder'], 
-		config['valid']['cache_name'], 
+		config['train']['train_annot_folder'],
+		config['train']['train_image_folder'],
+		config['train']['cache_name'],
+		config['valid']['valid_annot_folder'],
+		config['valid']['valid_image_folder'],
+		config['valid']['cache_name'],
 		config['model']['labels'])
 	print('\nTraining on: \t' + str(labels) + '\n')
 	'''
 	Create the generators
 	'''
 	train_generator = BatchGenerator(
-		instances			= train_ints, 
-		anchors				= config['model']['anchors'], 
-		labels				= labels, 
-		downsample			= 32, # ratio between network input's size and network output's size, 32 for YOLOv3
-		max_box_per_image	= max_box_per_image, 
-		batch_size			= config['train']['batch_size'], 
-		min_net_size		= config['model']['min_input_size'], 
-		max_net_size		= config['model']['max_input_size'], 
-		shuffle				= True, 
-		jitter				= 0.3, 
-		norm				= normalize)
+		instances           = train_ints,
+		anchors             = config['model']['anchors'],
+		labels              = labels,
+		downsample          = 32, # ratio between network input's size and network output's size, 32 for YOLOv3
+		max_box_per_image   = max_box_per_image,
+		batch_size          = config['train']['batch_size'],
+		min_net_size        = config['model']['min_input_size'],
+		max_net_size        = config['model']['max_input_size'],
+		shuffle             = True,
+		jitter              = 0.3,
+		norm                = normalize)
 	valid_generator = BatchGenerator(
-		instances			= valid_ints, 
-		anchors				= config['model']['anchors'], 
-		labels				= labels, 
-		downsample			= 32, # ratio between network input's size and network output's size, 32 for YOLOv3
-		max_box_per_image	= max_box_per_image, 
-		batch_size			= config['train']['batch_size'], 
-		min_net_size		= config['model']['min_input_size'], 
-		max_net_size		= config['model']['max_input_size'], 
-		shuffle				= True, 
-		jitter				= 0.0, 
-		norm				= normalize)
+		instances           = valid_ints,
+		anchors             = config['model']['anchors'],
+		labels              = labels,
+		downsample          = 32, # ratio between network input's size and network output's size, 32 for YOLOv3
+		max_box_per_image   = max_box_per_image,
+		batch_size          = config['train']['batch_size'],
+		min_net_size        = config['model']['min_input_size'],
+		max_net_size        = config['model']['max_input_size'],
+		shuffle             = True,
+		jitter              = 0.0,
+		norm                = normalize)
 	'''
 	Create the model
 	'''
@@ -1260,33 +1291,33 @@ def main_train():
 	os.environ['CUDA_VISIBLE_DEVICES'] = config['train']['gpus']
 	multi_gpu = len(config['train']['gpus'].split(','))
 	train_model, infer_model = create_model(
-		nb_class			= len(labels), 
-		anchors				= config['model']['anchors'], 
-		max_box_per_image	= max_box_per_image, 
-		max_grid			= [config['model']['max_input_size'], config['model']['max_input_size']], 
-		batch_size			= config['train']['batch_size'], 
-		warmup_batches		= warmup_batches, 
-		ignore_thresh		= config['train']['ignore_thresh'], 
-		multi_gpu			= multi_gpu, 
-		saved_weights_name	= config['train']['saved_weights_name'], 
-		lr					= config['train']['learning_rate'], 
-		grid_scales			= config['train']['grid_scales'], 
-		obj_scale			= config['train']['obj_scale'], 
-		noobj_scale			= config['train']['noobj_scale'], 
-		xywh_scale			= config['train']['xywh_scale'], 
-		class_scale			= config['train']['class_scale'],)
+		nb_class             = len(labels),
+		anchors              = config['model']['anchors'],
+		max_box_per_image    = max_box_per_image,
+		max_grid             = [config['model']['max_input_size'], config['model']['max_input_size']],
+		batch_size           = config['train']['batch_size'],
+		warmup_batches       = warmup_batches,
+		ignore_thresh        = config['train']['ignore_thresh'],
+		multi_gpu            = multi_gpu,
+		saved_weights_name   = config['train']['saved_weights_name'],
+		lr                   = config['train']['learning_rate'],
+		grid_scales          = config['train']['grid_scales'],
+		obj_scale            = config['train']['obj_scale'],
+		noobj_scale          = config['train']['noobj_scale'],
+		xywh_scale           = config['train']['xywh_scale'],
+		class_scale          = config['train']['class_scale'],)
 	'''
 	Kick off the training
 	'''
 	callbacks = create_callbacks(config['train']['saved_weights_name'], config['train']['tensorboard_dir'], infer_model)
 	train_model.fit_generator(
-		generator			= train_generator, 
-		steps_per_epoch		= len(train_generator) * config['train']['train_times'], 
-		epochs				= config['train']['nb_epochs'] + config['train']['warmup_epochs'], 
-		verbose				= 2 if config['train']['debug'] else 1, 
-		callbacks			= callbacks, 
-		workers				= 4, 
-		max_queue_size		= 8)
+		generator           = train_generator,
+		steps_per_epoch     = len(train_generator) * config['train']['train_times'],
+		epochs              = config['train']['nb_epochs'] + config['train']['warmup_epochs'],
+		verbose             = 2 if config['train']['debug'] else 1,
+		callbacks           = callbacks,
+		workers             = 4,
+		max_queue_size      = 8)
 	# make a GPU version of infer_model for evaluation
 	if multi_gpu > 1:
 		infer_model = load_model(config['train']['saved_weights_name'])
@@ -1301,10 +1332,10 @@ def main_train():
 	print('mAP: {:.4f}'.format(sum(average_precisions.values()) / len(average_precisions)))
 
 def main_predict(FILENAME):
-	config_path		= './config.json'
+	config_path		= config#'./config.json'
 	input_path		= FILENAME
-	with open(config_path) as config_buffer:
-		config = json.load(config_buffer)
+#	with open(config_path) as config_buffer:
+#		config = json.load(config_buffer)
 	# Set some parameter
 	net_h, net_w = 416, 416 # a multiple of 32, the smaller the faster
 	obj_thresh, nms_thresh = 0.5, 0.45
