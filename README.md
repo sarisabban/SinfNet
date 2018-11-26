@@ -41,7 +41,7 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/Check*
 
-It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script. So just stick to these to keep it simple.
+Your images should be in *./dataset/Images* ofcourse. It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script. So just stick to these to keep it simple.
 
 4. Open the GUI annotation tool using the following command:
 
@@ -49,7 +49,7 @@ It is best to stick to this structure with these names exactly, otherwise you wi
 
 5. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
 6. Click "Label Output Folder" on the top left to choose the directory that will save the lables (./dataset/BBox_Annotations).
-7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3, otherwise you will have to changes to different paths from within the code in some scripts. The images may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
+7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3, otherwise you will have to changes to different paths from within the code in some scripts. The images may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 280 of the BBox.py script accordindly (larger values = more zoomed image).
 8. You must click "Next" to load the images (but it will skip the first image, so go back to it).
 9. Use the mouse to generate a bounding box arround each object of interest.
 10. Label each box with the labels from the drop down menu on the right and clicking "Confirm Class".

@@ -192,14 +192,14 @@ class LabelTool():
 		self.goBtn.pack(side = LEFT)
 
 		# example pannel for illustration
-		self.egPanel = Frame(self.frame, border = 10)
-		self.egPanel.grid(row = 3, column = 0, rowspan = 5, sticky = N)
-		self.tmpLabel2 = Label(self.egPanel, text = "Examples:")
-		self.tmpLabel2.pack(side = TOP, pady = 5)
-		self.egLabels = []
-		for i in range(3):
-			self.egLabels.append(Label(self.egPanel))
-			self.egLabels[-1].pack(side = TOP)
+#		self.egPanel = Frame(self.frame, border = 10)
+#		self.egPanel.grid(row = 3, column = 0, rowspan = 5, sticky = N)
+#		self.tmpLabel2 = Label(self.egPanel, text = "Examples:")
+#		self.tmpLabel2.pack(side = TOP, pady = 5)
+#		self.egLabels = []
+#		for i in range(3):
+#			self.egLabels.append(Label(self.egPanel))
+#			self.egLabels[-1].pack(side = TOP)
 
 		# display mouse position
 		self.disp = Label(self.ctrPanel, text='')
@@ -252,25 +252,25 @@ class LabelTool():
 
 		# load example bboxes
 		#self.egDir = os.path.join(r'./Examples', '%03d' %(self.category))
-		self.egDir = os.path.join(os.getcwd(), "Examples/001")
-		if not os.path.exists(self.egDir):
-			return
-		filelist = glob.glob(os.path.join(self.egDir, '*.JPEG'))
-		self.tmp = []
-		self.egList = []
-		random.shuffle(filelist)
-		for (i, f) in enumerate(filelist):
-			if i == 1:
-				break
-			im = Image.open(f)
-			r = min(SIZE[0] / im.size[0], SIZE[1] / im.size[1])
-			new_size = int(r * im.size[0]), int(r * im.size[1])
-			self.tmp.append(im.resize(new_size, Image.ANTIALIAS))
-			self.egList.append(ImageTk.PhotoImage(self.tmp[-1]))
-			self.egLabels[i].config( \
-					image=self.egList[-1], width = SIZE[0], height = SIZE[1])
-		self.loadImage()
-		print('%d images loaded from %s' %(self.total, self.imageDir))
+#		self.egDir = os.path.join(os.getcwd(), "Examples/001")
+#		if not os.path.exists(self.egDir):
+#			return
+#		filelist = glob.glob(os.path.join(self.egDir, '*.JPEG'))
+#		self.tmp = []
+#		self.egList = []
+#		random.shuffle(filelist)
+#		for (i, f) in enumerate(filelist):
+#			if i == 1:
+#				break
+#			im = Image.open(f)
+#			r = min(SIZE[0] / im.size[0], SIZE[1] / im.size[1])
+#			new_size = int(r * im.size[0]), int(r * im.size[1])
+#			self.tmp.append(im.resize(new_size, Image.ANTIALIAS))
+#			self.egList.append(ImageTk.PhotoImage(self.tmp[-1]))
+#			self.egLabels[i].config( \
+#					image=self.egList[-1], width = SIZE[0], height = SIZE[1])
+#		self.loadImage()
+#		print('%d images loaded from %s' %(self.total, self.imageDir))
 
 	def loadImage(self):
 		# load image
@@ -281,8 +281,8 @@ class LabelTool():
 		self.img = self.img.resize((int(size[0]/self.factor), \
 													int(size[1]/self.factor)))
 		self.tkimg = ImageTk.PhotoImage(self.img)
-		self.mainPanel.config(width = max(self.tkimg.width(), 400), \
-										height=max(self.tkimg.height(), 400))
+		self.mainPanel.config(width = max(self.tkimg.width(), 10), \
+										height=max(self.tkimg.height(), 10))
 		self.mainPanel.create_image(0, 0, image = self.tkimg, anchor=NW)
 		self.progLabel.config(text = "%04d/%04d" %(self.cur, self.total))
 
