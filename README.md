@@ -66,10 +66,9 @@ This is a script that uses a real-time object detection convolutional neural net
 60. *Amphidinium trulla*
 
 ## How to use:
-This is a (Video)[] on how to use this setup.
+This is a [Video]() on how to use this setup.
 
 ### Update your system and install libraries.
-
 This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. To use this script you will need to first update your system and install the dependencies using the following commands:
 
 `sudo apt update`
@@ -81,11 +80,13 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 `pip3 install numpy keras tensorflow PIL opencv-python tkinter matplotlib imgaug scipy`
 
 ### Setting up a dataset
-You can download here the [Cell detection Dataset](), the [Dinoflagellates Dataset](), or the full [Protist Dataset]() if you want to retrain the network or add to the dataset and train the network. If you want to develop your own dataset follow these steps:
+You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm7xi12bbxgje7/dataset.tar.bz2?dl=0), the [Dinoflagellates Dataset](), or the full [Protist Dataset]() if you want to retrain the network or add to the dataset and train the network.
+
+If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-2. In the file named *class.txt* add the labels (classes) of each item, that you want to classify, in a new line.
-3. make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
+2. In the file named *class.txt* add the labels (classes) of each item that you want to classify, each label in a new line.
+3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Images*
 *./dataset/BBox_Annotations*
@@ -100,11 +101,11 @@ It is best to stick to this structure with these names exactly, otherwise you wi
 
 5. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
 6. Click "Label Output Folder" on the top left to choose the directory that will save the lables (./dataset/BBox_Annotations).
-7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3. Otherwise you will have to changes to different paths from within the code in some scripts. The image may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
+7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3, otherwise you will have to changes to different paths from within the code in some scripts. The images may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 273 of the BBox.py script accordindly (larger values = more zoomed image).
 8. You must click "Next" to load the images (but it will skip the first image, so go back to it).
-9. Use the mouse to generate a bounding box arround your object of interest.
-10. Label images with boxes.
-11. Click "Next >>" to save labels and move on to the next image (images are not loaded by order).
+9. Use the mouse to generate a bounding box arround each object of interest.
+10. Label each box with the labels from the drop down menu on the right.
+11. Click "Next >>" to save the labels and move on to the next image (images are not loaded by filename order).
 12. Once finished, check to make sure that your annotations are correct by using the following command:
 
 `python3 txt-xml+check.py -cd`
@@ -113,13 +114,13 @@ This will generate a new directory called ./dataset/Check with the images showin
 
 13. The annotations are in text (.txt) file format and they need to be in XML format, to convert run the following command:
 
-`python3 txt-xml+check.py -t ./dataset/annotations ./dataset/images`
+`python3 txt-xml+check.py -t`
 
-This will generate a new directory called ./dataset/Annotations and this directory is to be used in the neural network.
+This will generate a new directory called ./dataset/Annotations and this directory will be used in the neural network.
 
 ### Training the neural network
 #### For YOLOv2:
-1. On line 46-71 of the YOLOv2.py script add all your labels in a list as such ["label 1", "label 2", "label 3"] and adjust the location of the dataset and the names of your weights.
+1. On line 46-71 of the YOLOv2.py script add all your labels in a list as such ["label 1", "label 2", "label 3"] and adjust the location of the dataset and the name of your output weights file.
 2. Run training using the following command:
 
 `python3 YOLOv2.py -t`
@@ -133,31 +134,30 @@ This will generate a new directory called ./dataset/Annotations and this directo
 
 #### For YOLOv3:
 1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"].
-2. Download the YOLOv3 pre-trained weights using the following command:
-
-`wget https://pjreddie.com/media/files/yolov3.weights`
-
-3. The network is resource heavy and required a GPU and 16GB RAM to run. Therefore some cloud GPU services may not work and a larger system is required.
-4. Run training using the following command:
+2. The network is resource heavy and required a large GPU and more than 16GB of RAM to run. Therefore some cloud GPU cloud services may not work and a larger system is required.
+3. Run training using the following command:
 
 `python3 YOLOv3.py -t`
 
-5. If the neural network training does not go well, you will have to change the network hyperparameters which are found in the config.jason file.
-6. The logs directory contains the training logs. View the data using the following command:
+4. If the neural network training does not go well, you will have to change the network hyperparameters which are found in the config.jason file.
+5. The logs directory contains the training logs. View the data using the following command:
 
 `tensorboard --logdir=./logs`
 
-7. The protist.h5 file is the weights file used for image detection.
+6. The .h5 file is the weights file used for image detection.
 
 ### Detection
 If you just want to run a detection without developing a dataset nor re-training the network you can just run this command right now using the weights of our trained network.
-1. Run an image detection using the following command:
+1. [Download](https://www.dropbox.com/sh/h6tjfbh3wymxze1/AABN1FslPRjgCnF-5S2i5jEpa?dl=0) the relevent weights file.
+2. If you are going to use YOLOv3 then modify the config.json file to point to the weights file. If you are going to use YOLOv2 then just use the command (no need to modify the config.json file).
+
+3. Run image detection using the following command:
 
 `python3 YOLOv3.py -d FILENAME.jpg`
 
 or
 
-`python3 YOLOv2.py -d FILENAME.jpg`
+`python3 YOLOv2.py -d WEIGHTS.h5 IMAGE.jpg`
 
 ### Jupyter notebooks
 The Jupyter notebooks are provided for YOLOv2 and YOLOv3 to be able to quickly implemnet these scripts on cloud GPUs.
