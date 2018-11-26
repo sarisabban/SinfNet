@@ -50,8 +50,8 @@ config = {"model":{
 			"max_box_per_image":    10,
 			"labels":               ["Cell"]},
 		"train":{
-			"train_image_folder":   "./dataset/images/",
-			"train_annot_folder":   "./dataset/annotations/",
+			"train_image_folder":   "./dataset/Images/",
+			"train_annot_folder":   "./dataset/Annotations/",
 			"saved_weights_name":   "./cell.h5",
 			"train_times":          8,
 			"batch_size":           16,
