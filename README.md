@@ -133,7 +133,7 @@ This will generate a new directory called ./dataset/Annotations and this directo
 5. The .h5 file is the weights file used for image detection.
 
 #### For YOLOv3:
-1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"].
+1. On line 5 of the config.json file add all your labels in a list as such ["label 1", "label 2", "label 3"], and on line 10 chnage your output weights file name.
 2. The network is resource heavy and required a large GPU and more than 16GB of RAM to run. Therefore some cloud GPU cloud services may not work and a larger system is required.
 3. Run training using the following command:
 
