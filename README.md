@@ -2,13 +2,13 @@
 A neural network for protists image classification.
 
 ## Description:
-This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to count the number of cells present in an image, or classify different species of protists from a microscope image. Provided here are all the nessessary scripts to develop a database, train the YOLOv2 or YOLOv3 networks, and perform a detection. Microscope image datasets and pre-trained weights are also available where we trained this neural network to count cells or to classify the following species within an image:
+This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to detection cells present in an image, or classify different species of protists from a microscope image. Provided here are all the nessessary scripts to develop a database, train the YOLOv2 or YOLOv3 networks, and perform a detection. Microscope image datasets and pre-trained weights are also available where we trained this neural network to detect cells or to classify the following species within an image:
 
 <p align="center">Protist datase - 60 species:</p>
 
 <sub>*Akashiwo sanguineae, Bysmatrum subsalsum, Durinskia baltica, Fukuyoa reutzleri, Gymnodinium aureolum, Gymnodinium impudicum, Heterocapsa sp., Karlodinium arminger, Kryptoperidinium foliaceum, Levanderina fissa, Lingulodinium polyedrum, Margalefidinium polykrikoides, Pyrodinium bahamense, Scrippsiella sp, Scrippsiella trochoidea, Takayama tasmanica, Vulcanodinium sp., Alexandrium affine, Alexandrium andersonii, Alexandrium fundyense, Alexandrium hiranoi, Alexandrium leei, Alexandrium monilatum, Alexandrium ostenfeldii, Coolia malayensis, Coolia monotis, Coolia palmyrensis, Coolia santacroce, Gambierdiscus belizeanus, Gambierdiscus caribaeus, Gambierdiscus caribeaus, Gambierdiscus carolinianus, Gambierdiscus carpenteri, Gambierdiscus pacificus, Karenia brevis, Karenia mikimotoi, Karenia papilionaceae, Karenia selliformis, Prorocentrum belizeanum, Prorocentrum cordatum, Prorocentrum elegans, Prorocentrum hoffmannianum, Prorocentrum lima, Prorocentrum micans, Prorocentrum rhathymum, Prorocentrum texanum, Prorocentrum triestinum, Amphidinium carterae, Amphidinium cf. thermaeum, Amphidinium cf. massartii, Amphidinium fijiensis, Amphidinium gibbossum, Amphidinium magnum, Amphidinium massartii, Amphidinium paucianulatum, Amphidinium pseudomassartii, Amphidinium theodori, Amphidinium thermaeum, Amphidinium tomasii, Amphidinium trulla*</sub>
 
-The cell counting setup it mainly used to construct the protist dataset, since each protist species require at least 1000 annotated images, the cell counting detection neural network is use to auto annotate microscope cell images and construct a dataset, that is why it is provided here.
+The cell detection setup it mainly used to construct the protist dataset, since each protist species require at least 1000 annotated images, the cell detection neural network is use to auto annotate microscope cell images and construct a dataset, that is why it is provided here.
 
 ## How to use:
 This is a [Video]() on how to use this setup.
@@ -25,7 +25,7 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 `pip3 install numpy keras tensorflow PIL opencv-python tkinter matplotlib imgaug scipy`
 
 ### Setting up a dataset
-You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm7xi12bbxgje7/dataset.tar.bz2?dl=0), the [Dinoflagellates Dataset](), or the full [Protist Dataset]() if you want to retrain the network or add to the dataset and train the network.
+You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm7xi12bbxgje7/dataset.tar.bz2?dl=0) or the full [Protist Dataset]() if you want to retrain the network or add to the dataset and train the network.
 
 If you want to develop your own dataset follow these steps:
 
