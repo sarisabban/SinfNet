@@ -34,8 +34,11 @@ If you want to develop your own dataset follow these steps:
 3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Images*
+
 *./dataset/BBox_Annotations*
+
 *./dataset/Annotations*
+
 *./dataset/Check*
 
 It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script. So just stick to these to keep it simple.
