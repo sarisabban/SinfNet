@@ -514,6 +514,28 @@ def check_dir():
 	print('-----------------------')
 	print('[+] Done')
 
+def change():
+	directory = './dataset/BBox_Annotations'
+	for afile in os.listdir(directory):
+		data_in = open('{}/{}'.format(directory, afile), 'r')
+		next(data_in)
+		count = 0
+		lines = []
+		for line in data_in:
+			count += 1
+			line = line.split()
+			line[-1] = 'Cyst'
+			comb = ' '.join(line)+'\n'
+			lines.append(comb)
+
+		print(count)
+		print(lines)
+		data_out = open(afile, 'w')
+		data_out.write('{}\n'.format(str(count)))
+		for i in lines:
+			data_out.write(i)
+		data_out.close()
+
 def main():
 	if args.bbox:
 		root = Tk()
