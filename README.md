@@ -30,7 +30,7 @@ You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm
 If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-2. In the BBox.py script file named add the labels (classes) of each item the list in line 63 and save the file.
+2. In the Label.py script add the labels (classes) of each item the list in line 64 and save the file.
 3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Images*
