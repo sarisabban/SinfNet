@@ -30,6 +30,7 @@ import os
 import sys
 import cv2
 import copy
+import argparse
 import numpy as np
 import imgaug as ia
 import tensorflow as tf
@@ -71,6 +72,11 @@ config = {"model":{
 			"valid_image_folder":   "",
 			"valid_annot_folder":   "",
 			"valid_times":          1}}
+
+parser = argparse.ArgumentParser(description='YOLOv2 neural network')
+parser.add_argument('-t', '--train', action='store_true', help='Train the neural network')
+parser.add_argument('-d', '--detect', nargs='+', help='Detect objects on image or video')
+args = parser.parse_args()
 
 class BaseFeatureExtractor(object):
 	def __init__(self, input_size):
@@ -893,9 +899,9 @@ def predict(h5weights, TheImage):
 #		plt.imshow(image[:,:,::-1]); plt.show()
 
 def main():
-	if sys.argv[1] == '-t':
+	if args.train:
 		train()
-	elif sys.argv[1] == '-d':
+	elif args.detect:
 		predict(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()
