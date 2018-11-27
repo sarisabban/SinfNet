@@ -45,7 +45,7 @@ Your images should be in *./dataset/Images* ofcourse. It is best to stick to thi
 
 4. Open the GUI annotation tool using the following command:
 
-`python3 Label.py -BBox`
+`python3 Label.py --bbox`
 
 5. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
 6. Click "Label Output Folder" on the top left to choose the directory that will save the lables (./dataset/BBox_Annotations).
@@ -56,15 +56,19 @@ Your images should be in *./dataset/Images* ofcourse. It is best to stick to thi
 11. Click "Next >>" to save the labels and move on to the next image (images are not loaded by filename order).
 12. Once finished, check to make sure that your annotations are correct by using the following command:
 
-`python3 Label.py -check`
+`python3 Label.py --check`
 
 This will generate a new directory called ./dataset/Check with the images showing their annotations.
 
 13. The annotations are in text (.txt) file format and they need to be in XML format, to convert run the following command:
 
-`python3 Label.py -translate`
+`python3 Label.py --translate`
 
 This will generate a new directory called ./dataset/Annotations and this directory will be used in the neural network.
+
+For help use this command:
+
+`python3 Label.py --help`
 
 ### Training the neural network
 #### For YOLOv2:
