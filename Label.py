@@ -72,7 +72,7 @@ class LabelTool():
 	def __init__(self, master):
 		# set up the main frame
 		self.parent = master
-		self.parent.title("LabelTool")
+		self.parent.title("BBox Label Tool")
 		self.frame = Frame(self.parent)
 		self.frame.pack(fill=BOTH, expand=1)
 		self.parent.resizable(width = FALSE, height = FALSE)
