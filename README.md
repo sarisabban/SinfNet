@@ -10,6 +10,12 @@ This is a script that uses a real-time object detection convolutional neural net
 
 The cell detection setup it mainly used to construct the protist dataset, since each protist species require at least 1000 annotated images, the cell detection neural network is use to auto annotate microscope cell images and construct a dataset, that is why it is provided here.
 
+## Available datasets and trained weight files
+You can download these datasets to add to them and re-train the network to develop it, or to simply replicate our work:
+[Cell detection Dataset](https://www.dropbox.com/s/fz77cnhmjmrujjg/cell_detect%28474%29.tar.bz2?dl=0) and its [Weights](https://www.dropbox.com/s/a0hop2gw1afwlls/cell_detect%28474%29.h5?dl=0)
+[Amoeba Cyst/Active Dataset](https://www.dropbox.com/s/atlfh50vfgdcxq6/cyst_active%28474%29.tar.bz2?dl=0) and its [Weights]()
+[Full Protist Dataset]() and its [Weights]()
+
 ## How to use:
 This is a [Video]() on how to use this setup.
 
@@ -25,8 +31,6 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 `pip3 install numpy keras tensorflow PIL opencv-python tkinter matplotlib imgaug scipy`
 
 ### Setting up a dataset
-You can download here the [Cell detection Dataset](https://www.dropbox.com/s/3qm7xi12bbxgje7/dataset.tar.bz2?dl=0) or the full [Protist Dataset]() if you want to retrain the network or add to the dataset and train the network.
-
 If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
@@ -108,11 +112,8 @@ For help use this command:
 
 ### Detection
 If you just want to run a detection without developing a dataset nor re-training the network you can just run this command right now using the weights of our trained network.
-1. [Download](https://www.dropbox.com/sh/h6tjfbh3wymxze1/AABN1FslPRjgCnF-5S2i5jEpa?dl=0) the relevent weights file.
-2. If you are going to use YOLOv3 then modify the config.json file to point to the weights file. If you are going to use YOLOv2 then just use the command (no need to modify the config.json file).
-
-3. Run image detection using the following command:
-
+1. Download the relevent weights file, links availabe above.
+2. Run image detection using the following command:
 
 `python3 YOLOv2.py -d WEIGHTS.h5 FILENAME`
 
@@ -121,7 +122,7 @@ or
 `python3 YOLOv3.py -d WEIGHTS.h5 FILENAME`
 
 The FILENAME in YOLOv2.py can be either a .jpg image or a .mp4 video.
-The FILENAME in YOLOv3.py can be either a .jpg image, a .mp4 video or a webcam.
+The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
 ### Jupyter notebooks
 A Jupyter notebook is provided only for YOLOv2 to be able to quickly implemnet this scripts on a cloud GPU (the YOLOv3 script is too big for free cloud GPUs and requires a dedicated large system).
