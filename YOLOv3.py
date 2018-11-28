@@ -50,7 +50,7 @@ config = {"model":{
 			"min_input_size":       288,
 			"max_input_size":       448,
 			"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
-			"labels":               ["Cell"]},
+			"labels":               ["Active", "Inactive"]},
 		"train":{
 			"train_image_folder":   "./dataset/Images/",
 			"train_annot_folder":   "./dataset/Annotations/",
