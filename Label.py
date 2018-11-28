@@ -527,7 +527,6 @@ def change():
 			line[-1] = 'Cyst'
 			comb = ' '.join(line)+'\n'
 			lines.append(comb)
-
 		print(count)
 		print(lines)
 		data_out = open(afile, 'w')
