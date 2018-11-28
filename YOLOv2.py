@@ -47,7 +47,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from keras.layers import Reshape, Activation, Conv2D, Input, MaxPooling2D
 
 config = {"model":{
-			"labels":               ["Cell"],
+			"labels":               ["Active", "Inactive"],
 			"input_size":           416,
 			"anchors":              [0.57273, 0.677385, 1.87446,
 									2.06253, 3.33843, 5.47434,
