@@ -2,7 +2,7 @@
 A neural network for protists image classification.
 
 ## Description:
-This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to detection cells present in an image, or classify different species of protists from a microscope image. Provided here are all the nessessary scripts to develop a database, train the YOLOv2 or YOLOv3 networks, and perform a detection. Microscope image datasets and pre-trained weights are also available where we trained this neural network to detect cells or to classify the following species within an image:
+This is a script that uses a real-time object detection convolutional neural network called YOLOv3 to detection cells present in an image, or classify different species of protists from a microscope image. Provided here are all the nessessary scripts to develop a database, train the **YOLOv2** or **YOLOv3** networks, and perform a detection. Microscope image datasets and pre-trained weights are also available where we trained this neural network to detect cells or to classify the following species within an image:
 
 <p align="center">Protist datase - 60 species:</p>
 
