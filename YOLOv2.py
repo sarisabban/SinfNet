@@ -76,6 +76,7 @@ config = {"model":{
 parser = argparse.ArgumentParser(description='YOLOv2 neural network')
 parser.add_argument('-t', '--train', action='store_true', help='Train the neural network')
 parser.add_argument('-d', '--detect', nargs='+', help='Detect objects on image or video')
+parser.add_argument('-b', '--build', nargs='+', help='Build onto an existing dataset by auto-annotating the new images')
 args = parser.parse_args()
 
 class BaseFeatureExtractor(object):
@@ -898,10 +899,35 @@ def predict(h5weights, TheImage):
 #		input_image = input_image[:,:,::-1]
 #		plt.imshow(image[:,:,::-1]); plt.show()
 
+def build(directory, weights):
+	'''
+	To grow a dataset quickly. This functions is used after training
+	the network on a dataset. The training from the old dataset is
+	used to annotate additional images to be used to grow the dataset
+	for further training.
+	'''
+	for imagename in os.listdir(directory):
+		imagename = '{}/{}'.format(directory, imagename)
+		boxes = predict(weights, imagename)
+		image = cv2.imread(imagename)
+		image_h, image_w, _ = image.shape
+		with open('{}.txt'.format(imagename.split('.')[0]), 'w') as f:
+			f.write(str(len(boxes)) + '\n')
+			for box in boxes:
+				xmin = int(box.xmin*image_w)
+				ymin = int(box.ymin*image_h)
+				xmax = int(box.xmax*image_w)
+				ymax = int(box.ymax*image_h)
+				classes = config['model']['labels'][box.get_label()]
+				line = '{} {} {} {} {}\n'.format(xmin,ymin,xmax,ymax,classes)
+				f.write(line)
+
 def main():
 	if args.train:
 		train()
 	elif args.detect:
 		predict(sys.argv[2], sys.argv[3])
+	elif args.build:
+		build(sys.argv[3], sys.argv[2])
 
 if __name__ == '__main__': main()
