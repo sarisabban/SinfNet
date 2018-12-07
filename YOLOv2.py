@@ -890,7 +890,7 @@ def predict(h5weights, TheImage):
 		image = cv2.imread(image_path)
 		boxes = yolo.predict(image)
 		image = draw_boxes(image, boxes, config['model']['labels'])
-		print(len(boxes), 'boxes are found')
+		print(len(boxes), 'objects found')
 		cv2.imwrite(image_path[:-4] + '_detected' + image_path[-4:], image)
 		# Show image and boxes
 #		plt.figure(figsize=(10,10))
@@ -928,6 +928,6 @@ def main():
 	elif args.detect:
 		predict(sys.argv[2], sys.argv[3])
 	elif args.build:
-		build(sys.argv[3], sys.argv[2])
+		build(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()
