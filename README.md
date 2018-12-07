@@ -127,5 +127,11 @@ or
 The FILENAME in YOLOv2.py can be either a .jpg image or a .mp4 video.
 The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
+**You can add to an existing dataset**. Since manual annotations is time cinsuming, using the weights from a previous training you can perform a detection on a new set of images then add these images and annotations to the same database to re-train the neural network and increase its accuracy. Use the following command to perform mutiple image detection is a collection of images and get back image annotations:
+
+`python3 YOLOv2.py -b WEIGHTS.h5 IMAGE_DIRECTORY`
+
+Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important. This is currently only available for YOLOv2 because it is easier to implement on normal computers. Make sure you understand that weight files from YOLOv3 cannot be used in YOLOv2, and vice versa (because the network architectures are different).
+
 ### Jupyter notebooks
 A Jupyter notebook is provided only for YOLOv2 to be able to quickly implemnet this scripts on a cloud GPU (the YOLOv3 script is too big for free cloud GPUs and requires a dedicated large system).
