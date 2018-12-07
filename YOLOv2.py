@@ -513,7 +513,7 @@ class YOLO(object):
 		input_image = Input(shape=(self.input_size, self.input_size, 3))
 		self.true_boxes = Input(shape=(1, 1, 1, max_box_per_image , 4))
 		self.feature_extractor = FullYoloFeature(self.input_size)
-		print(self.feature_extractor.get_output_shape())
+		#print(self.feature_extractor.get_output_shape())
 		self.grid_h, self.grid_w = self.feature_extractor.get_output_shape()
 		features = self.feature_extractor.extract(input_image)
 		output = Conv2D(self.nb_box * (4 + 1 + self.nb_class),
@@ -898,20 +898,21 @@ def predict(h5weights, TheImage):
 #		input_image = input_image / 255.
 #		input_image = input_image[:,:,::-1]
 #		plt.imshow(image[:,:,::-1]); plt.show()
+		return(boxes)
 
-def build(directory, weights):
+def build(weights, directory):
 	'''
 	To grow a dataset quickly. This functions is used after training
 	the network on a dataset. The training from the old dataset is
 	used to annotate additional images to be used to grow the dataset
 	for further training.
 	'''
-	for imagename in os.listdir(directory):
-		imagename = '{}/{}'.format(directory, imagename)
-		boxes = predict(weights, imagename)
-		image = cv2.imread(imagename)
-		image_h, image_w, _ = image.shape
-		with open('{}.txt'.format(imagename.split('.')[0]), 'w') as f:
+	for image in os.listdir(directory):
+		name = '{}/{}'.format(directory, image)
+		boxes = predict(weights, name)
+		theimage = cv2.imread(name)
+		image_h, image_w, _ = theimage.shape
+		with open('{}.txt'.format(image.split('.')[0]), 'w') as f:
 			f.write(str(len(boxes)) + '\n')
 			for box in boxes:
 				xmin = int(box.xmin*image_w)
