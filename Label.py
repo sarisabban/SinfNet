@@ -515,6 +515,7 @@ def check_dir():
 	print('[+] Done')
 
 def change():
+	''' Rename a label '''
 	directory = './dataset/BBox_Annotations'
 	for afile in os.listdir(directory):
 		data_in = open('{}/{}'.format(directory, afile), 'r')
