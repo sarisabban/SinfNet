@@ -60,7 +60,7 @@ from tkinter import messagebox
 from PIL import Image, ImageTk, ImageDraw
 
 # class labels
-LABELS = ['Cyst', 'Active']
+LABELS = ['Inactive', 'Active']
 
 # colors for the bboxes
 COLORS = ['red', 'blue','pink', 'cyan', 'green', 'black']
