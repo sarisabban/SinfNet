@@ -514,9 +514,9 @@ def check_dir():
 	print('-----------------------')
 	print('[+] Done')
 
-def change():
-	''' Rename a label '''
-	directory = './dataset/BBox_Annotations'
+def change(Old, New):
+	'''Rename a label'''
+	directory = './Ann'
 	for afile in os.listdir(directory):
 		data_in = open('{}/{}'.format(directory, afile), 'r')
 		next(data_in)
@@ -525,7 +525,8 @@ def change():
 		for line in data_in:
 			count += 1
 			line = line.split()
-			line[-1] = 'Cyst'
+			if line[-1] == Old:
+				line[-1] = New
 			comb = ' '.join(line)+'\n'
 			lines.append(comb)
 		print(count)
