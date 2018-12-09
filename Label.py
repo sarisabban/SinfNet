@@ -72,6 +72,7 @@ parser = argparse.ArgumentParser(description='Object Detection Neural Network Da
 parser.add_argument('-b', '--bbox', action='store_true', help='Open the BBox image labeling tool')
 parser.add_argument('-t', '--translate', action='store_true', help='Translate .txt file to .xml file')
 parser.add_argument('-c', '--check', action='store_true', help='Check the images for correct annotation')
+parser.add_argument('-r', '--rename', action='store_true', help='Rename a label')
 args = parser.parse_args()
 
 class LabelTool():
@@ -514,7 +515,7 @@ def check_dir():
 	print('-----------------------')
 	print('[+] Done')
 
-def change(Old, New):
+def rename(Old, New):
 	'''Rename a label'''
 	directory = './dataset/BBox_Annotations'
 	for afile in os.listdir(directory):
@@ -547,5 +548,7 @@ def main():
 		txt_xml('./dataset/BBox_Annotations', './dataset/Images')
 	elif args.check:
 		check_dir()
+	elif args.rename:
+		rename(sys.argv[1], sys.argv[1])
 
 if __name__ == '__main__': main()
