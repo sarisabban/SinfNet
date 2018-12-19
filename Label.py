@@ -549,6 +549,6 @@ def main():
 	elif args.check:
 		check_dir()
 	elif args.rename:
-		rename(sys.argv[1], sys.argv[1])
+		rename(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()
