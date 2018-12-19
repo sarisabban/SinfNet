@@ -72,7 +72,7 @@ parser = argparse.ArgumentParser(description='Object Detection Neural Network Da
 parser.add_argument('-b', '--bbox', action='store_true', help='Open the BBox image labeling tool')
 parser.add_argument('-t', '--translate', action='store_true', help='Translate .txt file to .xml file')
 parser.add_argument('-c', '--check', action='store_true', help='Check the images for correct annotation')
-parser.add_argument('-r', '--rename', action='store_true', help='Rename a label')
+parser.add_argument('-r', '--rename', nargs='+', help='Rename a label')
 args = parser.parse_args()
 
 class LabelTool():
