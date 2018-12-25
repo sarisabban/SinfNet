@@ -57,7 +57,7 @@ config = {"model":{
 		"train":{
 			"train_image_folder":   "./dataset/Images/",
 			"train_annot_folder":   "./dataset/Annotations/",
-			"saved_weights_name":   "./cell.h5",
+			"saved_weights_name":   "./weights.h5",
 			"train_times":          8,
 			"batch_size":           16,
 			"learning_rate":        1e-4,
