@@ -38,6 +38,7 @@ import argparse
 import numpy as np
 import tensorflow as tf
 import xml.etree.ElementTree as ET
+from __future__ import print_function
 from keras.utils import Sequence
 from keras.optimizers import Adam
 from keras.engine.topology import Layer
