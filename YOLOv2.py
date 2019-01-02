@@ -646,7 +646,7 @@ class YOLO(object):
 			loss = tf.Print(loss, [total_recall/seen], message=\
 							'Average Recall \t',
 							summarize=1000)
-			return loss
+		return loss
 	def load_weights(self, weight_path):
 		self.model.load_weights(weight_path)
 	def train(self, train_imgs,
