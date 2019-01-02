@@ -1,6 +1,10 @@
 import tensorflow as tf
 import timeit
 
+np.set_printoptions(threshold=np.nan)
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
 def Find():
 	''' FIND GPU '''
 	device_name = tf.test.gpu_device_name()
