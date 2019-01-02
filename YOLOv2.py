@@ -861,7 +861,7 @@ def train():
 				coord_scale = config['train']['coord_scale'],
 				class_scale = config['train']['class_scale'],
 				saved_weights_name = config['train']['saved_weights_name'],
-				debug = True)#config['train']['debug'])
+				debug = config['train']['debug'])
 
 def predict(h5weights, TheImage):
 	weights_path = h5weights
