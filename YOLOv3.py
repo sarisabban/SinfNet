@@ -207,7 +207,7 @@ class YoloLayer(Layer):
 		loss_conf       = tf.reduce_sum(tf.square(conf_delta),      list(range(1,5)))
 		loss_class      = tf.reduce_sum(class_delta,                list(range(1,5)))
 		loss            = loss_xy + loss_wh + loss_conf + loss_class
-		if self.debug:
+		if config['train']['debug']:
 			loss            = tf.Print(loss, [grid_h, avg_obj], message='avg_obj \t\t', summarize=1000)
 			loss            = tf.Print(loss, [grid_h, avg_noobj], message='avg_noobj \t\t', summarize=1000)
 			loss            = tf.Print(loss, [grid_h, avg_iou], message='avg_iou \t\t', summarize=1000)
@@ -1321,7 +1321,7 @@ def main_train():
 		generator           = train_generator,
 		steps_per_epoch     = len(train_generator) * config['train']['train_times'],
 		epochs              = config['train']['nb_epochs'] + config['train']['warmup_epochs'],
-		verbose             = 2 if config['train']['debug'] else 1,
+		verbose             = 1,
 		callbacks           = callbacks,
 		workers             = 4,
 		max_queue_size      = 8)
