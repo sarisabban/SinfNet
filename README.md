@@ -13,9 +13,9 @@ The cell detection setup it mainly used to construct the protist dataset, since 
 ## Available datasets and trained weight files
 You can download these datasets to add to them and re-train the network to develop it, or to simply replicate our work:
 
-[Cell detection Dataset](https://www.dropbox.com/s/fyaglis36kyrtfm/Amoeba%28900%29.tar.bz2?dl=0) and its [YOLOv3 Weights]()
+[Cell detection Dataset](https://www.dropbox.com/s/vhi0pbzxq8juoy2/Cell%28900%29.tar.bz2?dl=0) and its [YOLOv3 Weights]()
 
-[Amoeba Cyst/Active Dataset](https://www.dropbox.com/s/vhi0pbzxq8juoy2/Cell%28900%29.tar.bz2?dl=0) and its [YOLOv3 Weights]()
+[Amoeba Cyst/Active Dataset](https://www.dropbox.com/s/fyaglis36kyrtfm/Amoeba%28900%29.tar.bz2?dl=0) and its [YOLOv3 Weights]()
 
 [Full Protist Dataset]() and its [YOLOv3 Weights]()
 
