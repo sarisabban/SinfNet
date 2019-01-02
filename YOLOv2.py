@@ -67,7 +67,7 @@ config = {"model":{
 			"no_object_scale":      1.0,
 			"coord_scale":          1.0,
 			"class_scale":          1.0,
-			"debug":                True},
+			"debug":                False},
 		"valid":{
 			"valid_image_folder":   "",
 			"valid_annot_folder":   "",
@@ -662,7 +662,7 @@ class YOLO(object):
 					coord_scale,
 					class_scale,
 					saved_weights_name='best_weights.h5',
-					debug=False):
+					debug=config['train']['debug']):
 		self.batch_size = batch_size
 		self.object_scale = object_scale
 		self.no_object_scale = no_object_scale
@@ -861,7 +861,7 @@ def train():
 				coord_scale = config['train']['coord_scale'],
 				class_scale = config['train']['class_scale'],
 				saved_weights_name = config['train']['saved_weights_name'],
-				debug = config['train']['debug'])
+				debug = True)#config['train']['debug'])
 
 def predict(h5weights, TheImage):
 	weights_path = h5weights
