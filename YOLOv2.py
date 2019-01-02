@@ -67,7 +67,7 @@ config = {"model":{
 			"no_object_scale":      1.0,
 			"coord_scale":          1.0,
 			"class_scale":          1.0,
-			"debug":                False},
+			"debug":                True},
 		"valid":{
 			"valid_image_folder":   "",
 			"valid_annot_folder":   "",
