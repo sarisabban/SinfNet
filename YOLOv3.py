@@ -70,7 +70,7 @@ config = {"model":{
 			"noobj_scale":          1,
 			"xywh_scale":           1,
 			"class_scale":          1,
-			"debug":                True},
+			"debug":                False},
 		"valid":{
 			"valid_image_folder":   "",
 			"valid_annot_folder":   "",
