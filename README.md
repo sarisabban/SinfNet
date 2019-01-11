@@ -15,7 +15,7 @@ You can download these datasets to add to them and re-train the network to devel
 
 [Cell detection Dataset]() and its [YOLOv3 Weights]()
 
-[Amoeba Cyst/Active Dataset](https://www.dropbox.com/s/fyaglis36kyrtfm/Amoeba%28900%29.tar.bz2?dl=0) and its [YOLOv3 Weights]()
+[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/ljimryjmimd0mxo/Amoeba(950).tar.bz2?dl=0) and its [YOLOv3 Weights]()
 
 [Full Protist Dataset]() and its [YOLOv3 Weights]()
 
