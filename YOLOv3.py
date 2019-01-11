@@ -52,8 +52,8 @@ config = {"model":{
 			"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
 			"labels":               ["Active", "Inactive"]},
 		"train":{
-			"train_image_folder":   "./dataset/Images_Train/",
-			"train_annot_folder":   "./dataset/Annotations_Train/",
+			"train_image_folder":   "./dataset/Images/",
+			"train_annot_folder":   "./dataset/Annotations/",
 			"tensorboard_dir":      "./logs",
 			"saved_weights_name":   "./weights.h5",
 			"cache_name":           "./training.plk",
@@ -72,8 +72,8 @@ config = {"model":{
 			"class_scale":          1,
 			"debug":                False},
 		"valid":{
-			"valid_image_folder":   "./dataset/Images_Valid/",
-			"valid_annot_folder":   "./dataset/Annotations_Valid/",
+			#"valid_image_folder":   "./dataset/Images_Valid/",
+			#"valid_annot_folder":   "./dataset/Annotations_Valid/",
 			"cache_name":           "",
 			"valid_times":          1}}
 
@@ -1131,16 +1131,16 @@ def create_training_instances(train_annot_folder, train_image_folder, train_cach
 	# parse annotations of the training set
 	train_ints, train_labels = parse_voc_annotation(train_annot_folder, train_image_folder, train_cache, labels)
 	# parse annotations of the validation set, if any, otherwise split the training set
-	if os.path.exists(valid_annot_folder):
-		valid_ints, valid_labels = parse_voc_annotation(valid_annot_folder, valid_image_folder, valid_cache, labels)
-	else:
-		print('valid_annot_folder not exists. Spliting the trainining set.')
-		train_valid_split = int(0.8*len(train_ints))
-		np.random.seed(0)
-		np.random.shuffle(train_ints)
-		np.random.seed()
-		valid_ints = train_ints[train_valid_split:]
-		train_ints = train_ints[:train_valid_split]
+#	if os.path.exists(valid_annot_folder):
+#		valid_ints, valid_labels = parse_voc_annotation(valid_annot_folder, valid_image_folder, valid_cache, labels)
+#	else:
+	print('valid_annot_folder not exists. Spliting the trainining set.')
+	train_valid_split = int(0.8*len(train_ints))
+	np.random.seed(0)
+	np.random.shuffle(train_ints)
+	np.random.seed()
+	valid_ints = train_ints[train_valid_split:]
+	train_ints = train_ints[:train_valid_split]
 	# compare the seen labels with the given labels in config.json
 	if len(labels) > 0:
 		overlap_labels = set(labels).intersection(set(train_labels.keys()))
