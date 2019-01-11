@@ -40,11 +40,19 @@ If you want to develop your own dataset follow these steps:
 2. In the Label.py script add the labels (classes) of each item the list in line 64 and save the file.
 3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
+*./dataset/Annotations*
+
 *./dataset/Images*
 
-*./dataset/BBox_Annotations*
+*./dataset/Annotations_Train*
 
-*./dataset/Annotations*
+*./dataset/Annotations_Valid*
+
+*./dataset/Images_Train*
+
+*./dataset/Images_Valid*
+
+*./dataset/BBox_Annotations*
 
 *./dataset/Check*
 
@@ -80,6 +88,8 @@ This will generate a new directory called ./dataset/Annotations and this directo
 For help use this command:
 
 `python3 Label.py --help`
+
+15. Divide the dataset into a training set and a validation set by adding them to the relevent directories mentioned in step 3. It is best to have the division as 80% training and 20% validation.
 
 ### Training the neural network
 #### For YOLOv2:
