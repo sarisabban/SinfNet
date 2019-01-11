@@ -52,8 +52,8 @@ config = {"model":{
 			"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
 			"labels":               ["Active", "Inactive"]},
 		"train":{
-			"train_image_folder":   "./dataset/Images/",
-			"train_annot_folder":   "./dataset/Annotations/",
+			"train_image_folder":   "./dataset/Images_Train/",
+			"train_annot_folder":   "./dataset/Annotations_Train/",
 			"tensorboard_dir":      "./logs",
 			"saved_weights_name":   "./weights.h5",
 			"cache_name":           "./training.plk",
@@ -72,8 +72,8 @@ config = {"model":{
 			"class_scale":          1,
 			"debug":                False},
 		"valid":{
-			"valid_image_folder":   "",
-			"valid_annot_folder":   "",
+			"valid_image_folder":   "./dataset/Images_Valid/",
+			"valid_annot_folder":   "./dataset/Annotations_Valid/",
 			"cache_name":           "",
 			"valid_times":          1}}
 
