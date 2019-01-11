@@ -72,8 +72,8 @@ config = {"model":{
 			"class_scale":          1,
 			"debug":                False},
 		"valid":{
-			#"valid_image_folder":   "./dataset/Images_Valid/",
-			#"valid_annot_folder":   "./dataset/Annotations_Valid/",
+			"valid_image_folder":   "./dataset/Images_Valid/",
+			"valid_annot_folder":   "./dataset/Annotations_Valid/",
 			"cache_name":           "",
 			"valid_times":          1}}
 
