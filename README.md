@@ -44,14 +44,6 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/Images*
 
-*./dataset/Annotations_Train*
-
-*./dataset/Annotations_Valid*
-
-*./dataset/Images_Train*
-
-*./dataset/Images_Valid*
-
 *./dataset/Test*
 
 *./dataset/BBox_Annotations*
@@ -91,7 +83,7 @@ For help use this command:
 
 `python3 Label.py --help`
 
-15. Divide the dataset into a training set and a validation set by adding them to the relevent directories mentioned in step 3. It is best to have the division as 80% training and 20% validation. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen).
+15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen).
 
 ### Training the neural network
 #### For YOLOv2:
