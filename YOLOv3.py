@@ -1338,7 +1338,7 @@ def main_train():
 		print(labels[label] + ': {:.4f}'.format(average_precision))
 	print('mAP: {:.4f}'.format(sum(average_precisions.values()) / len(average_precisions)))
 
-def main_predict(WEIGHTS, FILENAME):
+def main_predict(WEIGHTS, FILENAME, output_path):
 	config_path		= config
 	input_path		= FILENAME
 	# Set some parameter
@@ -1419,4 +1419,4 @@ if __name__ == '__main__':
 	if args.train:
 	    main_train()
 	elif args.detect:
-		main_predict(sys.argv[2], sys.argv[3])
+		main_predict(sys.argv[2], sys.argv[3], './')
