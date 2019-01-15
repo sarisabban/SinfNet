@@ -56,7 +56,7 @@ config = {"model":{
 			"train_annot_folder":   "./dataset/Annotations/",
 			"tensorboard_dir":      "./logs",
 			"saved_weights_name":   "./weights.h5",
-			"cache_name":           "./training.plk",
+			"cache_name":           "./training.pkl",
 			"pretrained_weights":   "",
 			"train_times":          8,
 			"batch_size":           16,
