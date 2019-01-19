@@ -141,5 +141,8 @@ The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
 Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important. This is currently only available for YOLOv2 because it is easier to implement on normal computers. Make sure you understand that weight files from YOLOv3 cannot be used in YOLOv2, and vice versa (because the network architectures are different).
 
+**Contributing to our dataset**
+If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
+
 ### Jupyter notebooks
 A Jupyter notebook is provided only for YOLOv2 to be able to quickly implement this scripts on a cloud GPU (the YOLOv3 script is too big for free cloud GPUs and requires a dedicated large system).
