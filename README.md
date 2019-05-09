@@ -112,11 +112,15 @@ If you just want to run a detection without developing a dataset nor re-training
 
 The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
-**You can add to an existing dataset**. Since manual annotations is time consuming, using the weights from a previous training you can perform a detection on a new set of images then add these images and annotations to the same database to re-train the neural network and increase its accuracy. Use the following command to perform multiple image detection is a collection of images and get back image annotations:
+**You can add to an existing dataset**. Since manual annotations is time consuming, this same neural network can be used to annotate new images to expand the current dataset (instead of annotating 1000s of images manually), make sure you use the Cell.h5 weights since you want to detect only the cells in the images. Thus you must insure your image is made up of a pure strain of cells. Start by commenting in line 555 in the YOLOv3.py script and use the following command to loop through all images in a directory and annotate them.:
 
-`python3 YOLOv3.py -b WEIGHTS.h5 IMAGE_DIRECTORY`
+`python3 YOLOv3.py -b Cell.h5 IMAGE_DIRECTORY`
 
-Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
+The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the Label.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
 
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
+
+## References:
+When using these scripts kindly reference the following:
+* 
