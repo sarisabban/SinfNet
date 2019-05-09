@@ -118,7 +118,7 @@ The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
 **You can add to an existing dataset**. Since manual annotations is time consuming, this same neural network can be used to annotate new images to expand the current dataset (instead of annotating 1000s of images manually), make sure you use the Cell.h5 weights since you want to detect only the cells in the images. Thus you must insure your image is made up of a pure strain of cells. Start by commenting in line 555 in the YOLOv3.py script and use the following command to loop through all images in a directory and annotate them.:
 
-`for i in IMAGE_DIRECTORY/*; do f="${i##*/}"; python3 YOLOv3.py -d Cell.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; sed -i "s/[^ ]*$/Cell/" ./"${f%.*}".txt;cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; done`
+`for i in IMAGE_DIRECTORY/*; do f="${i##*/}"; python3 YOLOv3.py -d Cell.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; sed -i "s/[^ ]*$/Cell/" ./"${f%.*}".txt;cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; mv ./"${f%.*}".txt ./BBox_Test; done`
 
 I know the command is ugly, but it works. The only thing you have to change is the *IMAGE_DIRECTORY* at the start of the command. The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the Label.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
 
