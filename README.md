@@ -116,7 +116,7 @@ The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
 `for i in IMAGE_DIRECTORY/*; do f="${i##*/}"; python3 YOLOv3.py -d Cell.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; sed -i "s/[^ ]*$/Cell/" ./"${f%.*}".txt;cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; done`
 
-The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the Label.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
+I know the command is ugly, but it works. The only thing you have to change is the *IMAGE_DIRECTORY* at the start of the command. The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the Label.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
 
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
