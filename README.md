@@ -93,9 +93,9 @@ For help use this command:
 
 This command will run the neural network to predict all images in the test directory and outputs its own BBOX text files. Using the information in the ./dataset/BBox_Test and ./dataset/BBox_Test_predictions you can evaluate how accurate the neural network is at correctly classifying the cells. You can run the evaluation using this command:
 
-``
+`python3 Label.py -e`
 
-
+The output will be
 
 ### Training the neural network
 1. On line 53 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on lines 57 and 58 change your output file names.
