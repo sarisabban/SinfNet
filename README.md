@@ -48,6 +48,8 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/BBox_Test*
 
+*./dataset/BBox_Test_predictions*
+
 *./dataset/BBox_Annotations*
 
 *./dataset/Check*
@@ -85,9 +87,15 @@ For help use this command:
 
 `python3 Label.py --help`
 
-15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen). Annotate these images and add the annotations to ./dataset/BBox_Test because after training this will be used to evaluation the efficiency of the training process, you want to see how many cells were correctly detected by the neural network compaired to what you have annotated. You can do that using the following script:
+15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen). Annotate these images and add the annotations to ./dataset/BBox_Test. After you train the neural network go back to the dataset directory and run the following command (make sure you change the WEIGHTS.h5 to your corresponding weights filename):
 
-``for i in IMAGE_DIRECTORY/*; do f="${i##*/}"; python3 YOLOv3.py -d Cell.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; mv ./"${f%.*}".txt ./BBox_Test; done``
+`for i in Test/*; do f="${i##*/}"; python3 YOLOv3.py -d WEIGHTS.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; mv ./"${f%.*}".txt ./BBox_Test; done`
+
+This command will run the neural network to predict all images in the test directory and outputs its own BBOX text files. Using the information in the ./dataset/BBox_Test and ./dataset/BBox_Test_predictions you can evaluate how accurate the neural network is at correctly classifying the cells. You can run the evaluation using this command:
+
+``
+
+
 
 ### Training the neural network
 1. On line 53 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on lines 57 and 58 change your output file names.
