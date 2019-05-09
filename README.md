@@ -46,6 +46,8 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/Test*
 
+*./dataset/BBox_Test*
+
 *./dataset/BBox_Annotations*
 
 *./dataset/Check*
@@ -83,7 +85,9 @@ For help use this command:
 
 `python3 Label.py --help`
 
-15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen).
+15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen). Annotate these images and add the annotations to ./dataset/BBox_Test because after training this will be used to evaluation the efficiency of the training process, you want to see how many cells were correctly detected by the neural network compaired to what you have annotated. You can do that using the following script:
+
+
 
 ### Training the neural network
 1. On line 53 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on lines 57 and 58 change your output file names.
