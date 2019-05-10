@@ -95,7 +95,7 @@ This command will run the neural network to predict all images in the test direc
 
 `python3 Label.py -e`
 
-The output will be 
+The output will be percent accuracy.
 
 ### Training the neural network
 1. On line 53 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on lines 57 and 58 change your output file names.
