@@ -73,6 +73,7 @@ parser.add_argument('-b', '--bbox', action='store_true', help='Open the BBox ima
 parser.add_argument('-t', '--translate', action='store_true', help='Translate .txt file to .xml file')
 parser.add_argument('-c', '--check', action='store_true', help='Check the images for correct annotation')
 parser.add_argument('-r', '--rename', nargs='+', help='Rename a label')
+parser.add_argument('-e', '--eval', action='store_true', help='Evaluate the accuracy of the trained neural network')
 args = parser.parse_args()
 
 class LabelTool():
@@ -538,6 +539,59 @@ def rename(Old, New):
 			data_out.write(i)
 		data_out.close()
 
+def BOX(BBOX_line1, BBOX_line2):
+	''' Compair two boxes'''
+	# Define Box 1
+	line1 = BBOX_line1
+	line1 = line1.strip().split()
+	xmin1 =int(line1[0])
+	ymin1 =int(line1[1])
+	xmax1 =int(line1[2])
+	ymax1 =int(line1[3])
+	label1= line1[4]
+	# Define box2
+	line2 = BBOX_line2
+	line2 = line2.strip().split()
+	xmin2 =int(line1[0])
+	ymin2 =int(line1[1])
+	xmax2 =int(line1[2])
+	ymax2 =int(line1[3])
+	label2= line2[4]
+	# Calculate IOU
+	bb1 = {'x1':xmin1, 'x2':xmax1, 'y1':ymin1, 'y2':ymax1}
+	bb2 = {'x1':xmin2, 'x2':xmax2, 'y1':ymin2, 'y2':ymax2}
+	x_left = max(bb1['x1'], bb2['x1'])
+	y_top = max(bb1['y1'], bb2['y1'])
+	x_right = min(bb1['x2'], bb2['x2'])
+	y_bottom = min(bb1['y2'], bb2['y2'])
+	if x_right < x_left or y_bottom < y_top: return 0.0
+	intersection_area = (x_right - x_left) * (y_bottom - y_top)
+	bb1_area = (bb1['x2'] - bb1['x1']) * (bb1['y2'] - bb1['y1'])
+	bb2_area = (bb2['x2'] - bb2['x1']) * (bb2['y2'] - bb2['y1'])
+	IOU = round((intersection_area / float(bb1_area + bb2_area - intersection_area))*100, 3)
+	if IOU > 50 and label1 == label2:
+		return(True)
+	else:
+		return(False)
+
+def eval(dir_test, dir_pred):
+	'''
+	Evaluates the Test set annotations against the network's
+	predictions
+	'''
+	for fT, fP in zip(os.listdir(dir_test), os.listdir(dir_pred)):
+		FileT = open('{}/{}'.format(dir_test, fT), 'r')
+		next(FileT)
+		FileP = open('{}/{}'.format(dir_pred, fP), 'r')
+		next(FileP)
+
+		for lineT in FileT:
+			for lineP in FileP:
+				print(BOX(lineT, lineP))
+
+
+
+
 def main():
 	if args.bbox:
 		root = Tk()
@@ -550,5 +604,6 @@ def main():
 		check_dir()
 	elif args.rename:
 		rename(sys.argv[2], sys.argv[3])
-
+	elif args.eval:
+		eval('BBox_Test', 'BBox_Test_Predictions')
 if __name__ == '__main__': main()
