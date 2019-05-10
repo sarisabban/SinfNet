@@ -15,7 +15,7 @@ You can download these datasets to add to them and re-train the network to devel
 
 | Dataset name                                                                                           | Weights                                                                  |
 |--------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/a7z43eivfrzd0rx/Amoeba%28950%29.tar.bz2?dl=0)|[YOLOv3 Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)|
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/2z5ghkxmzpjqf53/Amoeba%28950%29.tar.bz2?dl=0)|[YOLOv3 Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)|
 |[Cell detection Dataset]()                                                                              |[YOLOv3 Weights]()                                                        |
 |[Dinoflagellates Dataset]()                                                                             |[YOLOv3 Weights]()                                                        |
 
