@@ -568,13 +568,13 @@ def BOX(BBOX_line1, BBOX_line2):
 	intersection_area = (x_right - x_left) * (y_bottom - y_top)
 	bb1_area = (bb1['x2'] - bb1['x1']) * (bb1['y2'] - bb1['y1'])
 	bb2_area = (bb2['x2'] - bb2['x1']) * (bb2['y2'] - bb2['y1'])
-	IOU = round((intersection_area / float(bb1_area + bb2_area - intersection_area))*100, 3)
-	if IOU > 50 and label1 == label2:
+	IOU = round((intersection_area / float(bb1_area + bb2_area - intersection_area)), 3)
+	if IOU > 0.5 and label1 == label2:
 		print(IOU, label1, label2, 'True')
-#		return(True)
+		return(True)
 	else:
-		print(IOU, label1, label2, 'False')
-#		return(False)
+		#print(IOU, label1, label2, 'False')
+		return(False)
 
 def eval(dir_test, dir_pred):
 	'''
@@ -585,13 +585,15 @@ def eval(dir_test, dir_pred):
 		FileT = open('{}/{}'.format(dir_test, fT), 'r')
 		next(FileT)
 		FileP = open('{}/{}'.format(dir_pred, fP), 'r')
-		next(FileP)
 		for lineT in FileT:
+			FileP.seek(0)
+			next(FileP)
 			for lineP in FileP:
+				T = lineT.strip()
+				P = lineP.strip()
 				BOX(lineT, lineP)
-
-
-
+	# Calculate accuracy
+	#????????
 
 def main():
 	if args.bbox:
