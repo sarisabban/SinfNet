@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# https://sieriebriennikov.shinyapps.io/ninja/
 import keras
 import sklearn
 import numpy as np
