@@ -6,7 +6,7 @@ This is a script that uses a real-time object detection convolutional neural net
 
 <p align="center">Protist dataset - 10 species:</p>
 
-<sub>*Colsterium ehrenbergii Cylindrocystis brebissonii Lepocinclis spirogyroides Micrasterias rotata Paramecium bursaria Peridinium spec. Pinnularia neomajor Pleurotaenium ehrenbergii Pyrocystis lunula Volvox tertius*</sub>
+<sub>*Colsterium ehrenbergii - Cylindrocystis brebissonii - Lepocinclis spirogyroides - Micrasterias rotata - Paramecium bursaria - Peridinium spec. - Pinnularia neomajor - Pleurotaenium ehrenbergii - Pyrocystis lunula - Volvox tertius*</sub>
 
 The cell detection setup it mainly used to construct the protist dataset, since each protist species require at least 1000 annotated images, the cell detection neural network is use to auto annotate microscope cell images and construct a dataset, that is why it is provided here.
 
