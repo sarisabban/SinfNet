@@ -26,6 +26,23 @@ SOFTWARE.
 This script is modified from https://github.com/experiencor/keras-yolo3
 '''
 
+'''
+Algae:
+======
+objective = 4x * 1.25x (or 16x * 1.25x)
+Analyser  = 16
+Prizsm    = 90 degrees
+
+Nematodes:
+==========
+objective = 4x * 1.25x
+Analyser  = any
+Prizsm    = 90 degrees
+Aperture  = ?
+Polariser = 90 degrees
+Microscope= Orthoplan 064915
+'''
+
 import os
 import sys
 import cv2
