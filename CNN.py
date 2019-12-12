@@ -20,7 +20,30 @@ classes = ['cats', 'dogs']
 shape   = (224, 224)
 batches = 16
 epochs  = 10
-IDG = keras.preprocessing.image.ImageDataGenerator()#horizontal_flip=True, vertical_flip=True, rotation_range=45)
+IDG = keras.preprocessing.image.ImageDataGenerator(	featurewise_center=True,
+                                                    samplewise_center=True,
+                                                    featurewise_std_normalization=False,
+                                                    samplewise_std_normalization=False,
+                                                    zca_whitening=True,
+                                                    zca_epsilon=1e-06,
+                                                    rotation_range=10,
+                                                    width_shift_range=30,
+                                                    height_shift_range=30,
+                                                    brightness_range=None,
+                                                    shear_range=0.0,
+                                                    zoom_range=0.0,
+                                                    channel_shift_range=0.0,
+                                                    fill_mode='nearest',
+                                                    cval=0.0,
+                                                    horizontal_flip=True,
+                                                    vertical_flip=True,
+                                                    rescale=None,
+                                                    preprocessing_function=None,
+                                                    data_format='channels_last',
+                                                    validation_split=0.0,
+                                      #							interpolation_order=1,
+                                                    dtype='float32')
+
 train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
                                 classes=classes, batch_size=batches)
 tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
