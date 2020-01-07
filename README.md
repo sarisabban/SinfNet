@@ -16,8 +16,10 @@ You can download these datasets to add to them and re-train the network to devel
 | Dataset name                                                                                           | Weights                                                                  |
 |--------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
 |[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/2z5ghkxmzpjqf53/Amoeba%28950%29.tar.bz2?dl=0)|[YOLOv3 Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)|
+|[Nematode detection Dataset]()                                                                          |[YOLOv3 Weights]()                                                        |
+|[Nematode classification Dataset]()                                                                     |[CNN Weights]()                                                           |
 |[Cell detection Dataset]()                                                                              |[YOLOv3 Weights]()                                                        |
-|[Dinoflagellates Dataset]()                                                                             |[YOLOv3 Weights]()                                                        |
+|[Algae Dataset]()                                                                                       |[YOLOv3 Weights]()                                                        |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
@@ -37,14 +39,15 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 If you want to develop your own dataset follow these steps:
 
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-2. In the Label.py script add the labels (classes) of each item the list in line 64 and save the file.
-3. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
+2. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
 *./dataset/Annotations*
 
-*./dataset/Images*
+*./dataset/Train*
 
 *./dataset/Test*
+
+*./dataset/Valid*
 
 *./dataset/BBox_Test*
 
@@ -54,38 +57,48 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/Check*
 
+This command will quickly set it up:
+
+`mkdir -p ./dataset/Annotations ./dataset/Train ./dataset/Test ./dataset/BBox_Test ./dataset/BBox_Test_Predictions ./dataset/BBox_Annotations ./dataset/Check ./dataset/Valid`
+
 Your images should be in *./dataset/Images* of course. It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script. So just stick to these to keep it simple.
+If you would like to augment the images use the following command:
 
-4. Open the GUI annotation tool using the following command:
+`python3 ProtiClass.py --augment` or `python3 ProtiClass.py -a`
 
-`python3 Label.py --bbox`
+This will generate a new directory with all the saved augmented images on it, and these augmented images should be used for training.
 
-5. Click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
-6. Click "Label Output Folder" on the top left to choose the directory that will save the labels (./dataset/BBox_Annotations).
+3. Open the GUI annotation tool using the following command:
+
+`python3 ProtiClass.py --bbox` or `python3 ProtiClass.py -b`
+
+4. You will be prompted to enter the labels, enter a label and press enter to enter a new label. Type `end` to start labelling when you have enters all your desired labels.
+5. (Should be already setup), click "Image Input Folder" on the top left to choose the directory that contains the images (./dataset/Images).
+6. (Should be already setup), click "Label Output Folder" on the top left to choose the directory that will save the labels (./dataset/BBox_Annotations).
 7. Click "Load Dir" on the top right to load your choices (nothing will happen). Note: It is better to stick to the default dataset paths mentioned in step 3, otherwise you will have to changes to different paths from within the code in some scripts. The images may not scale very well, make sure you see the entire image and not just part of it, change the values (currently at 700) in line 280 of the BBox.py script accordingly (larger values = more zoomed image).
-8. You must click "Next" to load the images (but it will skip the first image, so go back to it).
+8. You must click "Next" to load the images (but it will skip the first image, so go back to it) then previous to go back to the first image.
 9. Use the mouse to generate a bounding box around each object of interest.
 10. Label each box with the labels from the drop down menu on the right and clicking "Confirm Class".
 11. Click "Next >>" to save the labels and move on to the next image (images are not loaded by filename order).
 12. Once finished, check to make sure that your annotations are correct by using the following command:
 
-`python3 Label.py --check`
+`python3 ProtiClass.py --check` or `python3 ProtiClass.py -k`
 
 This will generate a new directory called ./dataset/Check with the images showing their annotations.
 
 13. The annotations are in text (.txt) file format and they need to be in XML format, to convert run the following command:
 
-`python3 Label.py --translate`
+`python3 ProtiClass.py --translate` or `python3 ProtiClass.py -t`
 
 This will generate a new directory called ./dataset/Annotations and this directory will be used in the neural network.
 
 14. If you want to rename a label throughout the dataset use the following command
 
-`python3 Label.py --rename OLD NEW`
+`python3 ProtiClass.py --rename OLD NEW`  or `python3 ProtiClass.py -r OLD NEW`
 
 For help use this command:
 
-`python3 Label.py --help`
+`python3 ProtiClass.py --help` or `python3 ProtiClass.py -h`
 
 15. Add some images to the Test direcotry which will be used to test the accuracy of the final trained network (on images the network has never seen). Annotate these images and add the annotations to ./dataset/BBox_Test. After you train the neural network go back to the dataset directory and run the following command (make sure you change the WEIGHTS.h5 to your corresponding weights filename):
 
@@ -93,11 +106,22 @@ For help use this command:
 
 This command will run the neural network to predict all images in the test directory and outputs its own BBOX text files. Using the information in the ./dataset/BBox_Test and ./dataset/BBox_Test_Predictions you can evaluate how accurate the neural network is at correctly classifying the cells. You can run the evaluation using this command:
 
-`python3 Label.py -e`
+`python3 ProtiClass.py --eval` or `python3 ProtiClass.py -e`
 
 The output will be percent accuracy.
 
 ### Training the neural network
+#### CNN
+1. You can train the images on a CNN using the following command:
+2. The labels for each class should be directories within the *./dataset/Train* directory including the images of only that class.
+3. There must be images in the *./dataset/Train*, *./dataset/Test*, and *./dataset/Valid* directories for this architecture to work.
+
+`python3 ProtiClass.py --cnn_train CNN` or `python3 ProtiClass.py -ct CNN`
+
+Where CNN stands for one of the following CNN architectures: VGG16, VGG19, ResNet50, or DenseNet201
+The network will look for the images in the *./dataset/Images* directory and will augment them 10 times before pushing them through the neural network.
+
+#### Object
 1. On line 53 of the YOLOv3.py script add all your labels in a list as such ["label 1", "label 2", "label 3"], and on lines 57 and 58 change your output file names.
 2. The network is resource heavy and required a large GPU and more than 16GB of RAM to run. Therefore some cloud GPU cloud services may not work and a larger system is required.
 3. To see the help menu use the following command:
@@ -116,6 +140,14 @@ The output will be percent accuracy.
 7. The .h5 file is the weights file used for image detection.
 
 ### Detection
+#### CNN
+1. To run a prediction use the following command:
+
+`python3 ProtiClass.py --cnn_predict CNN IMAGE` or `python3 ProtiClass.py -cp CNN IMAGE`
+
+You must have the weights.h5 file in the same directory as the ProtiClass.py script and identify which CNN the the weights where trained on.
+
+#### Object
 If you just want to run a detection without developing a dataset nor re-training the network you can just run this command right now using the weights of our trained network.
 1. Download the relevant weights file, links available above.
 2. Run image detection using the following command:
@@ -128,7 +160,7 @@ The FILENAME in YOLOv3.py can be either a .jpg image, .mp4 video or a webcam.
 
 `for i in IMAGE_DIRECTORY/*; do f="${i##*/}"; python3 YOLOv3.py -d Cell.h5 $i > ./"${f%.*}".txt; rm ./"${i##*/}"; sed -i "s/[^ ]*$/Cell/" ./"${f%.*}".txt; cat ./"${f%.*}".txt | wc -l > temp && cat ./"${f%.*}".txt >> temp && mv temp ./"${f%.*}".txt; mv ./"${f%.*}".txt ./BBox_Test; done`
 
-I know the command is ugly, but it works. The only thing you have to change is the *IMAGE_DIRECTORY* at the start of the command. The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the Label.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
+I know the command is ugly, but it works. The only thing you have to change is the *IMAGE_DIRECTORY* at the start of the command. The annotation is as good as the training of the network, which is not 100%, therefore a human must go over the annotated images using the ProtiClass.py script as in step 4 to fix any mistakes. Make sure you repeat steps 12 and 13 to check and translate the new annotations. Annotations may have some mistakes therefore checking the annotations is very important.
 
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
