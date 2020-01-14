@@ -45,6 +45,8 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/BBox_Annotations*
 
+*./dataset/BBox_Test*
+
 *./dataset/Check*
 
 *./dataset/Predictions*
