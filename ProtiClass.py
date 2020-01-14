@@ -656,7 +656,7 @@ def main():
 	elif args.translate:txt_xml('./dataset/BBox_Annotations','./dataset/Train')
 	elif args.check: check_dir()
 	elif args.rename: rename(sys.argv[2], sys.argv[3])
-	elif args.eval: eval('BBox_Test', 'BBox_Test_Predictions')
+	elif args.eval: eval('Valid', 'Predictions')
 	elif args.augment: augment()
 	elif args.cnn_train: CNN(choice='predict', CNN=sys.argv[2])
 	elif args.cnn_predict: CNN(CNN=sys.argv[2], prediction=sys.argv[3])
