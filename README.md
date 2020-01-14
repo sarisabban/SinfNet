@@ -43,19 +43,17 @@ If you want to develop your own dataset follow these steps:
 
 *./dataset/Annotations*
 
-*./dataset/Train*
-
-*./dataset/Test*
-
-*./dataset/Valid*
-
-*./dataset/BBox_Test*
-
-*./dataset/BBox_Test_Predictions*
-
 *./dataset/BBox_Annotations*
 
 *./dataset/Check*
+
+*./dataset/Predictions*
+
+*./dataset/Test*
+
+*./dataset/Train*
+
+*./dataset/Valid*
 
 This command will quickly set it up:
 
