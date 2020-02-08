@@ -139,7 +139,7 @@ The network will look for the images in the *./dataset/Images* directory and wil
 
 7. The .h5 file is the weights file used for image detection.
 
-8. If the training is interrupted, you can use the weight.h5 and training.pkl files to continue where you left off.
+8. If the training is interrupted, you can use the weight.h5 file to continue where you left off.
 
 ### Detection
 #### CNN
