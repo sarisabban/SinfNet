@@ -541,7 +541,7 @@ def augment(input_path='./dataset/Train',
 			new_image.save(output)
 			if i >= count-1: break
 
-def CNN(choice='predict', CNN='VGG16', prediction='./image.jpg'):
+def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''
 	if choice == 'train':
 		Train   = './dataset/Train'
@@ -553,69 +553,71 @@ def CNN(choice='predict', CNN='VGG16', prediction='./image.jpg'):
 		classes = []
 		for c in os.listdir(Train): classes.append(c)
 		IDG = keras.preprocessing.image.ImageDataGenerator(
-			featurewise_center=True,
-			samplewise_center=True,
-			featurewise_std_normalization=False,
-			samplewise_std_normalization=False,
-			zca_whitening=True,
-			zca_epsilon=1e-06,
-			rotation_range=10,
-			width_shift_range=30,
-			height_shift_range=30,
-			brightness_range=None,
-			shear_range=0.0,
-			zoom_range=0.0,
-			channel_shift_range=0.0,
-			fill_mode='nearest',
-			cval=0.0,
+			#featurewise_center=True,
+			#samplewise_center=True,
+			#featurewise_std_normalization=False,
+			#samplewise_std_normalization=False,
+			#zca_whitening=True,
+			#zca_epsilon=1e-06,
+			#rotation_range=10,
+			#width_shift_range=30,
+			#height_shift_range=30,
+			#brightness_range=None,
+			#shear_range=0.0,
+			#zoom_range=0.0,
+			#channel_shift_range=0.0,
+			#fill_mode='nearest',
+			#cval=0.0,
 			horizontal_flip=True,
 			vertical_flip=True,
-			rescale=None,
-			preprocessing_function=None,
-			data_format='channels_last',
-			validation_split=0.0,
+			#rescale=None,
+			#preprocessing_function=None,
+			#data_format='channels_last',
+			#validation_split=0.0,
 			#interpolation_order=1,
 			dtype='float32')
 		train = IDG.flow_from_directory(Train, target_size=shape,
-						color_mode='rgb', classes=classes, batch_size=batches)
+			color_mode='rgb', classes=classes, batch_size=batches)
 		tests = IDG.flow_from_directory(Tests, target_size=shape,
-						color_mode='rgb', classes=classes, batch_size=batches)
+			color_mode='rgb', classes=classes, batch_size=batches)
 		valid = IDG.flow_from_directory(Valid, target_size=shape,
-						color_mode='rgb', classes=classes, batch_size=batches)
+			color_mode='rgb', classes=classes, batch_size=batches)
 		input_shape = train.image_shape
+		IDG.fit(train)
 		if CNN == 'VGG16' or 'vgg16':
 			model = VGG16(weights=None, input_shape=input_shape,
-						classes=len(classes))
+				classes=len(classes))
 		elif CNN == 'VGG19' or 'vgg19':
 			model = VGG19(weights=None, input_shape=input_shape,
-						classes=len(classes))
+				classes=len(classes))
 		elif CNN == 'ResNet50' or 'resnet50':
 			model = ResNet50(weights=None, input_shape=input_shape,
-						classes=len(classes))
+				classes=len(classes))
 		elif CNN == 'DenseNet201' or 'densenet201':
 			model = DenseNet201(weights=None, input_shape=input_shape,
-						classes=len(classes))
+				classes=len(classes))
 		model.compile(optimizer=keras.optimizers.SGD(
-						lr=1e-3,
-						decay=1e-6,
-						momentum=0.9,
-						nesterov=True),
-						loss='categorical_crossentropy',
-						metrics=['accuracy'])
+			lr=1e-3,
+			decay=1e-6,
+			momentum=0.9,
+			nesterov=True),
+			loss='categorical_crossentropy',
+			metrics=['accuracy'])
 		Esteps = int(train.samples/train.next()[0].shape[0])
 		Vsteps = int(valid.samples/valid.next()[0].shape[0])
 		history= model.fit_generator(train,
-						steps_per_epoch=Esteps,
-						epochs=epochs,
-						validation_data=valid,
-						validation_steps=Vsteps,
-						verbose=1)
+			steps_per_epoch=Esteps,
+			epochs=epochs,
+			validation_data=valid,
+			validation_steps=Vsteps,
+			verbose=1)
 		plt.plot(history.history['loss'])
 		plt.plot(history.history['val_loss'])
 		plt.title('Model Loss')
 		plt.ylabel('Loss')
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
+		#plt.show()
 		plt.save()
 		plt.plot(history.history['acc'])
 		plt.plot(history.history['val_acc'])
@@ -623,6 +625,7 @@ def CNN(choice='predict', CNN='VGG16', prediction='./image.jpg'):
 		plt.ylabel('Accuracy')
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
+		#plt.show()
 		plt.save()
 		Y_pred = model.predict_generator(tests, verbose=1)
 		y_pred = np.argmax(Y_pred, axis=1)
