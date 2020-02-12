@@ -13,13 +13,13 @@ The cell detection setup it mainly used to construct the protist dataset, since 
 ## Available datasets and trained weight files
 You can download these datasets to add to them and re-train the network to develop it, or to simply replicate our work:
 
-|Dataset Name                                                                                   |Weights                                                                   |mAP or Accuracy|
-|-----------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/247tkdqd9cskn00/Amoeba.tar.bz2?dl=0)|[YOLOv3 Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)|0.6473         |
-|[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)         |[YOLOv3 Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0) |0.9549         |
-|[Algae Classification Dataset](https://www.dropbox.com/s/jcvdicvl1eg6o6z/Algae.tar.bz2?dl=0)   |[YOLOv3 Weights](https://www.dropbox.com/s/4o9peiulwizsa72/Algae.h5?dl=0) |0.7118         |
-|[Nematode Detection Dataset](https://www.dropbox.com/s/hw5u0fwym4iul61/Nematodes.tar.bz2?dl=0) |[YOLOv3 Weights]()| |
-|[Nematode Classification Dataset]()                                                            |[CNN Weights]()   | |
+|Dataset Name                                                                                            |Weights                                                                   |mAP or Accuracy|
+|--------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|---------------|
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/247tkdqd9cskn00/Amoeba.tar.bz2?dl=0)         |[YOLOv3 Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)|0.6473         |
+|[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)                  |[YOLOv3 Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0) |0.9549         |
+|[Algae Classification Dataset](https://www.dropbox.com/s/jcvdicvl1eg6o6z/Algae.tar.bz2?dl=0)            |[YOLOv3 Weights](https://www.dropbox.com/s/4o9peiulwizsa72/Algae.h5?dl=0) |0.7118         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/hw5u0fwym4iul61/Nematodes.tar.bz2?dl=0)          |[YOLOv3 Weights]()| |
+|[Nematode Classification Dataset](https://www.dropbox.com/s/4oqrx3s4scrk3ny/Nematodes_Feed.tar.bz2?dl=0)|[CNN Weights]()   | |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
