@@ -15,6 +15,7 @@ from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 import matplotlib.pyplot as plt
+from keras.preprocessing import image
 from PIL import Image, ImageTk, ImageDraw
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg19 import VGG19
@@ -543,68 +544,44 @@ def augment(input_path='./dataset/Train',
 
 def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''
+	Train   = './dataset/Train'
+	Tests   = './dataset/Test'
+	Valid   = './dataset/Valid'
+	shape   = (224, 224)
+	epochs  = 30
+	batches = 16
+	classes = []
+	for c in os.listdir(Train): classes.append(c)
+	IDG = keras.preprocessing.image.ImageDataGenerator()
+	train = IDG.flow_from_directory(Train, target_size=shape,
+		color_mode='rgb', classes=classes, batch_size=batches)
+	tests = IDG.flow_from_directory(Tests, target_size=shape,
+		color_mode='rgb', classes=classes, batch_size=batches)
+	valid = IDG.flow_from_directory(Valid, target_size=shape,
+		color_mode='rgb', classes=classes, batch_size=batches)
+	input_shape = train.image_shape
+	if CNN == 'VGG16' or 'vgg16':
+		model = VGG16(weights=None, input_shape=input_shape,
+			classes=len(classes))
+	elif CNN == 'VGG19' or 'vgg19':
+		model = VGG19(weights=None, input_shape=input_shape,
+			classes=len(classes))
+	elif CNN == 'ResNet50' or 'resnet50':
+		model = ResNet50(weights=None, input_shape=input_shape,
+			classes=len(classes))
+	elif CNN == 'DenseNet201' or 'densenet201':
+		model = DenseNet201(weights=None, input_shape=input_shape,
+			classes=len(classes))
+	model.compile(optimizer=keras.optimizers.SGD(
+		lr=1e-3,
+		decay=1e-6,
+		momentum=0.9,
+		nesterov=True),
+		loss='categorical_crossentropy',
+		metrics=['accuracy'])
+	Esteps = int(train.samples/train.next()[0].shape[0])
+	Vsteps = int(valid.samples/valid.next()[0].shape[0])
 	if choice == 'train':
-		Train   = './dataset/Train'
-		Tests   = './dataset/Test'
-		Valid   = './dataset/Valid'
-		shape   = (224, 224)
-		epochs  = 10
-		batches = 16
-		classes = []
-		for c in os.listdir(Train): classes.append(c)
-		IDG = keras.preprocessing.image.ImageDataGenerator(
-			#featurewise_center=True,
-			#samplewise_center=True,
-			#featurewise_std_normalization=False,
-			#samplewise_std_normalization=False,
-			#zca_whitening=True,
-			#zca_epsilon=1e-06,
-			#rotation_range=10,
-			#width_shift_range=30,
-			#height_shift_range=30,
-			#brightness_range=None,
-			#shear_range=0.0,
-			#zoom_range=0.0,
-			#channel_shift_range=0.0,
-			#fill_mode='nearest',
-			#cval=0.0,
-			horizontal_flip=True,
-			vertical_flip=True,
-			#rescale=None,
-			#preprocessing_function=None,
-			#data_format='channels_last',
-			#validation_split=0.0,
-			#interpolation_order=1,
-			dtype='float32')
-		train = IDG.flow_from_directory(Train, target_size=shape,
-			color_mode='rgb', classes=classes, batch_size=batches)
-		tests = IDG.flow_from_directory(Tests, target_size=shape,
-			color_mode='rgb', classes=classes, batch_size=batches)
-		valid = IDG.flow_from_directory(Valid, target_size=shape,
-			color_mode='rgb', classes=classes, batch_size=batches)
-		input_shape = train.image_shape
-		IDG.fit(train)
-		if CNN == 'VGG16' or 'vgg16':
-			model = VGG16(weights=None, input_shape=input_shape,
-				classes=len(classes))
-		elif CNN == 'VGG19' or 'vgg19':
-			model = VGG19(weights=None, input_shape=input_shape,
-				classes=len(classes))
-		elif CNN == 'ResNet50' or 'resnet50':
-			model = ResNet50(weights=None, input_shape=input_shape,
-				classes=len(classes))
-		elif CNN == 'DenseNet201' or 'densenet201':
-			model = DenseNet201(weights=None, input_shape=input_shape,
-				classes=len(classes))
-		model.compile(optimizer=keras.optimizers.SGD(
-			lr=1e-3,
-			decay=1e-6,
-			momentum=0.9,
-			nesterov=True),
-			loss='categorical_crossentropy',
-			metrics=['accuracy'])
-		Esteps = int(train.samples/train.next()[0].shape[0])
-		Vsteps = int(valid.samples/valid.next()[0].shape[0])
 		history= model.fit_generator(train,
 			steps_per_epoch=Esteps,
 			epochs=epochs,
@@ -617,16 +594,14 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 		plt.ylabel('Loss')
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
-		#plt.show()
-		plt.save()
+		plt.show()
 		plt.plot(history.history['acc'])
 		plt.plot(history.history['val_acc'])
 		plt.title('Model Accuracy')
 		plt.ylabel('Accuracy')
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
-		#plt.show()
-		plt.save()
+		plt.show()
 		Y_pred = model.predict_generator(tests, verbose=1)
 		y_pred = np.argmax(Y_pred, axis=1)
 		matrix = confusion_matrix(tests.classes, y_pred)
@@ -636,9 +611,28 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 		print(classification_report(tests.classes,y_pred,target_names=classes))
 		model.save_weights('weights.h5')
 	elif choice == 'predict':
-		model.load_weights('weights.h5')
-		prdct = model.predict(prediction)
-		print(prdct)
+		model.load_weights('./weights.h5')
+		img = image.load_img(prediction, target_size=shape)
+		im = image.img_to_array(img)
+		im = np.expand_dims(im, axis=0)
+		if CNN == 'VGG16' or 'vgg16':
+			im = keras.applications.vgg16.preprocess_input(im)
+			prediction = model.predict(im)
+			print(prediction)
+		elif CNN == 'VGG19' or 'vgg19':
+			im = keras.applications.vgg19.preprocess_input(im)
+			prediction = model.predict(im)
+			print(prediction)
+		elif CNN == 'ResNet50' or 'resnet50':
+			im = keras.applications.resnet50.preprocess_input(im)
+			prediction = model.predict(im)
+			print(prediction)
+			print(keras.applications.resnet50.decode_predictions(prdct))
+		elif CNN == 'DenseNet201' or 'densenet201':
+			im = keras.applications.densenet201.preprocess_input(im)
+			prediction = model.predict(im)
+			print(prediction)
+			print(keras.applications.densenet201.decode_predictions(prdct))
 
 def main():
 	if args.bbox:
