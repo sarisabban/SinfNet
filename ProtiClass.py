@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from PIL import Image, ImageTk, ImageDraw
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg19 import VGG19
-from keras.applications.resnet import ResNet50
+from keras.applications.resnet50 import ResNet50
 from keras.applications.densenet import DenseNet201
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
