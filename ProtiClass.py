@@ -548,7 +548,7 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	Tests   = './dataset/Test'
 	Valid   = './dataset/Valid'
 	shape   = (224, 224)
-	epochs  = 30
+	epochs  = 500
 	batches = 16
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
