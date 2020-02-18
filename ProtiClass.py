@@ -546,19 +546,18 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''
 	Train   = './dataset/Train'
 	Tests   = './dataset/Test'
-	Valid   = './dataset/Valid'
 	shape   = (224, 224)
-	epochs  = 500
+	epochs  = 1
 	batches = 16
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
-	IDG = keras.preprocessing.image.ImageDataGenerator()
-	train = IDG.flow_from_directory(Train, target_size=shape,
-		color_mode='rgb', classes=classes, batch_size=batches)
-	tests = IDG.flow_from_directory(Tests, target_size=shape,
-		color_mode='rgb', classes=classes, batch_size=batches)
-	valid = IDG.flow_from_directory(Valid, target_size=shape,
-		color_mode='rgb', classes=classes, batch_size=batches)
+	IDG = keras.preprocessing.image.ImageDataGenerator(validation_split=0.2)
+	train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+	    classes=classes, batch_size=batches, shuffle=True, subset='training')
+	tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+	    classes=classes, batch_size=batches, shuffle=True)
+	valid = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+	    classes=classes, batch_size=batches, shuffle=True, subset='validation')
 	input_shape = train.image_shape
 	if CNN == 'VGG16' or 'vgg16':
 		model = VGG16(weights=None, input_shape=input_shape,
@@ -627,12 +626,12 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 			im = keras.applications.resnet50.preprocess_input(im)
 			prediction = model.predict(im)
 			print(prediction)
-			print(keras.applications.resnet50.decode_predictions(prdct))
+			print(keras.applications.resnet50.decode_predictions(prediction))
 		elif CNN == 'DenseNet201' or 'densenet201':
 			im = keras.applications.densenet201.preprocess_input(im)
 			prediction = model.predict(im)
 			print(prediction)
-			print(keras.applications.densenet201.decode_predictions(prdct))
+			print(keras.applications.densenet201.decode_predictions(prediction))
 
 def main():
 	if args.bbox:
