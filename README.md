@@ -167,6 +167,10 @@ I know the command is ugly, but it works. The only thing you have to change is t
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
 
+## Funders:
+* experiment.com(https://experiment.com/)
+* Microsoft
+
 ## References:
 When using these scripts kindly reference the following:
 * 
