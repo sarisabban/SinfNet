@@ -169,7 +169,7 @@ If you would like to add images to our dataset (any type of protist cell) make s
 
 ## Funders:
 * [Experiment](https://experiment.com/)
-* Microsoft
+* [Microsoft](https://www.microsoft.com/en-us/ai/ai-for-earth-tech-resources)
 
 ## References:
 When using these scripts kindly reference the following:
