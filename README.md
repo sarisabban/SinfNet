@@ -167,6 +167,25 @@ I know the command is ugly, but it works. The only thing you have to change is t
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of protist cell) make sure that each species has 2000 annotated images where each image is sharp and taken from a brightfield light miscroscope at 400x magnification. Please contact me so we can work together.
 
+## Auto Annotation:
+The Cells dataset was developed to make annotating images with different cells easier.
+
+1. Comment out the last line of the script `#cv2.imwrite ...` line 1434 of the YOLOv3.py script as to not generate images.
+
+2. Use the following command to loop through all images and detect the cells:
+
+`for f in ./DIRECTORY/*; do; python3 YOLOv3.py -d WEIGHTS.h5 $f >> DIRECTORY; done`
+
+Where DIRECTORY is the name of the directory that contains all the images.
+
+3. Then use the following command to generate the BBox_Annotation text files:
+
+`python3 ProtiClass.py --convert` or `python3 ProtiClass.py -c`
+
+4. Check all images to make sure the the annotations are correct, and to correct minor errors.
+
+5. Translate the text files into .xml files
+
 ## Funders:
 * [Experiment](https://experiment.com/)
 * [Microsoft](https://www.microsoft.com/en-us/ai/ai-for-earth-tech-resources)
