@@ -37,9 +37,10 @@ parser.add_argument('-t', '--translate',   action='store_true', help='Translate 
 parser.add_argument('-k', '--check',       action='store_true', help='Check the images for correct annotation')
 parser.add_argument('-e', '--eval',        action='store_true', help='Evaluate the accuracy of the trained neural network')
 parser.add_argument('-a', '--augment',     action='store_true', help='Augments images')
-parser.add_argument('-cp', '--cnn_predict',action='store_true', help='Predict from CNN')
+parser.add_argument('-cp','--cnn_predict', action='store_true', help='Predict from CNN')
 parser.add_argument('-r', '--rename',      nargs='+', help='Rename a label')
 parser.add_argument('-ct','--cnn_train',   nargs='+', help='Train on CNN')
+parser.add_argument('-c', '--convert',     nargs='+', help='Convert Bash terminal output to .txt files')
 args = parser.parse_args()
 
 class LabelTool():
@@ -481,6 +482,39 @@ def BOX(BBOX_line1, BBOX_line2):
 		return(True)
 	else: return(False)
 
+def convert(directory):
+	''' Converts Bash terminal output to .txt file for Cell auto detection '''
+	Items = []
+	temp = None
+	with open('1.txt', 'r') as f:
+		count = 0
+		for line in f:
+			line = line.strip().split()
+			if line == []: pass
+			elif directory in line[0].split('/'):
+				Items.append(temp)
+				temp = []
+				name = line[0].split('/')[-1]
+				count = 0
+				temp.append(name.split('.')[0])
+			else:
+				coord = line[:4]
+				coord.append(directory)
+				coord = ' '.join(coord)
+				count += 1
+				temp.append('{}\n'.format(coord))
+		Items.append(temp)
+	Items = Items[1:]
+	for item in Items:
+		name = '{}.txt'.format(item[0])
+		coords = item[1:]
+		coords = ''.join(coords)
+		count = '{}\n'.format(len(item)-1)
+		with open(name, 'w') as F:
+			F.write(count)
+			F.write(coords)
+		print('Completed {}'.format(name))
+	
 def eval(dir_test, dir_pred):
 	'''
 	Evaluates the Test set annotations against the network's
@@ -649,12 +683,13 @@ def main():
 		tool = LabelTool(root, LABELS)
 		root.resizable(width=True, height=True)
 		root.mainloop()
-	elif args.translate:txt_xml('./dataset/BBox_Annotations','./dataset/Train')
+	elif args.translate:txt_xml('./dataset/BBox_Annotations', './dataset/Train')
 	elif args.check: check_dir()
 	elif args.rename: rename(sys.argv[2], sys.argv[3])
 	elif args.eval: eval('Valid', 'Predictions')
 	elif args.augment: augment()
 	elif args.cnn_train: CNN(choice='predict', CNN=sys.argv[2])
 	elif args.cnn_predict: CNN(CNN=sys.argv[2], prediction=sys.argv[3])
+	elif args.convert: convert(sys.argv[2])
 
 if __name__ == '__main__': main()
