@@ -486,7 +486,7 @@ def convert(directory):
 	''' Converts Bash terminal output to .txt file for Cell auto detection '''
 	Items = []
 	temp = None
-	with open('1.txt', 'r') as f:
+	with open(directory, 'r') as f:
 		count = 0
 		for line in f:
 			line = line.strip().split()
