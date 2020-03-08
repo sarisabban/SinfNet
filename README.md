@@ -184,7 +184,7 @@ Where DIRECTORY is the name of the directory that contains all the images.
 
 4. Check all images to make sure the the annotations are correct, and to correct minor errors.
 
-5. Translate the text files into .xml files
+5. Translate the text files into .xml files.
 
 ## Funders:
 * [Experiment](https://experiment.com/)
