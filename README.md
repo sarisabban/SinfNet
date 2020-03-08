@@ -174,7 +174,7 @@ The Cells dataset was developed to make annotating images with different cells e
 
 2. Use the following command to loop through all images and detect the cells:
 
-`for f in ./DIRECTORY/*; do; python3 YOLOv3.py -d WEIGHTS.h5 $f >> DIRECTORY; done`
+`for f in ./DIRECTORY/*; do python3 YOLOv3.py -d WEIGHTS.h5 $f >> DIRECTORY; done`
 
 Where DIRECTORY is the name of the directory that contains all the images.
 
