@@ -421,11 +421,9 @@ def check_dir():
 		file_txt = './dataset/BBox_Annotations/{}.txt'.format(Afile)
 		box(file_txt, file_img)
 		count += 1
+		os.system('mv ./{}.jpg ./dataset/Check'.format(Afile))
 	print('\n[+] Total of {} files'.format(count))
 	os.makedirs('./dataset/Check', exist_ok=True)
-	print('\n[+] Generated Check directory')
-	os.system('mv ./*.jpg ./dataset/Check')
-	print('\n[+] Moved files')
 	print('-----------------------')
 	print('[+] Done')
 
