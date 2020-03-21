@@ -31,9 +31,9 @@ This script works on GNU/Linux Ubuntu 18.04 and over using Python 3.6 and over. 
 
 `sudo apt full-upgrade`
 
-`sudo apt install python3-pip`
+`sudo apt install python3-pip python3-opencv`
 
-`pip3 install numpy keras tensorflow opencv-python opencv-contrib-python tkinter matplotlib imgaug scipy`
+`pip3 install numpy keras tensorflow tkinter matplotlib imgaug scipy`
 
 ### Setting up a dataset
 If you want to develop your own dataset follow these steps:
