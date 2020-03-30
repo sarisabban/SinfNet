@@ -585,36 +585,57 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
 	if CNN == 'VGG16' or 'vgg16':
-		model = VGG16(weights=None, input_shape=input_shape,
-		    classes=len(classes))
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg16.preprocess_input)
-	elif CNN == 'VGG19' or 'vgg19':
-		model = VGG19(weights=None, input_shape=input_shape,
-		    classes=len(classes))
+		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=False)
+		input_shape = train.image_shape
+		model = VGG16(weights=None, input_shape=input_shape,
+			classes=len(classes))
+	if CNN == 'VGG19' or 'vgg19':
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg19.preprocess_input)
+		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=False)
+		input_shape = train.image_shape
+		model = VGG16(weights=None, input_shape=input_shape,
+			classes=len(classes))        
 	elif CNN == 'ResNet50' or 'resnet50':
-		model = ResNet50(weights=None, input_shape=input_shape,
-		    classes=len(classes))
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.resnet50.preprocess_input)
+		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=False)
+		input_shape = train.image_shape
+		model = ResNet50(weights=None, input_shape=input_shape,
+			classes=len(classes))
 	elif CNN == 'DenseNet201' or 'densenet201':
-		model = DenseNet201(weights=None, input_shape=input_shape,
-		    classes=len(classes))
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.densenet.preprocess_input)
-	train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
-		classes=classes, batch_size=batches, shuffle=True)
-	valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
-		classes=classes, batch_size=batches, shuffle=True)
-	tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
-		classes=classes, batch_size=batches, shuffle=False)
-	input_shape = train.image_shape
+		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=True)
+		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+			classes=classes, batch_size=batches, shuffle=False)
+		input_shape = train.image_shape
+		model = DenseNet201(weights=None, input_shape=input_shape,
+			classes=len(classes))
 	model.compile(optimizer=keras.optimizers.SGD(
 			lr=1e-3,
 			decay=1e-6,
