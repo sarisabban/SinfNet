@@ -577,41 +577,54 @@ def augment(input_path='./dataset/Train',
 def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''
 	Train   = './dataset/Train'
+	Valid   = './dataset/Valid'
 	Tests   = './dataset/Test'
 	shape   = (224, 224)
-	epochs  = 30
+	epochs  = 10
 	batches = 16
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
-	IDG = keras.preprocessing.image.ImageDataGenerator(validation_split=0.2)
-	train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
-	    classes=classes, batch_size=batches, shuffle=True, subset='training')
-	tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
-	    classes=classes, batch_size=batches, shuffle=True)
-	valid = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
-	    classes=classes, batch_size=batches, shuffle=True, subset='validation')
-	input_shape = train.image_shape
 	if CNN == 'VGG16' or 'vgg16':
 		model = VGG16(weights=None, input_shape=input_shape,
-			classes=len(classes))
+		    classes=len(classes))
+		IDG = keras.preprocessing.image.ImageDataGenerator(
+			rescale=1./255,
+			preprocessing_function=keras.applications.vgg16.preprocess_input)
 	elif CNN == 'VGG19' or 'vgg19':
 		model = VGG19(weights=None, input_shape=input_shape,
-			classes=len(classes))
+		    classes=len(classes))
+		IDG = keras.preprocessing.image.ImageDataGenerator(
+			rescale=1./255,
+			preprocessing_function=keras.applications.vgg19.preprocess_input)
 	elif CNN == 'ResNet50' or 'resnet50':
 		model = ResNet50(weights=None, input_shape=input_shape,
-			classes=len(classes))
+		    classes=len(classes))
+		IDG = keras.preprocessing.image.ImageDataGenerator(
+			rescale=1./255,
+			preprocessing_function=keras.applications.resnet50.preprocess_input)
 	elif CNN == 'DenseNet201' or 'densenet201':
 		model = DenseNet201(weights=None, input_shape=input_shape,
-			classes=len(classes))
+		    classes=len(classes))
+		IDG = keras.preprocessing.image.ImageDataGenerator(
+			rescale=1./255,
+			preprocessing_function=keras.applications.densenet.preprocess_input)
+	train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+		classes=classes, batch_size=batches, shuffle=True)
+	valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+		classes=classes, batch_size=batches, shuffle=True)
+	tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+		classes=classes, batch_size=batches, shuffle=False)
+	input_shape = train.image_shape
 	model.compile(optimizer=keras.optimizers.SGD(
-		lr=1e-3,
-		decay=1e-6,
-		momentum=0.9,
-		nesterov=True),
-		loss='categorical_crossentropy',
-		metrics=['accuracy'])
+			lr=1e-3,
+			decay=1e-6,
+			momentum=0.9,
+			nesterov=True),
+			loss='categorical_crossentropy',
+			metrics=['accuracy'])
 	Esteps = int(train.samples/train.next()[0].shape[0])
 	Vsteps = int(valid.samples/valid.next()[0].shape[0])
+	Tsteps = int(tests.samples/tests.next()[0].shape[0])
 	if choice == 'train':
 		history= model.fit_generator(train,
 			steps_per_epoch=Esteps,
@@ -633,6 +646,8 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
 		plt.show()
+		evaluation = model.evaluate_generator(tests, Tsteps)
+		print('Test Set: Accuracy{} Loss{}'.format(evaluation[0],evaluation[1]))
 		Y_pred = model.predict_generator(tests, verbose=1)
 		y_pred = np.argmax(Y_pred, axis=1)
 		matrix = confusion_matrix(tests.classes, y_pred)
