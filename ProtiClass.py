@@ -536,8 +536,8 @@ def augment(input_path='./dataset/Train',
 	''' Augments images and saves them into a new directory '''
 	os.makedirs('./dataset/Augmented', exist_ok=True)
 	for Image in os.listdir(input_path):
-		gen = ImageDataGenerator(	featurewise_center=True,
-									samplewise_center=True,
+		gen = ImageDataGenerator(	featurewise_center=False,
+									samplewise_center=False,
 									featurewise_std_normalization=False,
 									samplewise_std_normalization=False,
 									zca_whitening=False,
