@@ -668,7 +668,8 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 		plt.legend(['Train', 'Validation'], loc='upper left')
 		plt.show()
 		evaluation = model.evaluate_generator(tests, Tsteps)
-		print('Test Set: Accuracy{} Loss{}'.format(evaluation[0],evaluation[1]))
+		print('Test Set: Accuracy {} Loss {}'.format(
+			round(evaluation[0], 4), round(evaluation[1], 4)))
 		Y_pred = model.predict_generator(tests, verbose=1)
 		y_pred = np.argmax(Y_pred, axis=1)
 		matrix = confusion_matrix(tests.classes, y_pred)
