@@ -41,21 +41,14 @@ If you want to develop your own dataset follow these steps:
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
 2. Make a directory called dataset and within it in make the following directories: Images, BBox_Annotations, Annotations, and Check. You should have the following structure:
 
-        *./dataset/Annotations*
-
-        *./dataset/BBox_Annotations*
-
-        *./dataset/BBox_Test*
-
-        *./dataset/Check*
-
-        *./dataset/Predictions*
-
-        *./dataset/Test*
-
-        *./dataset/Train*
-
-        *./dataset/Valid*
+        ./dataset/Annotations
+        ./dataset/BBox_Annotations
+        ./dataset/BBox_Test
+        ./dataset/Check
+        ./dataset/Predictions
+        ./dataset/Test
+        ./dataset/Train
+        ./dataset/Valid
 
 This command will quickly set it up:
 
@@ -70,58 +63,38 @@ This will generate a new directory with all the saved augmented images on it, an
 
 Regarding using the CNN neural network for image classification, the dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
 
-    *./dataset/Test/*
+    ./dataset/Test/
+                  class1/
+                        image1.jpg
+                        image2.jpg
+                  class2/
+                        image1.jpg
+                        image2.jpg
+                  class3/
+                        image1.jpg
+                        image2.jpg
 
-                  *class1/*
-
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class2/*
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class3/
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-    *./dataset/Train*
-
-                  *class1/*
-
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class2/*
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class3/
-                        *image1.jpg*
-
-                        *image2.jpg*
-    *./dataset/Valid*
-
-                  *class1/*
-
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class2/*
-                        *image1.jpg*
-
-                        *image2.jpg*
-
-                  *class3/
-                        *image1.jpg*
-
-                        *image2.jpg*
+    ./dataset/Train
+                  class1/
+                        image1.jpg
+                        image2.jpg
+                  class2/
+                        image1.jpg
+                        image2.jpg
+                  class3/
+                        image1.jpg
+                        image2.jpg
+                        
+    ./dataset/Valid
+                  class1/
+                        image1.jpg
+                        image2.jpg
+                  class2/
+                        image1.jpg
+                        image2.jpg
+                  class3/
+                        image1.jpg
+                        image2.jpg
 
 3. Open the GUI annotation tool using the following command:
 
