@@ -580,7 +580,7 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 	Valid   = './dataset/Valid'
 	Tests   = './dataset/Test'
 	shape   = (224, 224)
-	epochs  = 10
+	epochs  = 20
 	batches = 16
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
