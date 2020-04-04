@@ -597,7 +597,7 @@ def CNN(CNN='VGG16', choice='predict', prediction='./dataset/Test/image.jpg'):
 		input_shape = train.image_shape
 		model = VGG16(weights=None, input_shape=input_shape,
 			classes=len(classes))
-	if CNN == 'VGG19' or 'vgg19':
+	elif CNN == 'VGG19' or 'vgg19':
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg19.preprocess_input)
