@@ -19,7 +19,7 @@ You can download these datasets to add to them and re-train the network to devel
 |[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)                          |[YOLOv3 Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)    |0.9549         |
 |[Algae Classification Dataset](https://www.dropbox.com/s/jcvdicvl1eg6o6z/Algae.tar.bz2?dl=0) or [Algae Classification Dataset_Augmented](https://www.dropbox.com/s/a78qfnuaedcspxm/Algae.tar?dl=0)                    |[YOLOv3 Weights](https://www.dropbox.com/s/4o9peiulwizsa72/Algae.h5?dl=0)    |0.7118         |
 |[Nematode Detection Dataset](https://www.dropbox.com/s/ah7rhrf7f0etfw5/Nematodes.tar.bz2?dl=0)                  |[YOLOv3 Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)|0.8867         |
-|[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)    |[CNN Weights]()   | 0.997 on ResNet50        |
+|[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|[CNN Weights]()   | 0.991 on ResNet50        |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
