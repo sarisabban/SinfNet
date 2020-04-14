@@ -3418,7 +3418,7 @@ def train(LABEL, WEIGHTS=''):
             assert subset in ["Train", "Valid"]
             dataset_dir = os.path.join(dataset_dir, subset)
             annotations = json.load(open(os.path.join(dataset_dir,
-                                                    "via_region_data.json")))
+                                                    "{}.json".format(LABEL))))
             annotations = list(annotations.values())
             annotations = [a for a in annotations if a['regions']]
             for a in annotations:
