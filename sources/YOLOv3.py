@@ -59,8 +59,8 @@ config = {"model":{
 			"train_image_folder":   "./dataset/Train/",
 			"train_annot_folder":   "./dataset/Annotations/",
 			"tensorboard_dir":      "./logs",
-			"saved_weights_name":   '{}.h5'.format(WEIGHTS),
-			"cache_name":           "./training.pkl",
+			"saved_weights_name":   './{}.h5'.format(WEIGHTS),
+			"cache_name":           "./{}.pkl".format(WEIGHTS),
 			"pretrained_weights":   "",
 			"train_times":          8,
 			"batch_size":           16,
@@ -77,7 +77,7 @@ config = {"model":{
 			"debug":                False},
 		"valid":{
 			"valid_image_folder":   "./dataset/Valid/",
-			"valid_annot_folder":   "./dataset/Annotations_Valid/",
+			"valid_annot_folder":   "./dataset/Valid_Annotations/",
 			"cache_name":           "",
 			"valid_times":          1}}
 

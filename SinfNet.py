@@ -11,6 +11,8 @@ parser.add_argument('-ct', '--cnn_train',    nargs='+', help='Train on CNN')
 parser.add_argument('-cp', '--cnn_predict',  nargs='+', help='Predict from CNN')
 parser.add_argument('-yt', '--yolo_train',   nargs='+', help='Train on YOLOv3')
 parser.add_argument('-yp', '--yolo_predict', nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-mt', '--mrcnn_train',  nargs='+', help='Train on Mask-RCNN')
+parser.add_argument('-mp', '--mrcnn_predict',nargs='+', help='Predict from Mask-RCNN')
 parser.add_argument('-c' , '--convert',      nargs='+', help='Convert Bash terminal output to .txt files')
 parser.add_argument('-tx', '--translate_xml',action='store_true', help='Translate .txt file to .xml file')
 parser.add_argument('-tc', '--translate_csv',action='store_true', help='Translate .csv file to .xml file')
@@ -145,7 +147,11 @@ def convert(directory):
 			F.write(count)
 			F.write(coords)
 		print('[+] Completed {}'.format(name))
-
+	os.makedirs('./dataset/BBox_Annotations', exist_ok=True)
+	os.system('mv *.txt ./dataset/BBox_Annotations')
+	translate_txt_xml('./dataset/BBox_Annotations', './dataset/Train')
+	os.system('rm -r ./dataset/BBox_Annotations')
+	
 def main():
 	if args.cnn_train:
 		from sources import CNN
@@ -176,5 +182,16 @@ def main():
 	elif args.bbox:
 		from sources import BBox
 		BBox.main()
+
+
+
+
+	elif args.mrcnn_predict:
+		from sources import MaskRCNN
+		MaskRCNN.predict()
+
+	elif args.mrcnn_train:
+		from sources import MaskRCNN
+		MaskRCNN.train()
 
 if __name__ == '__main__': main()
