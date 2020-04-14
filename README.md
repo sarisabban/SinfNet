@@ -93,7 +93,7 @@ All .xml annotations will be moved to the *./dataset/Annotations* directory.
 
 #### For instance segmentation
 
-1. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a JSON file and add this file to the directory of the images it annotates (train annotation in the Train directory and validation annotations to the Valid directory).
+1. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a JSON file [from top right Annotations > Export Annotations (as json)] and add this file to the directory of the images it annotates (train annotation in the Train directory and validation annotations to the Valid directory).
 
 #### For classification
 1. The dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
