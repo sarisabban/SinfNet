@@ -254,5 +254,3 @@ When using any part of this project kindly reference the following:
 * Make Video
 
 * Add reference
-
-* Mask-RCNN predict and train commands
