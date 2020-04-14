@@ -35,6 +35,7 @@ import re
 import sys
 import cv2
 import math
+import json
 import keras
 import scipy
 import shutil
@@ -72,12 +73,12 @@ from distutils.version import LooseVersion
 from keras.preprocessing.image import ImageDataGenerator
 os.system('clear')
 
-# Requires TensorFlow 1.3+ and Keras 2.0.8+.
+# Requires TensorFlow 1.13+ and Keras 2.0.8+.
 from distutils.version import LooseVersion
-assert LooseVersion(tf.__version__) >= LooseVersion("1.3")
+assert LooseVersion(tf.__version__) >= LooseVersion("1.13")
 assert LooseVersion(keras.__version__) >= LooseVersion('2.0.8')
 
-class Config(object):
+class config(object):
     '''
     Base configuration class. For custom configurations, create a
     sub-class that inherits from this one and override properties
@@ -285,8 +286,8 @@ def box_refinement_graph(box, gt_box):
     gt_center_x = gt_box[:, 1] + 0.5 * gt_width
     dy = (gt_center_y - center_y) / height
     dx = (gt_center_x - center_x) / width
-    dh = tf.log(gt_height / height)
-    dw = tf.log(gt_width / width)
+    dh = tf.math.log(gt_height / height)
+    dw = tf.math.log(gt_width / width)
     result = tf.stack([dy, dx, dh, dw], axis=1)
     return result
 
@@ -1330,75 +1331,6 @@ def Run_ParallelModel():
         callbacks=[keras.callbacks.TensorBoard(log_dir=MODEL_DIR,
                                                write_graph=True)])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def log(text, array=None):
     '''
     Prints a text message. And, optionally, if a Numpy array is provided it
@@ -1640,7 +1572,7 @@ class ProposalLayer(KE.Layer):
 
 def log2_graph(x):
     '''Implementation of Log2. TF doesn't have a native implementation.'''
-    return tf.log(x) / tf.log(2.0)
+    return tf.math.log(x) / tf.math.log(2.0)
 
 class PyramidROIAlign(KE.Layer):
     '''
@@ -1770,11 +1702,11 @@ def detection_targets_graph(proposals, gt_class_ids, gt_boxes, gt_masks, config)
     negative_indices = tf.where(tf.logical_and(roi_iou_max < 0.5, no_crowd_bool))[:, 0]
     positive_count = int(config.TRAIN_ROIS_PER_IMAGE *
                          config.ROI_POSITIVE_RATIO)
-    positive_indices = tf.random_shuffle(positive_indices)[:positive_count]
+    positive_indices = tf.random.shuffle(positive_indices)[:positive_count]
     positive_count = tf.shape(positive_indices)[0]
     r = 1.0 / config.ROI_POSITIVE_RATIO
     negative_count = tf.cast(r * tf.cast(positive_count, tf.float32), tf.int32) - positive_count
-    negative_indices = tf.random_shuffle(negative_indices)[:negative_count]
+    negative_indices = tf.random.shuffle(negative_indices)[:negative_count]
     positive_rois = tf.gather(proposals, positive_indices)
     negative_rois = tf.gather(proposals, negative_indices)
     positive_overlaps = tf.gather(overlaps, positive_indices)
@@ -1885,9 +1817,9 @@ def refine_detections_graph(rois, probs, deltas, window, config):
     keep = tf.where(class_ids > 0)[:, 0]
     if config.DETECTION_MIN_CONFIDENCE:
         conf_keep = tf.where(class_scores >= config.DETECTION_MIN_CONFIDENCE)[:, 0]
-        keep = tf.sets.set_intersection(tf.expand_dims(keep, 0),
+        keep = tf.sets.intersection(tf.expand_dims(keep, 0),
                                         tf.expand_dims(conf_keep, 0))
-        keep = tf.sparse_tensor_to_dense(keep)[0]
+        keep = tf.sparse.to_dense(keep)[0]
     pre_nms_class_ids = tf.gather(class_ids, keep)
     pre_nms_scores = tf.gather(class_scores, keep)
     pre_nms_rois = tf.gather(refined_rois,   keep)
@@ -1910,9 +1842,9 @@ def refine_detections_graph(rois, probs, deltas, window, config):
                          dtype=tf.int64)
     nms_keep = tf.reshape(nms_keep, [-1])
     nms_keep = tf.gather(nms_keep, tf.where(nms_keep > -1)[:, 0])
-    keep = tf.sets.set_intersection(tf.expand_dims(keep, 0),
+    keep = tf.sets.intersection(tf.expand_dims(keep, 0),
                                     tf.expand_dims(nms_keep, 0))
-    keep = tf.sparse_tensor_to_dense(keep)[0]
+    keep = tf.sparse.to_dense(keep)[0]
     roi_count = config.DETECTION_MAX_INSTANCES
     class_scores_keep = tf.gather(class_scores, keep)
     num_keep = tf.minimum(tf.shape(class_scores_keep)[0], roi_count)
@@ -1920,7 +1852,7 @@ def refine_detections_graph(rois, probs, deltas, window, config):
     keep = tf.gather(keep, top_ids)
     detections = tf.concat([
         tf.gather(refined_rois, keep),
-        tf.to_float(tf.gather(class_ids, keep))[..., tf.newaxis],
+        tf.cast(tf.gather(class_ids, keep))[..., tf.newaxis],
         tf.gather(class_scores, keep)[..., tf.newaxis]
         ], axis=1)
     gap = config.DETECTION_MAX_INSTANCES - tf.shape(detections)[0]
@@ -2920,7 +2852,7 @@ class MaskRCNN():
             loss = (
                 tf.reduce_mean(layer.output, keepdims=True)
                 * self.config.LOSS_WEIGHTS.get(name, 1.))
-            self.keras_model.metrics_tensors.append(loss)
+            self.keras_model.add_metric(loss, name)
     def set_trainable(self, layer_regex, keras_model=None, indent=0, verbose=1):
         '''Sets model layers as trainable if their names match
         the given regular expression.
@@ -3431,11 +3363,9 @@ def denorm_boxes_graph(boxes, shape):
     shift = tf.constant([0., 0., 1., 1.])
     return tf.cast(tf.round(tf.multiply(boxes, scale) + shift), tf.int32)
 
-def predict(labels = 'labels.txt',
-			weights = 'weights.h5',
-			image = 'image.jpg'):
+def predict(labels, weights='weights.h5', image='image.jpg'):
 	''' Perform a prediction '''
-	CLASS_NAMES = open(labels).read().strip().split("\n")
+	CLASS_NAMES = labels
 	hsv = [(i / len(CLASS_NAMES), 1, 1.0) for i in range(len(CLASS_NAMES))]
 	COLORS = list(map(lambda c: colorsys.hsv_to_rgb(*c), hsv))
 	random.seed(42)
@@ -3474,14 +3404,85 @@ def predict(labels = 'labels.txt',
 			0.6, color, 2)
 	cv2.imwrite("Output.jpg", image)
 
-def train():
-	pass
+def train(LABEL, WEIGHTS=''):
+    class DATAConfig(config):
+        NAME = LABEL
+        IMAGES_PER_GPU = 1
+        NUM_CLASSES = 1 + 1
+        STEPS_PER_EPOCH = 100
+        DETECTION_MIN_CONFIDENCE = 0.9
+    Config = DATAConfig()
+    class DATADataset(Dataset):
+        def load_DATA(self, dataset_dir, subset):
+            self.add_class(LABEL, 1, LABEL)
+            assert subset in ["Train", "Valid"]
+            dataset_dir = os.path.join(dataset_dir, subset)
+            annotations = json.load(open(os.path.join(dataset_dir,
+                                                    "via_region_data.json")))
+            annotations = list(annotations.values())
+            annotations = [a for a in annotations if a['regions']]
+            for a in annotations:
+                if type(a['regions']) is dict:
+                    polygons=[r['shape_attributes'] for r in a['regions'].values()]
+                else:
+                    polygons = [r['shape_attributes'] for r in a['regions']] 
+                image_path = os.path.join(dataset_dir, a['filename'])
+                image = skimage.io.imread(image_path)
+                height, width = image.shape[:2]
+                self.add_image(
+                    LABEL,
+                    image_id=a['filename'],
+                    path=image_path,
+                    width=width, height=height,
+                    polygons=polygons)
+        def load_mask(self, image_id):
+            image_info = self.image_info[image_id]
+            if image_info["source"] != LABEL:
+                return super(self.__class__, self).load_mask(image_id)
+            info = self.image_info[image_id]
+            mask = np.zeros([info["height"], info["width"],
+                            len(info["polygons"])],
+                            dtype=np.uint8)
+            for i, p in enumerate(info["polygons"]):
+                rr, cc = skimage.draw.polygon(p['all_points_y'],
+                                              p['all_points_x'])
+                mask[rr, cc, i] = 1
+            return mask.astype(np.bool), np.ones([mask.shape[-1]],
+                                                 dtype=np.int32)
+        def image_reference(self, image_id):
+            info = self.image_info[image_id]
+            if info["source"] == LABEL: return info["path"]
+            else: super(self.__class__, self).image_reference(image_id)
+    '''Train the model.'''
+    dataset_train = DATADataset()
+    dataset_train.load_DATA('./dataset', "Train")
+    dataset_train.prepare()
+    dataset_val = DATADataset()
+    dataset_val.load_DATA('./dataset', "Valid")
+    dataset_val.prepare()
+    model = MaskRCNN(mode="training", config=Config, model_dir=os.getcwd())
+    if WEIGHTS != '':
+        model.load_weights(WEIGHTS, by_name=True)
+    # Training - Stage 1
+    print("Training network heads")
+    model.train(dataset_train, dataset_val,
+                learning_rate=Config.LEARNING_RATE,
+                epochs=2,
+                layers='heads')
+    # Training - Stage 2
+    print("Fine tune Resnet stage 4 and up")
+    model.train(dataset_train, dataset_val,
+                learning_rate=Config.LEARNING_RATE,
+                epochs=2,
+                layers='4+')
+    # Training - Stage 3
+    print("Fine tune all layers")
+    model.train(dataset_train, dataset_val,
+                learning_rate=Config.LEARNING_RATE / 10,
+                epochs=2,
+                layers='all')
 
-
-
-
-
-
-
-
-#if __name__ == '__main__': predict()
+if __name__ == '__main__':
+	LABELS = ' '.join(sys.argv[4:])
+	predict(labels=labels, weights='weights.h5', image='image.jpg')
+	train(LABELS, '')

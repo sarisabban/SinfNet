@@ -19,13 +19,12 @@ This is a collection of datasets and neural networks to detect or classify micro
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
 
-|Dataset Name                                                                                                    |Network     |Weights                                                                             |mAP or Accuracy|
-|----------------------------------------------------------------------------------------------------------------|------------|------------------------------------------------------------------------------------|---------------|
-|[Amoeba Active/Inactive Dataset]()         |YOLOv3      |[Weights]()|0.6473         |
-|[Cell Detection Dataset]()                 |YOLOv3      |[Weights]()|0.9549         |
-|[Nematode Detection Dataset]()             |YOLOv3      |[Weights]()|0.8867         |
-|[Nematode Feeding Classification Dataset]()|ResNet50 CNN|[Weights]()|0.9909         |
-
+|Dataset Name                                                                                                    |Network     |Weights                                                                    |mAP or Accuracy|
+|----------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------|---------------|
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/m64zdi9x6ufjdi6/Amoeba.tar.bz2?dl=0)                 |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
+|[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)                          |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/e96pjdp68m5zc73/Nematodes.tar.bz2?dl=0)                  |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
+|[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
 |[Nematode Biomass Dataset]()               |Mask-RCNN   |[Weights]()|               |
 |[Algae Classification Dataset]()           |YOLOv3      |[Weights]()|               |
 
@@ -157,7 +156,13 @@ The WEIGHTS is the name of the output weight.h5 file, the PROJECT_NAME is just a
 
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --mrcnn_train WEIGHTS PROJECT_NAME LABELS` for example `python SinfNet.py -mt Amoeba Amoeba Active Inactive`
+`python SinfNet.py --mrcnn_train LABEL` for example `python SinfNet.py -mt Active`
+
+At this moment, the script only takes one label at a time. But labels can be added by including pre-trained weights as such:
+
+`python SinfNet.py --mrcnn_train LABEL WEIGHTS.h5` for example `python SinfNet.py -mt Active Amoeba.h5`
+
+At the end of the training a directory will be generated which includes the log files and weight files. You should save the last weight file that results from the full run of the neural network.
 
 #### For classification
 1. You can train the images on a CNN using the following command:
@@ -182,7 +187,9 @@ Where WEIGHTS.h5 is the weights file, the FILENAME can be either a .jpg image, .
 
 1. Follow the same steps as object detection, use the following command to predict/detect:
 
-`python SinfNet.py --mrcnn_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -mp Amoeba.h5 image.jpg Active Inactive`
+`python SinfNet.py --mrcnn_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -mp Amoeba.h5 image.jpg BG Active Inactive`
+
+Always include BG (Background) as the first label.
 
 #### For classification
 1. Download the relevant weights file (links available in table above) or generate the file from the steps above.
@@ -216,22 +223,22 @@ The annotations are as good as the training of the network, which is not 100%, t
 If you would like to add images to our dataset (any type of microscopic organism) make sure that each species has 200 annotated images where each image is sharp and taken from a bright-field light microscope at 400x magnification. Please contact me so we can work together.
 
 ## Table of commands:
-|Command                                         |Description                    |
-|------------------------------------------------|-------------------------------|
-python SinfNet.py -h                             |Help                           |
-python SinfNet.py -a NUMBER OF IMAGES            |Augment                        |
-python SinfNet.py -v                             |Open weg-based immage annotator|
-python SinfNet.py -b                             |BBox (NOT USED)                |
-python SinfNet.py -c DIRECTORY                   |Convert Bash output to .xml    |
-python SinfNet.py -tc                            |Convert .cvs to .xml           |
-python SinfNet.py -tx                            |Convert .txt to .xml (NOT USED)|
-python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS|YOLOv3 network train           |
-python SinfNet.py -yp WEIGHTS FILENAME LABELS    |YOLOv3 network predict         |
-python SinfNet.py -ct CNN                        |CNN network train              |
-python SinfNet.py -cp CNN WEIGHTS FILENAME       |CNN network classify           |
-
-python SinfNet.py -mt WEIGHTS PROJECT_NAME LABELS|Mask-RCNN network train        |
-python SinfNet.py -mp WEIGHTS.h5 FILENAME LABELS |Mask-RCNN network predict      |
+|Command                                         |Description                                     |
+|------------------------------------------------|------------------------------------------------|
+python SinfNet.py -h                             |Help                                            |
+python SinfNet.py -a NUMBER OF IMAGES            |Augment                                         |
+python SinfNet.py -v                             |Open weg-based immage annotator                 |
+python SinfNet.py -b                             |BBox (NOT USED)                                 |
+python SinfNet.py -c DIRECTORY                   |Convert Bash output to .xml                     |
+python SinfNet.py -tc                            |Convert .cvs to .xml                            |
+python SinfNet.py -tx                            |Convert .txt to .xml (NOT USED)                 |
+python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS|YOLOv3 network train                            |
+python SinfNet.py -yp WEIGHTS FILENAME LABELS    |YOLOv3 network predict                          |
+python SinfNet.py -ct CNN                        |CNN network train                               |
+python SinfNet.py -cp CNN WEIGHTS FILENAME       |CNN network classify                            |
+python SinfNet.py -mp WEIGHTS.h5 FILENAME LABELS |Mask-RCNN network predict                       |
+python SinfNet.py -mt LABEL                      |Mask-RCNN network train                         |
+python SinfNet.py -mt LABEL WEIGHTS.h5           |Mask-RCNN network train with pre-trained weights|
 
 ## Funders:
 * [Experiment](https://experiment.com/)

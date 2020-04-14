@@ -3,7 +3,6 @@
 import os
 import sys
 import argparse
-import pandas as pd
 from PIL import Image
 
 parser = argparse.ArgumentParser(description='Collection of datasets and networks for organism classification')
@@ -158,7 +157,7 @@ def main():
 		CNN.CNN(sys.argv[2], 'train', '', '')
 	elif args.cnn_predict:
 		from sources import CNN
-		CNN.CNN(sys.argv[2], 'predict', sys.argv[3] ,sys.argv[4])
+		CNN.CNN(sys.argv[2], 'predict', sys.argv[3], sys.argv[4])
 	elif args.via:
 		os.system('firefox ./sources/VIA.html')
 	elif args.yolo_train:
@@ -182,16 +181,15 @@ def main():
 	elif args.bbox:
 		from sources import BBox
 		BBox.main()
-
-
-
-
 	elif args.mrcnn_predict:
 		from sources import MaskRCNN
-		MaskRCNN.predict()
-
+		LABELS = ' '.join(sys.argv[4:])
+		MaskRCNN.predict(LABELS, sys.argv[2], sys.argv[3], )
 	elif args.mrcnn_train:
 		from sources import MaskRCNN
-		MaskRCNN.train()
+		try:
+			MaskRCNN.train(sys.argv[2], sys.argv[3])
+		except:
+			MaskRCNN.train(sys.argv[2], '')
 
 if __name__ == '__main__': main()
