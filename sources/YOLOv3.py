@@ -37,6 +37,7 @@ import keras
 import pickle
 import numpy as np
 import tensorflow as tf
+from scipy import special
 import xml.etree.ElementTree as ET
 from keras.utils import Sequence
 from keras.optimizers import Adam
@@ -545,7 +546,7 @@ def draw_boxes(image, boxes, labels, obj_thresh, quiet=True):
 	return image
 
 def _sigmoid(x):
-	return scipy.special.expit(x)
+	return special.expit(x)
 
 def makedirs(path):
 	try:
