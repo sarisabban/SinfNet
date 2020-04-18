@@ -11,7 +11,6 @@ from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from PIL import Image
 from DAOD import *
 
-print('=======')
 def augment(input_path='./dataset/Train',
 			output_path='./dataset/Augmented',
 			count=10):
@@ -215,9 +214,9 @@ def DAOD(	image_input='./dataset/Train',
 			print('Completed: {} {}'.format(Ioutput, Boutput))
 
 if __name__ == '__main__':
-#	augment(input_path='./dataset/Train',
-#			output_path='./dataset/Augmented',
-#			count=10)
+	augment(input_path='./dataset/Train',
+			output_path='./dataset/Augmented',
+			count=10)
 	DAOD(image_input='./I',
 		image_output='./AI',
 		bbox_input='./A',
@@ -225,94 +224,3 @@ if __name__ == '__main__':
 		count=2,
 		input_format='txt',
 		output_format='xml')
-
-
-
-
-
-
-
-
-"""
-############### COULD NOT FIGURE OUT IMPLEMENTING FILL_MODE ############
-import scipy
-def transform_matrix_offset_center(matrix, x, y):
-    o_x = float(x) / 2 + 0.5
-    o_y = float(y) / 2 + 0.5
-    offset_matrix = np.array([[1, 0, o_x], [0, 1, o_y], [0, 0, 1]])
-    reset_matrix = np.array([[1, 0, -o_x], [0, 1, -o_y], [0, 0, 1]])
-    transform_matrix = np.dot(np.dot(offset_matrix, matrix), reset_matrix)
-    return transform_matrix
-
-
-def rotate(img, bboxes, angle=0):
-    theta = np.deg2rad(-angle)
-    transform_matrix = np.array([[np.cos(theta), -np.sin(theta), 0],
-                                [np.sin(theta), np.cos(theta), 0],
-                                [0, 0, 1]])
-
-    w,h = img.shape[1], img.shape[0]
-    transform_matrix = transform_matrix_offset_center(transform_matrix, h, w)
-    final_affine_matrix = transform_matrix[:2, :2]
-    final_offset = transform_matrix[:2, 2]
-    img = np.rollaxis(img, 2, 0)
-    channel_images = [scipy.ndimage.interpolation.affine_transform(
-        x_channel,
-        final_affine_matrix,
-        final_offset,
-        order=1,
-        mode='nearest',
-        cval=0) for x_channel in img]
-    img = np.stack(channel_images, axis=0)
-    img = np.rollaxis(img, 0, 2 + 1)
-
-    cx, cy = w//2, h//2
-    corners = get_corners(bboxes)
-    corners = np.hstack((corners, bboxes[:,4:]))
-#    img = rotate_im(img, angle)
-    corners[:,:8] = rotate_box(corners[:,:8], angle, cx, cy, h, w)
-    new_bbox = get_enclosing_box(corners)
-    scale_factor_x = img.shape[1] / w
-    scale_factor_y = img.shape[0] / h
-#    image = cv2.resize(img, (w,h))
-    new_bbox[:,:4] /= [scale_factor_x, scale_factor_y, scale_factor_x, scale_factor_y] 
-    bboxes  = new_bbox
-    bboxes = clip_box(bboxes, [0,0,w, h], 0.25)
-    return img, bboxes
-
-
-
-#        theta = np.deg2rad(theta)
-#        rotation_matrix = np.array([[np.cos(theta), -np.sin(theta), 0],
-#                                    [np.sin(theta), np.cos(theta), 0],
-#                                    [0, 0, 1]])
-#
-#        translate_matrix = np.array([[1, 0, tx],
-#                                 [0, 1, ty],
-#                                 [0, 0, 1]])
-#
-#        shear_matrix = np.array([[1, -np.sin(shear), 0],
-#                                 [0, np.cos(shear), 0],
-#                                 [0, 0, 1]])
-#
-#        scale_matrix = np.array([[zx, 0, 0],
-#                                [0, zy, 0],
-#                                [0, 0, 1]])
-
-
-
-
-
-
-
-import pickle as pkl
-bboxes = pkl.load(open("messi_ann.pkl", "rb"))
-img = img_to_array(load_img('messi.jpg'))
-
-I = rotate(img, bboxes, 30)
-img_, bboxes_ = RandomHSV(20, 20, 20)(I[0].copy(), I[1].copy())
-
-output = draw_rect(img_, bboxes_)
-plt.imshow(output)
-plt.show()
-"""
