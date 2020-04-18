@@ -16,7 +16,6 @@ from keras.applications.densenet import DenseNet201
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from sklearn.metrics import classification_report, confusion_matrix
-os.system('clear')
 
 def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''

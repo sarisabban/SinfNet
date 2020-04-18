@@ -71,7 +71,6 @@ from matplotlib.patches import Polygon
 from skimage.measure import find_contours
 from distutils.version import LooseVersion
 from keras.preprocessing.image import ImageDataGenerator
-os.system('clear')
 
 # Requires TensorFlow 1.13+ and Keras 2.0.8+.
 from distutils.version import LooseVersion

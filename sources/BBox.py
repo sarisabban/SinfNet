@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 
 import os
+import glob
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
 from PIL import Image, ImageTk
+
+COLORS = ['red', 'blue','pink', 'cyan', 'green', 'black'] # colors for the bboxes
+SIZE = 256, 256 # image sizes for the examples
 
 class LabelTool():
 	'''
@@ -36,8 +40,6 @@ class LabelTool():
 	This script is modified from https://github.com/xiaqunfeng/BBox-Label-Tool
 	which is in turn adopted from https://github.com/puzzledqs/BBox-Label-Tool
 	'''
-	COLORS = ['red', 'blue','pink', 'cyan', 'green', 'black'] # colors for the bboxes
-	SIZE = 256, 256 # image sizes for the examples
 	def __init__(self, master, LABELS):
 		self.parent = master
 		self.parent.title('BBox Label Tool')
