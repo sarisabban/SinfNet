@@ -79,7 +79,15 @@ Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file f
 
 `python SinfNet.py --via` or `python SinfNet.py -v`
 
-You must have FireFox for this to work.
+You must have FireFox for this to work. There is a bug with tool where the boxes are described in an unconventional way
+
+
+Use this tool only for polygon annotation that will be used with instance segmentation, use the following command for bounding box annotation:
+
+
+`python SinfNet.py --bbox` or `python SinfNet.py -b`
+
+You will be prompted to add the labels, then type *end* to finish adding the label and start the GUI program. A new directory called *BBox_Annotations* will be generated that will contain the annotations in .txt format.
 
 4. Watch the video to understand how to annotate using this tool, or read the manual under *Help > Getting Started*.
 
@@ -232,7 +240,7 @@ If you would like to add images to our dataset (any type of microscopic organism
 python SinfNet.py -h                             |Help                                            |
 python SinfNet.py -a NUMBER OF IMAGES            |Augment                                         |
 python SinfNet.py -v                             |Open weg-based immage annotator                 |
-python SinfNet.py -b                             |BBox (NOT USED)                                 |
+python SinfNet.py -b                             |BBox                                            |
 python SinfNet.py -c DIRECTORY                   |Convert Bash output to .xml                     |
 python SinfNet.py -tc                            |Convert .cvs to .xml                            |
 python SinfNet.py -tx                            |Convert .txt to .xml (NOT USED)                 |

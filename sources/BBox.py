@@ -289,6 +289,7 @@ class LabelTool():
 		print('set label class to : {}'.format(self.currentLabelclass))
 
 def main():
+	os.makedirs('./dataset/BBox_Annotations', exist_ok=True)
 	P1 = 'Enter label and press enter to enter a new label.\n'
 	P2 = 'Type `end` to end label entry and continue to annotation.'
 	print(P1+P2)
