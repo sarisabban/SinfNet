@@ -63,6 +63,8 @@ def DAOD(	image_input='./dataset/Train',
 			input_format='csv',
 			output_format='xml'):
 	''' Data Augmentation For Object Detection - no reflection '''
+	os.makedirs('./dataset/Augmented', exist_ok=True)
+	os.makedirs('./dataset/Augmented_Annotations', exist_ok=True)
 	if input_format == 'txt':
 		BBOX = defaultdict(list)
 		for filename in os.listdir(bbox_input):

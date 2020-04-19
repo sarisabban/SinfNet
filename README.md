@@ -69,7 +69,11 @@ If you would like to augment the images use the following command:
 
 `python SinfNet.py --augment NUMBER` example `python SinfNet.py -a 10`
 
-Where NUMBER is the number of augments to each image. This will generate a new directory called *Augmented* with all the saved augmented images in it. Only these augmented images should be used for training (by moving them to *./dataset/Train*) and not mixed with the original images (by moving the original images to *./dataset/Valid* and their .xml annotation to *./dataset/Valid_Annotations*).
+If you would like to augment the images that have object detection annotations use the following command:
+
+`python SinfNet.py --augment_object NUMBER INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -ao 10 txt xml`
+
+Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file format of the images annotations, and OUTPUT_FORMAT is the desired output format of the augmented annotations. This will generate a new directory called *Augmented* (and *Augmented_Annotations* for object detection) with all the saved augmented images in it. Only these augmented images should be used for training (by moving them to *./dataset/Train*) and not mixed with the original images (by moving the original images to *./dataset/Valid* and their .xml annotation to *./dataset/Valid_Annotations*).
 
 3. Open the web-based GUI annotation tool using the following command:
 

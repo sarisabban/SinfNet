@@ -16,6 +16,7 @@ parser.add_argument('-c' , '--convert',      nargs='+', help='Convert Bash termi
 parser.add_argument('-tx', '--translate_xml',action='store_true', help='Translate .txt file to .xml file')
 parser.add_argument('-tc', '--translate_csv',action='store_true', help='Translate .csv file to .xml file')
 parser.add_argument('-a' , '--augment',      action='store_true', help='Augments images')
+parser.add_argument('-ao' , '--augment_object',      action='store_true', help='Data Augmentation For Object Detection')
 parser.add_argument('-v' , '--via',          action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',         action='store_true', help='Open the BBox image labeling tool')
 args = parser.parse_args()
@@ -178,6 +179,14 @@ def main():
 			input_path='./dataset/Train',
 			output_path='./dataset/Augmented',
 			count=sys.argv[2])
+	elif args.augment_object:
+		DAOD(image_input='./dataset/Train',
+			image_output='./dataset/Augmented',
+			bbox_input='./dataset/Annotations',
+			bbox_output='./dataset/Augmented_Annotations',
+			count=sys.argv[2],
+			input_format=sys.argv[3],
+			output_format=sys.argv[4])
 	elif args.bbox:
 		from sources import BBox
 		BBox.main()
