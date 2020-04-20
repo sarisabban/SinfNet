@@ -16,9 +16,9 @@ class LabelTool():
 	GUI bounding box annotation tool
 
 	MIT License
-	
+
 	Copyright (c) 2017 Shi Qiu
-	
+
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to
 	deal in the Software without restriction, including without limitation the
@@ -28,7 +28,7 @@ class LabelTool():
 	
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
-	
+
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ class LabelTool():
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 	IN THE SOFTWARE.
-	
+
 	This script is modified from https://github.com/xiaqunfeng/BBox-Label-Tool
 	which is in turn adopted from https://github.com/puzzledqs/BBox-Label-Tool
 	'''
@@ -191,11 +191,12 @@ class LabelTool():
 					tmp[1] = int(int(tmp[1])/self.factor)
 					tmp[2] = int(int(tmp[2])/self.factor)
 					tmp[3] = int(int(tmp[3])/self.factor)
+					print(tmp)
 					self.bboxList.append(tuple(tmp))
 					color_index = (len(self.bboxList)-1) % len(COLORS)
 					tmpId = self.mainPanel.create_rectangle(
 								tmp[0], tmp[1],
-								tmp[2], tmp[3],
+								tmp[2] + tmp[0], tmp[3] + tmp[1],
 								width = 2,
 								outline = COLORS[color_index])
 					self.bboxIdList.append(tmpId)
@@ -208,7 +209,8 @@ class LabelTool():
 		with open(self.labelfilename, 'w') as f:
 			f.write('%d\n' %len(self.bboxList))
 			for bbox in self.bboxList:
-				f.write("{} {} {} {} {}\n".format(int(int(bbox[0])*self.factor),
+				f.write("{} {} {} {} {}\n".format(
+								int(int(bbox[0])*self.factor),
 								int(int(bbox[1])*self.factor),
 								int(int(bbox[2])*self.factor),
 								int(int(bbox[3])*self.factor),
@@ -220,6 +222,8 @@ class LabelTool():
 		else:
 			x1, x2 = min(self.STATE['x'], event.x), max(self.STATE['x'],event.x)
 			y1, y2 = min(self.STATE['y'], event.y), max(self.STATE['y'],event.y)
+			x2 = x2-x1
+			y2 = y2-y1
 			self.bboxList.append((x1, y1, x2, y2, self.currentLabelclass))
 			self.bboxIdList.append(self.bboxId)
 			self.bboxId = None
