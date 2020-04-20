@@ -23,10 +23,10 @@ All datasets used are available here for download, along with their neural netwo
 |----------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------|---------------|
 |[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/m64zdi9x6ufjdi6/Amoeba.tar.bz2?dl=0)                 |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
 |[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)                          |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
-|[Nematode Detection Dataset](https://www.dropbox.com/s/e96pjdp68m5zc73/Nematodes.tar.bz2?dl=0)                  |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/e96pjdp68m5zc73/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
 |[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
+|[Algae Classification Dataset](https://www.dropbox.com/s/vhk3ibzkpontpcn/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
 |[Nematode Biomass Dataset]()               |Mask-RCNN   |[Weights]()|               |
-|[Algae Classification Dataset]()           |YOLOv3      |[Weights]()|               |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
@@ -65,10 +65,6 @@ If you want to develop your own dataset and train it follow these steps otherwis
 
 Your images should be in *./dataset/Train*. It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script, so stick to these names and keep it simple.
 
-If you would like to augment the images use the following command:
-
-`python SinfNet.py --augment NUMBER` example `python SinfNet.py -a 10`
-
 If you would like to augment the images that have object detection annotations use the following command:
 
 `python SinfNet.py --augment_object NUMBER INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -ao 10 txt xml`
@@ -79,11 +75,9 @@ Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file f
 
 `python SinfNet.py --via` or `python SinfNet.py -v`
 
-You must have FireFox for this to work. There is a bug with tool where the boxes are described in an unconventional way
-
+You must have FireFox for this to work. There is a bug with this tool where the boxes are described in an unconventional way: the fix is to define the width and hight from the start of the image instead of an addition to the axis value [VIA->BBOX W: x+w H: y+h | BBOX->VIA W: x-w H: y-h]
 
 Use this tool only for polygon annotation that will be used with instance segmentation, use the following command for bounding box annotation:
-
 
 `python SinfNet.py --bbox` or `python SinfNet.py -b`
 
@@ -97,15 +91,40 @@ You will be prompted to add the labels, then type *end* to finish adding the lab
 
 7. Convert the .csv file to a .xml file using the following command:
 
-`python SinfNet.py --translate_csv` or `python SinfNet.py -tc`
+`python SinfNet.py --translate_bbox IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tb ./dataset/Train ./dataset/Annotations ./dataset/Translations txt xml`
 
-All .xml annotations will be moved to the *./dataset/Annotations* directory.
+Where IMAGE_DIRECTORY is the path to the directory of images, ANNOTATION_INPUT the path to the directory with the files to be converted, ANNOTATION_OUTPUT the path to the directory where the converted files are to be saved, INPUT_FORMAT the input file format OUTPUTFORMAT the format to convert to.
+
+identify only the sigle file for the .csv and .json formats, txt and xml must identify the directory the multiple files reside in.
 
 8. Do not delete the .csv file, rather save it in case you want to rename any label.
 
 #### For instance segmentation
 
 1. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a JSON file [from top right Annotations > Export Annotations (as json)] and add this file to the directory of the images it annotates (train annotation in the Train directory and validation annotations to the Valid directory).
+
+
+
+
+
+
+
+
+
+
+If you would like to augment the images use the following command
+
+`python SinfNet.py --augment_segment NUMBER INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -as 10 txt csv`
+
+
+
+
+
+
+
+
+
+
 
 #### For classification
 1. The dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
@@ -235,22 +254,21 @@ The annotations are as good as the training of the network, which is not 100%, t
 If you would like to add images to our dataset (any type of microscopic organism) make sure that each species has 200 annotated images where each image is sharp and taken from a bright-field light microscope at 400x magnification. Please contact me so we can work together.
 
 ## Table of commands:
-|Command                                         |Description                                     |
-|------------------------------------------------|------------------------------------------------|
-python SinfNet.py -h                             |Help                                            |
-python SinfNet.py -a NUMBER OF IMAGES            |Augment                                         |
-python SinfNet.py -v                             |Open weg-based immage annotator                 |
-python SinfNet.py -b                             |BBox                                            |
-python SinfNet.py -c DIRECTORY                   |Convert Bash output to .xml                     |
-python SinfNet.py -tc                            |Convert .cvs to .xml                            |
-python SinfNet.py -tx                            |Convert .txt to .xml (NOT USED)                 |
-python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS|YOLOv3 network train                            |
-python SinfNet.py -yp WEIGHTS FILENAME LABELS    |YOLOv3 network predict                          |
-python SinfNet.py -ct CNN                        |CNN network train                               |
-python SinfNet.py -cp CNN WEIGHTS FILENAME       |CNN network classify                            |
-python SinfNet.py -mp WEIGHTS.h5 FILENAME LABELS |Mask-RCNN network predict                       |
-python SinfNet.py -mt LABEL                      |Mask-RCNN network train                         |
-python SinfNet.py -mt LABEL WEIGHTS.h5           |Mask-RCNN network train with pre-trained weights|
+|Command                                         |Description                                                                |
+|------------------------------------------------|---------------------------------------------------------------------------|
+python SinfNet.py -h                             |Help                                                                       |
+python SinfNet.py -a NUMBER OF IMAGES            |Augment                                                                    |
+python SinfNet.py -v                             |Open weg-based immage annotator                                            |
+python SinfNet.py -b                             |BBox                                                                       |
+python SinfNet.py -c DIRECTORY                   |Convert Bash output to .xml                                                |
+python SinfNet.py -tb                            |Convert between different bbox annotation formats(txt, csv, coco-json, xml)|
+python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS|YOLOv3 network train                                                       |
+python SinfNet.py -yp WEIGHTS FILENAME LABELS    |YOLOv3 network predict                                                     |
+python SinfNet.py -ct CNN                        |CNN network train                                                          |
+python SinfNet.py -cp CNN WEIGHTS FILENAME       |CNN network classify                                                       |
+python SinfNet.py -mp WEIGHTS.h5 FILENAME LABELS |Mask-RCNN network predict                                                  |
+python SinfNet.py -mt LABEL                      |Mask-RCNN network train                                                    |
+python SinfNet.py -mt LABEL WEIGHTS.h5           |Mask-RCNN network train with pre-trained weights                           |
 
 ## Funders:
 * [Experiment](https://experiment.com/)
