@@ -225,4 +225,4 @@ if __name__ == '__main__':
 		bbox_output='./AA',
 		count=2,
 		input_format='txt',
-		output_format='xml')
+		output_format='txt')
