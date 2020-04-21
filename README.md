@@ -21,11 +21,11 @@ All datasets used are available here for download, along with their neural netwo
 
 |Dataset Name                                                                                                    |Network     |Weights                                                                    |mAP or Accuracy|
 |----------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------|---------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/m64zdi9x6ufjdi6/Amoeba.tar.bz2?dl=0)                 |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
-|[Cell Detection Dataset](https://www.dropbox.com/s/pl5vi4rr8nsea37/Cells.tar.bz2?dl=0)                          |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
-|[Nematode Detection Dataset](https://www.dropbox.com/s/e96pjdp68m5zc73/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                 |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
+|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                          |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
 |[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
-|[Algae Classification Dataset](https://www.dropbox.com/s/vhk3ibzkpontpcn/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
+|[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
 |[Nematode Biomass Dataset]()               |Mask-RCNN   |[Weights]()|               |
 
 ## How to use:

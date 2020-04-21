@@ -13,7 +13,7 @@ parser.add_argument('-yp', '--yolo_predict',  nargs='+', help='Predict from YOLO
 parser.add_argument('-mt', '--mrcnn_train',   nargs='+', help='Train on Mask-RCNN')
 parser.add_argument('-mp', '--mrcnn_predict', nargs='+', help='Predict from Mask-RCNN')
 parser.add_argument('-c' , '--convert',       nargs='+', help='Convert Bash terminal output to .txt files')
-parser.add_argument('-tb', '--translate_bbox',action='store_true', help='Translate between annotation file formats')
+parser.add_argument('-tb', '--translate_bbox',nargs='+', help='Translate between annotation file formats')
 parser.add_argument('-a' , '--augment',       action='store_true', help='Augments images')
 parser.add_argument('-ao', '--augment_object',action='store_true', help='Data Augmentation For Object Detection')
 parser.add_argument('-v' , '--via',           action='store_true', help='Open the VIA image labeling tool')
@@ -131,39 +131,39 @@ def translate_bbox(	image_path='./dataset/Train',
 		for name in BBOX:
 			filename = name.split('.')[0]
 			output = '{}/{}.xml'.format(ann_output, filename)
-		with open(output, 'w') as f:
-				source = 'https://github.com/sarisabban/SinfNet'
-				total = str(len(BBOX[name]))
-				W, H = Image.open('{}/{}'.format(image_path, name)).size
-				f.write('<annotation>\n')
-				f.write('\t<filename>{}.jpg</filename>\n'.format(filename))
-				f.write('\t<source>{}</source>\n'.format(source))
-				f.write('\t<path>../dataset/Train/{}.jpg</path>\n'.format(filename))
-				f.write('\t<size>\n')
-				f.write('\t\t<width>{}</width>\n'.format(W))
-				f.write('\t\t<height>{}</height>\n'.format(H))
-				f.write('\t\t<depth>3</depth>\n')
-				f.write('\t</size>\n')
-				f.write('\t<segments>{}</segments>\n'.format(total))
-				items = 0
-				for line in BBOX[name]:
-					line = [str(i) for i in line]
-					x = line[0]
-					y = line[1]
-					w = line[2]
-					h = line[3]
-					label = line[4]
-					items += 1
-					f.write('\t<object>\n')
-					f.write('\t\t<name>{}</name>\n'.format(label))
-					f.write('\t\t<bndbox>\n')
-					f.write('\t\t\t<xmin>{}</xmin>\n'.format(x))
-					f.write('\t\t\t<ymin>{}</ymin>\n'.format(y))
-					f.write('\t\t\t<xmax>{}</xmax>\n'.format(w))
-					f.write('\t\t\t<ymax>{}</ymax>\n'.format(h))
-					f.write('\t\t</bndbox>\n')
-					f.write('\t</object>\n')
-				f.write('</annotation>')
+			with open(output, 'w') as f:
+					source = 'https://github.com/sarisabban/SinfNet'
+					total = str(len(BBOX[name]))
+					W, H = Image.open('{}/{}'.format(image_path, name)).size
+					f.write('<annotation>\n')
+					f.write('\t<filename>{}.jpg</filename>\n'.format(filename))
+					f.write('\t<source>{}</source>\n'.format(source))
+					f.write('\t<path>../dataset/Train/{}.jpg</path>\n'.format(filename))
+					f.write('\t<size>\n')
+					f.write('\t\t<width>{}</width>\n'.format(W))
+					f.write('\t\t<height>{}</height>\n'.format(H))
+					f.write('\t\t<depth>3</depth>\n')
+					f.write('\t</size>\n')
+					f.write('\t<segments>{}</segments>\n'.format(total))
+					items = 0
+					for line in BBOX[name]:
+						line = [str(i) for i in line]
+						x = line[0]
+						y = line[1]
+						w = line[2]
+						h = line[3]
+						label = line[4]
+						items += 1
+						f.write('\t<object>\n')
+						f.write('\t\t<name>{}</name>\n'.format(label))
+						f.write('\t\t<bndbox>\n')
+						f.write('\t\t\t<xmin>{}</xmin>\n'.format(x))
+						f.write('\t\t\t<ymin>{}</ymin>\n'.format(y))
+						f.write('\t\t\t<xmax>{}</xmax>\n'.format(w))
+						f.write('\t\t\t<ymax>{}</ymax>\n'.format(h))
+						f.write('\t\t</bndbox>\n')
+						f.write('\t</object>\n')
+					f.write('</annotation>')
 	elif output_format == 'coco':
 		output = '{}/temp'.format(ann_output)
 		with open(output, 'w') as f:
@@ -227,6 +227,7 @@ def translate_bbox(	image_path='./dataset/Train',
 				for line in fin:
 					fout.write(line.replace("'", ""))
 		os.remove('{}/temp'.format(ann_output))
+	print('[+] Done')
 
 def convert(directory):
 	''' Converts Bash terminal output to .txt file for Cell auto detection '''
@@ -281,10 +282,10 @@ def main():
 		from sources import YOLOv3
 		YOLOv3.main_predict(sys.argv[2], sys.argv[3], './')
 	elif args.translate_bbox:
-		translate_bbox(	image_path=sys.argv[2]
-						ann_input=sys.argv[3]
-						ann_output=sys.argv[4]
-						input_format=sys.argv[5]
+		translate_bbox(	image_path=sys.argv[2],
+						ann_input=sys.argv[3],
+						ann_output=sys.argv[4],
+						input_format=sys.argv[5],
 						output_format=sys.argv[6])
 	elif args.convert:
 		convert(sys.argv[2])
