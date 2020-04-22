@@ -281,8 +281,8 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				start, end = shape['index']
 				aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
 				shape['points'] = aug_points
-			NewName = TheImage.split('/')[-1]
-			cv2.imwrite('{}/Aug_{}-{}'.format(im_out, NewName, str(iters+1)), image_aug)
+			NewName = TheImage.split('/')[-1].split('.')[0]
+			cv2.imwrite('{}/Aug-{}_{}.jpg'.format(im_out, NewName, str(iters+1)), image_aug)
 			with open('{}/Aug_{}-{}.json'.format(ann_output, TheImage.split('/')[-1].split('.')[0], str(iters+1)), 'w+') as f:
 				version = data['version']
 				flags = data['flags']
