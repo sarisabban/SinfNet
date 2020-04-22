@@ -12,8 +12,8 @@ from PIL import Image
 from DAOD import *
 
 def augment(input_path='./dataset/Train',
-			output_path='./dataset/Augmented',
-			count=10):
+				output_path='./dataset/Augmented',
+				count=10):
 	''' Augments images and saves them into a new directory '''
 	os.makedirs('./dataset/Augmented', exist_ok=True)
 	for Images in os.listdir(input_path):
@@ -55,14 +55,14 @@ def augment(input_path='./dataset/Train',
 			new_image.save(output)
 			if i >= count-1: break
 
-def DAOD(	image_input='./dataset/Train',
-			image_output='./dataset/Augmented',
-			bbox_input='./dataset/Annotations',
-			bbox_output='./dataset/Augmented_Annotations',
-			count=10,
-			input_format='csv',
-			output_format='xml'):
-	''' Data Augmentation For Object Detection - no reflection '''
+def augment_bbox(image_input='./dataset/Train',
+				image_output='./dataset/Augmented',
+				bbox_input='./dataset/Annotations',
+				bbox_output='./dataset/Augmented_Annotations',
+				count=10,
+				input_format='csv',
+				output_format='xml'):
+	''' Augment images with bounding boxes and saves them into a new directory '''
 	os.makedirs('./dataset/Augmented', exist_ok=True)
 	os.makedirs('./dataset/Augmented_Annotations', exist_ok=True)
 	if input_format == 'txt':
@@ -215,14 +215,80 @@ def DAOD(	image_input='./dataset/Train',
 			#plt.show()
 			print('Completed: {} {}'.format(Ioutput, Boutput))
 
+def augment_poly(TheImage, im_out, ann_path, ann_output):
+	''' Augment images with polygons and saves them into a new directory '''
+	seq = iaa.Sequential([
+		iaa.Fliplr(0.5),
+		iaa.Flipud(0.5),
+		iaa.Multiply((0.7, 1.0)),
+		iaa.Affine(
+				translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+				rotate=(-90, 90),
+				shear=(-16, 16),
+				mode=ia.ALL)
+		iaa.Sometimes(0.5, iaa.Dropout((0.001, 0.01), per_channel=0.5)),
+		], random_order=True)
+	seq_det = seq.to_deterministic()
+	im = cv2.imread(TheImage, 1)
+	im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+	with open(ann_path) as handle: data = json.load(handle)
+	shape_dicts = data['shapes']
+	points = []
+	aug_shape_dicts = []
+	i = 0
+	for shape in shape_dicts:
+		for pairs in shape['points']:
+			points.append(ia.Keypoint(x=pairs[0], y=pairs[1]))
+		_d = {}
+		_d['label'] = shape['label']
+		_d['index'] = (i, i+len(shape['points']))
+		aug_shape_dicts.append(_d)
+		i += len(shape['points'])
+	keypoints = ia.KeypointsOnImage(points, shape=(256,256,3))
+	image_aug = seq_det.augment_images([im])[0]
+	keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
+	for shape in aug_shape_dicts:
+		start, end = shape['index']
+		aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
+		shape['points'] = aug_points
+	NewName = TheImage.split('/')[-1]
+	cv2.imwrite('{}/Aug_{}'.format(im_out, NewName), image_aug)
+	with open('{}/Aug_{}.json'.format(ann_output, TheImage.split('/')[-1].split('.')[0]), 'w+') as f:
+		version = data['version']
+		flags = data['flags']
+		lineColor = data['lineColor']
+		fillColor = data['fillColor']
+		path = '.{}/Aug_{}'.format(im_out, TheImage.split('/')[-1])
+		imageData = data['imageData']
+		W, H = Image.open(TheImage).size
+		header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
+		.format(version, flags, lineColor, fillColor, path, imageData, W, H)
+		f.write(header)
+		for info in aug_shape_dicts:
+			shape_type = 'polygon'
+			line_color = 'null'
+			fill_color = 'null'
+			label = info['label']
+			points = info['points']
+			body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
+			.format(label, line_color, fill_color, points, shape_type)
+			f.write(body)
+		loc = f.seek(0, os.SEEK_END)
+		f.seek(loc-1)
+		f.write(']}')
+
 if __name__ == '__main__':
 	augment(input_path='./dataset/Train',
 			output_path='./dataset/Augmented',
 			count=10)
-	DAOD(image_input='./I',
+	augment_bbox(image_input='./I',
 		image_output='./AI',
 		bbox_input='./A',
 		bbox_output='./AA',
 		count=2,
 		input_format='txt',
 		output_format='txt')
+	augment_poly('./dataset/Train/0.jpg',
+				'./Augmented',
+				'./Annotations/0.json',
+				'./Augmented_Annotations')

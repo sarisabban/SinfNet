@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 import os
-import sys
-import argparse
+import csv
+import json
+import datetime
 from PIL import Image
+from collections import defaultdict
 
 parser = argparse.ArgumentParser(description='Collection of datasets and networks for organism classification')
 parser.add_argument('-ct', '--cnn_train',     nargs='+', help='Train on CNN')
@@ -13,26 +15,21 @@ parser.add_argument('-yp', '--yolo_predict',  nargs='+', help='Predict from YOLO
 parser.add_argument('-mt', '--mrcnn_train',   nargs='+', help='Train on Mask-RCNN')
 parser.add_argument('-mp', '--mrcnn_predict', nargs='+', help='Predict from Mask-RCNN')
 parser.add_argument('-c' , '--convert',       nargs='+', help='Convert Bash terminal output to .txt files')
-parser.add_argument('-tb', '--translate_bbox',nargs='+', help='Translate between annotation file formats')
-parser.add_argument('-a' , '--augment',       action='store_true', help='Augments images')
-parser.add_argument('-ao', '--augment_object',action='store_true', help='Data Augmentation For Object Detection')
+parser.add_argument('-tb', '--translate_bbox',nargs='+', help='Translate between bounding box annotation file formats')
+parser.add_argument('-tp', '--translate_poly',nargs='+', help='Translate between polygon annotation file formats')
+parser.add_argument('-a' , '--augment',       action='store_true', help='Augment images')
+parser.add_argument('-ap', '--augment_poly',  action='store_true', help='Augment images with bounding polygons')
+parser.add_argument('-ab', '--augment_bbox',  action='store_true', help='Augment images with bounding boxes')
 parser.add_argument('-v' , '--via',           action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',          action='store_true', help='Open the BBox image labeling tool')
 args = parser.parse_args()
-
-import os
-import csv
-import json
-import datetime
-from PIL import Image
-from collections import defaultdict
 
 def translate_bbox(	image_path='./dataset/Train',
 					ann_input='./dataset/Annotations',
 					ann_output='./dataset/Augmented_Annotations',
 					input_format='txt',
 					output_format='txt'):
-	''' Translating between different annotation formats '''
+	''' Translating between different bounding box annotation formats '''
 	if input_format == 'txt':
 		BBOX = defaultdict(list)
 		for filename in os.listdir(ann_input):
@@ -229,6 +226,128 @@ def translate_bbox(	image_path='./dataset/Train',
 		os.remove('{}/temp'.format(ann_output))
 	print('[+] Done')
 
+def translate_poly(	image_path='./dataset/Train',
+					ann_input='./dataset/Annotations',
+					ann_output='./dataset/Augmented_Annotations',
+					input_format='csv',
+					output_format='json'):
+	''' Translating between different polygon annotation formats '''
+	if input_format == 'csv':
+		TheLines = []
+		POLY = defaultdict(list)
+		with open(ann_input, 'r') as F:
+			next(F)
+			for line in F:
+				line = line.strip().split(':')
+				filename = line[0].split(',')[0]
+				path = '{}/{}'.format(image_path, filename)
+				W, H = Image.open(path).size
+				lineColor = [0, 255, 0, 128]
+				fillColor = [255, 255, 0, 128]
+				shape_type = line[1].split('"')[2]
+				line_color = 'null'
+				fill_color = 'null'
+				label = line[3].split('"')[-3]
+				x_points = line[2].split('"')[0][:-2][1:].split(',')
+				y_points = line[3].split('"')[0][:-2][1:].split(',')
+				points = []
+				for x, y in zip(x_points, y_points):
+					x = int(x)
+					y = int(y)
+					point = [x, y]
+					points.append(point)
+				POLY[filename,
+					str(lineColor),
+					str(fillColor),
+					path, W, H].append([label,
+										line_color,
+										fill_color,
+										points,
+										shape_type])
+	elif input_format == 'json':
+		POLY = defaultdict(list)
+		for TheFile in os.listdir(ann_input):
+			with open('{}/{}'.format(ann_input, TheFile), 'r') as f:
+				d = json.load(f)
+				filename = TheFile.split('.')[0]+'.jpg'
+				W, H = d['imageWidth'], d['imageHeight']
+				lineColor = d['lineColor']
+				fillColor = d['fillColor']
+				path = d['imagePath']
+				size = os.stat('{}/{}'.format(image_path, filename)).st_size
+				for tot, x in enumerate(d['shapes']): total = tot+1
+				num = 0
+				for item in d['shapes']:
+					label = item['label']
+					points = item['points']
+					x = []
+					y = []
+					for i in points:
+						x.append(i[0])
+						y.append(i[1])
+					shape_type = item['shape_type']
+					line_color = item['line_color']
+					fill_color = item['fill_color']
+					POLY[filename,
+						str(lineColor),
+						str(fillColor),
+						path, W, H].append([label,
+											line_color,
+											fill_color,
+											points,
+											shape_type])
+					num += 1
+	if output_format == 'csv':
+		with open('{}/Translated.csv'.format(ann_output), 'w+') as f:
+			header = 'filename,file_size,file_attributes,region_count,region_id,region_shape_attributes,region_attributes\n'
+			line = f.seek(0)
+			if f.readline() != header:
+				f.write(header)
+			for name in POLY:
+				filename = name[0]
+				size = os.stat('{}/{}'.format(image_path, filename)).st_size
+				for tot, x in enumerate(POLY[name]): total = tot+1
+				num = 0
+				for item in POLY[name]:
+					shapetype = item[4]
+					label = item[0]
+					x = []
+					y = []
+					for points in item[3]:
+						x.append(points[0])
+						y.append(points[1])
+					TheLine = '{},{},"{{}}",{},{},"{{""name"":""{}"",""all_points_x"":{},""all_points_y"":{}}}","{{""{}"":""""}}"\n'\
+					.format(filename, size, total, num, shape_type, x, y, label)
+					f.write(TheLine)
+					num += 1
+	elif output_format == 'json':
+		for name in POLY:
+			filename = name[0].split('.')[0]
+			with open('{}/{}.json'.format(ann_output, filename), 'w+') as f:
+				version = '3.11.2'
+				flags = ''
+				lineColor = name[1]
+				fillColor = name[2]
+				path = name[3]
+				imageData = ''
+				W, H = str(name[4]), str(name[5])
+				header = '{{"version": "{}",\n"flags": {{{}}},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
+				.format(version, flags, lineColor, fillColor, path, imageData, W, H)
+				f.write(header)
+				for info in POLY[name]:
+					shape_type = info[4]
+					line_color = info[1]
+					fill_color = info[2]
+					label = info[0]
+					points = info[3]
+					body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
+					.format(label, line_color, fill_color, points, shape_type)
+					f.write(body)
+				loc = f.seek(0, os.SEEK_END)
+				f.seek(loc-1)
+				f.write(']}')
+	print('[+] Done')
+
 def convert(directory):
 	''' Converts Bash terminal output to .txt file for Cell auto detection '''
 	Items = []
@@ -287,6 +406,12 @@ def main():
 						ann_output=sys.argv[4],
 						input_format=sys.argv[5],
 						output_format=sys.argv[6])
+	elif args.translate_poly:
+		translate_poly(	image_path=sys.argv[2],
+						ann_input=sys.argv[3],
+						ann_output=sys.argv[4],
+						input_format=sys.argv[5],
+						output_format=sys.argv[6])
 	elif args.convert:
 		convert(sys.argv[2])
 	elif args.augment:
@@ -295,8 +420,34 @@ def main():
 			input_path='./dataset/Train',
 			output_path='./dataset/Augmented',
 			count=sys.argv[2])
-	elif args.augment_object:
-		DAOD(image_input='./dataset/Train',
+	elif args.augment_poly:
+		from sources import Augment
+#		translate_poly(	image_path=sys.argv[2],
+#						ann_input=sys.argv[3],
+#						ann_output=sys.argv[4],
+#						input_format='csv',
+#						output_format='json')
+
+
+
+#		augment_poly('./dataset/Train/0.jpg',
+#					'./Augmented',
+#					'./Annotations/0.json',
+#					'./Augmented_Annotations')
+
+
+#		translate_poly(	image_path=sys.argv[2],
+#						ann_input=sys.argv[3],
+#						ann_output=sys.argv[4],
+#						input_format='json',
+#						output_format='csv')
+
+
+
+
+	elif args.augment_bbox:
+		from sources import Augment
+		augment_bbox(image_input='./dataset/Train',
 			image_output='./dataset/Augmented',
 			bbox_input='./dataset/Annotations',
 			bbox_output='./dataset/Augmented_Annotations',
