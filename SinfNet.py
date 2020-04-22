@@ -3,7 +3,9 @@
 import os
 import csv
 import json
+import shutil
 import datetime
+import argparse
 from PIL import Image
 from collections import defaultdict
 
@@ -422,28 +424,33 @@ def main():
 			count=sys.argv[2])
 	elif args.augment_poly:
 		from sources import Augment
-#		translate_poly(	image_path=sys.argv[2],
-#						ann_input=sys.argv[3],
-#						ann_output=sys.argv[4],
-#						input_format='csv',
-#						output_format='json')
-
-
-
-#		augment_poly('./dataset/Train/0.jpg',
-#					'./Augmented',
-#					'./Annotations/0.json',
-#					'./Augmented_Annotations')
-
-
-#		translate_poly(	image_path=sys.argv[2],
-#						ann_input=sys.argv[3],
-#						ann_output=sys.argv[4],
-#						input_format='json',
-#						output_format='csv')
-
-
-
+		Ann_in = sys.argv[2]
+		iters = sys.argv[3]
+		Fname = Ann_in.split('/')[-1].split('.')[0]
+		os.makedirs('./dataset/Augmented', exist_ok=True)
+		os.makedirs('./dataset/Augmented_Annotations', exist_ok=True)
+		os.makedirs('./dataset/Translated_Annotations', exist_ok=True)
+		translate_poly(	image_path='./dataset/Train',
+						ann_input=Ann_in,
+						ann_output='./dataset/Translated_Annotations',
+						input_format='csv',
+						output_format='json')
+		for Images in os.listdir('./dataset/Train'):
+			print(Images)
+			Augment.augment_poly('./dataset/Train/{}'.format(Images),
+								'./dataset/Augmented',
+								'./dataset/Translated_Annotations/{}.json'.format(Images.split('.')[0]),
+								'./dataset/Augmented_Annotations', 
+								iters)
+		translate_poly(	image_path='./dataset/Train',
+						ann_input='./dataset/Translated_Annotations',
+						ann_output='./dataset/Augmented',
+						input_format='json',
+						output_format='csv')
+		os.rename(	'./dataset/Augmented/Translated.csv',
+					'./dataset/Augmented/Aug_{}.csv'.format(Fname))
+		shutil.rmtree('./dataset/Translated_Annotations')
+		shutil.rmtree('./dataset/Augmented_Annotations')
 
 	elif args.augment_bbox:
 		from sources import Augment

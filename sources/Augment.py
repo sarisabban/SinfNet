@@ -1,15 +1,18 @@
 import os
 import cv2
 import PIL
+import json
 import keras
 import numpy as np
+import imgaug as ia
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from imgaug import augmenters as iaa
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from PIL import Image
-from DAOD import *
+from .DAOD import *
 
 def augment(input_path='./dataset/Train',
 				output_path='./dataset/Augmented',
@@ -215,67 +218,70 @@ def augment_bbox(image_input='./dataset/Train',
 			#plt.show()
 			print('Completed: {} {}'.format(Ioutput, Boutput))
 
-def augment_poly(TheImage, im_out, ann_path, ann_output):
+def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 	''' Augment images with polygons and saves them into a new directory '''
-	seq = iaa.Sequential([
-		iaa.Fliplr(0.5),
-		iaa.Flipud(0.5),
-		iaa.Multiply((0.7, 1.0)),
-		iaa.Affine(
-				translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
-				rotate=(-90, 90),
-				shear=(-16, 16),
-				mode=ia.ALL)
-		iaa.Sometimes(0.5, iaa.Dropout((0.001, 0.01), per_channel=0.5)),
-		], random_order=True)
-	seq_det = seq.to_deterministic()
-	im = cv2.imread(TheImage, 1)
-	im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-	with open(ann_path) as handle: data = json.load(handle)
-	shape_dicts = data['shapes']
-	points = []
-	aug_shape_dicts = []
-	i = 0
-	for shape in shape_dicts:
-		for pairs in shape['points']:
-			points.append(ia.Keypoint(x=pairs[0], y=pairs[1]))
-		_d = {}
-		_d['label'] = shape['label']
-		_d['index'] = (i, i+len(shape['points']))
-		aug_shape_dicts.append(_d)
-		i += len(shape['points'])
-	keypoints = ia.KeypointsOnImage(points, shape=(256,256,3))
-	image_aug = seq_det.augment_images([im])[0]
-	keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
-	for shape in aug_shape_dicts:
-		start, end = shape['index']
-		aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
-		shape['points'] = aug_points
-	NewName = TheImage.split('/')[-1]
-	cv2.imwrite('{}/Aug_{}'.format(im_out, NewName), image_aug)
-	with open('{}/Aug_{}.json'.format(ann_output, TheImage.split('/')[-1].split('.')[0]), 'w+') as f:
-		version = data['version']
-		flags = data['flags']
-		lineColor = data['lineColor']
-		fillColor = data['fillColor']
-		path = '.{}/Aug_{}'.format(im_out, TheImage.split('/')[-1])
-		imageData = data['imageData']
-		W, H = Image.open(TheImage).size
-		header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
-		.format(version, flags, lineColor, fillColor, path, imageData, W, H)
-		f.write(header)
-		for info in aug_shape_dicts:
-			shape_type = 'polygon'
-			line_color = 'null'
-			fill_color = 'null'
-			label = info['label']
-			points = info['points']
-			body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
-			.format(label, line_color, fill_color, points, shape_type)
-			f.write(body)
-		loc = f.seek(0, os.SEEK_END)
-		f.seek(loc-1)
-		f.write(']}')
+	try:
+		for iters in range(iterations):
+			seq = iaa.Sequential([
+				iaa.Fliplr(0.5),
+				iaa.Flipud(0.5),
+				iaa.Multiply((0.7, 1.0)),
+				iaa.Affine(
+						translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+						rotate=(-90, 90),
+						shear=(-16, 16),
+						mode=ia.ALL),
+				iaa.Sometimes(0.5, iaa.Dropout((0.001, 0.01), per_channel=0.5))
+				], random_order=True)
+			seq_det = seq.to_deterministic()
+			im = cv2.imread(TheImage, 1)
+			im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+			with open(ann_path) as handle: data = json.load(handle)
+			shape_dicts = data['shapes']
+			points = []
+			aug_shape_dicts = []
+			i = 0
+			for shape in shape_dicts:
+				for pairs in shape['points']:
+					points.append(ia.Keypoint(x=pairs[0], y=pairs[1]))
+				_d = {}
+				_d['label'] = shape['label']
+				_d['index'] = (i, i+len(shape['points']))
+				aug_shape_dicts.append(_d)
+				i += len(shape['points'])
+			keypoints = ia.KeypointsOnImage(points, shape=(256,256,3))
+			image_aug = seq_det.augment_images([im])[0]
+			keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
+			for shape in aug_shape_dicts:
+				start, end = shape['index']
+				aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
+				shape['points'] = aug_points
+			NewName = TheImage.split('/')[-1]
+			cv2.imwrite('{}/Aug_{}-{}'.format(im_out, NewName, str(iters+1)), image_aug)
+			with open('{}/Aug_{}-{}.json'.format(ann_output, TheImage.split('/')[-1].split('.')[0], str(iters+1)), 'w+') as f:
+				version = data['version']
+				flags = data['flags']
+				lineColor = data['lineColor']
+				fillColor = data['fillColor']
+				path = '.{}/Aug_{}'.format(im_out, TheImage.split('/')[-1])
+				imageData = data['imageData']
+				W, H = Image.open(TheImage).size
+				header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
+				.format(version, flags, lineColor, fillColor, path, imageData, W, H)
+				f.write(header)
+				for info in aug_shape_dicts:
+					shape_type = 'polygon'
+					line_color = 'null'
+					fill_color = 'null'
+					label = info['label']
+					points = info['points']
+					body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
+					.format(label, line_color, fill_color, points, shape_type)
+					f.write(body)
+				loc = f.seek(0, os.SEEK_END)
+				f.seek(loc-1)
+				f.write(']}')
+	except: pass
 
 if __name__ == '__main__':
 	augment(input_path='./dataset/Train',
@@ -289,6 +295,6 @@ if __name__ == '__main__':
 		input_format='txt',
 		output_format='txt')
 	augment_poly('./dataset/Train/0.jpg',
-				'./Augmented',
+				'./Augmented_Images',
 				'./Annotations/0.json',
 				'./Augmented_Annotations')

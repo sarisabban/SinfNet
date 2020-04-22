@@ -109,26 +109,9 @@ Where IMAGE_DIRECTORY is the path to the directory of images, ANNOTATION_INPUT t
 
 If you would like to augment the images use the following command:
 
+`python SinfNet.py --augment_polygon CSV NUMBER` example `python SinfNet.py -ap ./dataset/Train/Nematodes.csv 10`
 
-
-
-
-
-
-
-
-
-`python SinfNet.py --augment_polygon NUMBER` example `python SinfNet.py -ap 10`
-
-
-
-
-
-
-
-
-
-
+Where CSV is the .csv file that contains the polygone annotations for the entire dataset, should be stationed within the *./dataset/Train* directory
 
 #### For classification
 1. The dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
@@ -263,13 +246,7 @@ If you would like to add images to our dataset (any type of microscopic organism
 python SinfNet.py -h                                                                              |Help                                                                       |
 python SinfNet.py -a  NUMBER                                                                      |Augment images                                                             |
 python SinfNet.py -ab NUMBER INPUT_FORMAT OUTPUT_FORMAT                                           |Augment images with bounding boxes                                         |
-
-
-
-python SinfNet.py -ap NUMBER                                                                      |Augment images with bounding polygons                                      |
-
-
-
+python SinfNet.py -ap CSV NUMBER                                                                  |Augment images with bounding polygons                                      |
 python SinfNet.py -v                                                                              |Open weg-based immage annotator                                            |
 python SinfNet.py -b                                                                              |BBox                                                                       |
 python SinfNet.py -c DIRECTORY                                                                    |Convert Bash output to .xml                                                |
