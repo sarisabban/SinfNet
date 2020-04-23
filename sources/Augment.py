@@ -260,7 +260,7 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				], random_order=True)
 			seq_det = seq.to_deterministic()
 			im = cv2.imread(TheImage, 1)
-			im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+			#im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
 			with open(ann_path) as handle: data = json.load(handle)
 			shape_dicts = data['shapes']
 			points = []
@@ -274,7 +274,8 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				_d['index'] = (i, i+len(shape['points']))
 				aug_shape_dicts.append(_d)
 				i += len(shape['points'])
-			keypoints = ia.KeypointsOnImage(points, shape=(256,256,3))
+			W, H = Image.open(TheImage).size
+			keypoints = ia.KeypointsOnImage(points, shape=(W,H,3))###### Switch if incorrect
 			image_aug = seq_det.augment_images([im])[0]
 			keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
 			for shape in aug_shape_dicts:
