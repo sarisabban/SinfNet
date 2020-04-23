@@ -246,7 +246,7 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 	'''
 	''' Augment images with polygons and saves them into a new directory '''
 	try:
-		for iters in range(iterations):
+		for iters in range(int(iterations)):
 			seq = iaa.Sequential([
 				iaa.Fliplr(0.5),
 				iaa.Flipud(0.5),
@@ -282,8 +282,9 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
 				shape['points'] = aug_points
 			NewName = TheImage.split('/')[-1].split('.')[0]
-			cv2.imwrite('{}/Aug-{}_{}.jpg'.format(im_out, NewName, str(iters+1)), image_aug)
-			with open('{}/Aug_{}-{}.json'.format(ann_output, TheImage.split('/')[-1].split('.')[0], str(iters+1)), 'w+') as f:
+			print('{}/Aug_{}-{}.jpg'.format(im_out, NewName, str(iters+1)))
+			cv2.imwrite('{}/Aug_{}-{}.jpg'.format(im_out, NewName, str(iters+1)), image_aug)
+			with open('{}/Aug_{}-{}.json'.format(ann_output, NewName, str(iters+1)), 'w+') as f:
 				version = data['version']
 				flags = data['flags']
 				lineColor = data['lineColor']
@@ -306,7 +307,7 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				loc = f.seek(0, os.SEEK_END)
 				f.seek(loc-1)
 				f.write(']}')
-	except: pass
+	except Exception as error: print(error)#pass
 
 if __name__ == '__main__':
 	augment(input_path='./dataset/Train',

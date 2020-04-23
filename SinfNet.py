@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import csv
 import json
 import shutil
@@ -19,9 +20,9 @@ parser.add_argument('-mp', '--mrcnn_predict', nargs='+', help='Predict from Mask
 parser.add_argument('-c' , '--convert',       nargs='+', help='Convert Bash terminal output to .txt files')
 parser.add_argument('-tb', '--translate_bbox',nargs='+', help='Translate between bounding box annotation file formats')
 parser.add_argument('-tp', '--translate_poly',nargs='+', help='Translate between polygon annotation file formats')
+parser.add_argument('-ap', '--augment_poly',  nargs='+', help='Augment images with bounding polygons')
+parser.add_argument('-ab', '--augment_bbox',  nargs='+', help='Augment images with bounding boxes')
 parser.add_argument('-a' , '--augment',       action='store_true', help='Augment images')
-parser.add_argument('-ap', '--augment_poly',  action='store_true', help='Augment images with bounding polygons')
-parser.add_argument('-ab', '--augment_bbox',  action='store_true', help='Augment images with bounding boxes')
 parser.add_argument('-v' , '--via',           action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',          action='store_true', help='Open the BBox image labeling tool')
 args = parser.parse_args()
@@ -272,6 +273,7 @@ def translate_poly(	image_path='./dataset/Train',
 			with open('{}/{}'.format(ann_input, TheFile), 'r') as f:
 				d = json.load(f)
 				filename = TheFile.split('.')[0]+'.jpg'
+				print(filename)
 				W, H = d['imageWidth'], d['imageHeight']
 				lineColor = d['lineColor']
 				fillColor = d['fillColor']
@@ -436,14 +438,13 @@ def main():
 						input_format='csv',
 						output_format='json')
 		for Images in os.listdir('./dataset/Train'):
-			print(Images)
 			Augment.augment_poly('./dataset/Train/{}'.format(Images),
 								'./dataset/Augmented',
 								'./dataset/Translated_Annotations/{}.json'.format(Images.split('.')[0]),
 								'./dataset/Augmented_Annotations', 
 								iters)
-		translate_poly(	image_path='./dataset/Train',
-						ann_input='./dataset/Translated_Annotations',
+		translate_poly(	image_path='./dataset/Augmented',
+						ann_input='./dataset/Augmented_Annotations',
 						ann_output='./dataset/Augmented',
 						input_format='json',
 						output_format='csv')
@@ -451,7 +452,6 @@ def main():
 					'./dataset/Augmented/Aug_{}.csv'.format(Fname))
 		shutil.rmtree('./dataset/Translated_Annotations')
 		shutil.rmtree('./dataset/Augmented_Annotations')
-
 	elif args.augment_bbox:
 		from sources import Augment
 		augment_bbox(image_input='./dataset/Train',
