@@ -307,7 +307,7 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 				loc = f.seek(0, os.SEEK_END)
 				f.seek(loc-1)
 				f.write(']}')
-	except Exception as error: print(error)#pass
+	except Exception as error: pass
 
 if __name__ == '__main__':
 	augment(input_path='./dataset/Train',
@@ -320,7 +320,8 @@ if __name__ == '__main__':
 		count=2,
 		input_format='txt',
 		output_format='txt')
-	augment_poly('./dataset/Train/0.jpg',
-				'./Augmented_Images',
-				'./Annotations/0.json',
-				'./Augmented_Annotations')
+	augment_poly('../dat/images/1.jpg',
+				'../dat/aug_images',
+				'../dat/annotated/1.json',
+				'../dat/aug_annoted',
+				3)

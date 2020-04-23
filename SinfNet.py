@@ -273,7 +273,6 @@ def translate_poly(	image_path='./dataset/Train',
 			with open('{}/{}'.format(ann_input, TheFile), 'r') as f:
 				d = json.load(f)
 				filename = TheFile.split('.')[0]+'.jpg'
-				print(filename)
 				W, H = d['imageWidth'], d['imageHeight']
 				lineColor = d['lineColor']
 				fillColor = d['fillColor']
