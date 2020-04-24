@@ -26,7 +26,7 @@ All datasets used are available here for download, along with their neural netwo
 |[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
 |[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
 |[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
-|[Nematode Biomass Dataset](https://www.dropbox.com/s/mhtdj7t0i2qb5vn/Nematodes_Segment.tar.bz2?dl=0)            |Mask-RCNN   |[Weights]()|               |
+|[Nematode Biomass Dataset](https://www.dropbox.com/s/0b7g35dsg9nywy5/Nematodes_Segment.tar.bz2?dl=0)            |Mask-RCNN   |[Weights]()|               |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
