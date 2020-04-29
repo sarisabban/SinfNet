@@ -255,10 +255,17 @@ def translate_poly(	image_path='./dataset/Train',
 				y_points = line[3].split('"')[0][:-2][1:].split(',')
 				points = []
 				for x, y in zip(x_points, y_points):
-					x = int(x)
-					y = int(y)
-					point = [x, y]
-					points.append(point)
+					try:
+						x = int(x)
+						y = int(y)
+						point = [x, y]
+						points.append(point)
+					except:
+						x = float(x)
+						y = float(y)
+						point = [x, y]
+						points.append(point)
+
 				POLY[filename,
 					str(lineColor),
 					str(fillColor),
