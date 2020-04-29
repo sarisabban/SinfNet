@@ -242,7 +242,9 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 	SOFTWARE.
 
-	Adapted from: https://github.com/seth814/Semantic-Shapes
+	Adapted from:
+	https://github.com/seth814/Semantic-Shapes
+	https://www.youtube.com/watch?v=-Z7Sx2sS8z8
 	'''
 	''' Augment images with polygons and saves them into a new directory '''
 	try:
