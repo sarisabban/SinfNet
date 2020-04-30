@@ -3,6 +3,7 @@
 import os
 import sys
 import csv
+import math
 import json
 import shutil
 import datetime
@@ -22,6 +23,7 @@ parser.add_argument('-tb', '--translate_bbox',  nargs='+', help='Translate betwe
 parser.add_argument('-tp', '--translate_poly',  nargs='+', help='Translate between polygon annotation file formats')
 parser.add_argument('-ap', '--augment_poly',    nargs='+', help='Augment images with bounding polygons')
 parser.add_argument('-ab', '--augment_bbox',    nargs='+', help='Augment images with bounding boxes')
+parser.add_argument('-C', '--crop',             nargs='+', help='Crop images to make their dimentions multiples of 32')
 parser.add_argument('-a' , '--augment',         action='store_true', help='Augment images')
 parser.add_argument('-v' , '--via',             action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',            action='store_true', help='Open the BBox image labeling tool')
@@ -394,7 +396,20 @@ def convert(directory):
 	os.system('mv *.txt ./dataset/BBox_Annotations')
 	translate_txt_xml('./dataset/BBox_Annotations', './dataset/Train')
 	os.system('rm -r ./dataset/BBox_Annotations')
-	
+
+def crop(directory):
+	''' Crops images to make their dimetions multiples of 32'''
+	os.makedirs('./dataset/Cropped', exist_ok=True)
+	for i in os.listdir(directory):
+		filename = '{}/{}'.format(directory, i)
+		img = Image.open(filename)
+		W, H = img.size
+		w = 32* math.floor(W/32)
+		h = 32* math.floor(H/32)
+		area = (0, 0, w, h)
+		c_img = img.crop(area)
+		c_img.save('./dataset/Cropped/{}'.format(i))
+
 def main():
 	if args.cnn_train:
 		from sources import CNN
@@ -476,5 +491,7 @@ def main():
 	elif args.semantic_predict:
 		from sources import semantic
 		semantic.semantic_predict(sys.argv[2])
+	elif args.crop:
+		crop(sys.argv[2])
 
 if __name__ == '__main__': main()

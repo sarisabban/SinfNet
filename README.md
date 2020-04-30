@@ -108,7 +108,13 @@ identify only the sigle file for the .csv and .json formats, txt and xml must id
         ./dataset/Train
         ./dataset/Train_Annotations
 
-2. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a .csv file [from top right Annotations > Export Annotations (as csv)] and rename appropriatly. Then you will have to convert the .csv file to multiple .json files using the following command:
+2. The neural network only takes images with dimentions that are multiples of 32, therefore it is possible to crop the images to satisfy this restriction using the following command:
+
+`python SinfNet.py --crop IMAGE_DIRECTORY` or `python SinfNet.py -C ./dataset/Train`
+
+A new direcory called Cropped will be generated with the cropped images in it.
+
+3. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a .csv file [from top right Annotations > Export Annotations (as csv)] and rename appropriatly. Then you will have to convert the .csv file to multiple .json files using the following command:
 
 `python SinfNet.py --translate_poly IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tp ./dataset/Train ./dataset/Nematode.csv ./dataset/Train_Annotations csv json`
 
@@ -257,6 +263,7 @@ python SinfNet.py -ap CSV NUMBER                                                
 python SinfNet.py -v                                                                              |Open weg-based immage annotator                                            |
 python SinfNet.py -b                                                                              |BBox                                                                       |
 python SinfNet.py -c DIRECTORY                                                                    |Convert Bash output to .xml                                                |
+python SinfNet.py -C DIRECTORY                                                                    |Crops images to make their dimentions multiples of 32                      |
 python SinfNet.py -tb IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT|Convert between different bbox annotation formats(txt, csv, coco-json, xml)|
 python SinfNet.py -tp IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT|Convert between different polygon formats(csv, json)                       |
 python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS                                                 |YOLOv3 network train                                                       |
