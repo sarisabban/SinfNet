@@ -1,3 +1,31 @@
+'''
+MIT License
+
+Copyright (c) 2019 Seth Adams
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Adapted from:
+https://github.com/seth814/Semantic-Shapes
+https://www.youtube.com/watch?v=-Z7Sx2sS8z8
+'''
+
 import os
 import sys
 import cv2
@@ -5,10 +33,10 @@ import json
 import random
 import numpy as np
 import tensorflow as tf
-#import pydensecrf.densecrf as dcrf
+import pydensecrf.densecrf as dcrf
 from tensorflow.keras import backend as K
 from tensorflow.keras.optimizers import Adam
-#from pydensecrf.utils import unary_from_softmax
+from pydensecrf.utils import unary_from_softmax
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import ModelCheckpoint
@@ -105,10 +133,9 @@ class DataGenerator(tf.keras.utils.Sequence):
 
 def unet(pretrained=False, base=4):
     if pretrained:
-        path = os.path.join('models', model_name+'.model')
+        path = model_name+'.h5'
         if os.path.exists(path):
             model = load_model(path, custom_objects={'dice': dice})
-            model.summary()
             return model
         else:
             print('Failed to load existing model at: {}'.format(path))
@@ -168,7 +195,7 @@ def unet(pretrained=False, base=4):
 
 def fcn_8(pretrained=False, base=4):
     if pretrained:
-        path = os.path.join('models', model_name+'.model')
+        path = model_name+'.h5'
         if os.path.exists(path):
             model = load_model(path, custom_objects={'dice': dice})
             return model
@@ -221,7 +248,7 @@ def fcn_8(pretrained=False, base=4):
     return model
 
 def sorted_fns(dir):
-    return sorted(os.listdir(dir), key=lambda x: int(x.split('.')[0]))
+    return sorted(os.listdir(dir), key=lambda x: x.split('.')[0])
 
 def preprocess_input(x):
     x /= 255.
@@ -269,28 +296,27 @@ def crf(im_softmax, im_rgb):
         res_crf = add_masks(res_hot)
         return res_crf
 
-def semantic_train():
+def train():
 	image_paths=[os.path.join('./dataset/Train', x) for x in sorted_fns('./dataset/Train')]
 	annot_paths=[os.path.join('./dataset/Train_Annotations', x) for x in sorted_fns('./dataset/Train_Annotations')]
 	if 'unet' in model_name:
-		model = unet(pretrained=False, base=4)
+		model = unet(pretrained=True, base=4)
 	elif 'fcn_8' in model_name:
-		model = fcn_8(pretrained=False, base=4)
+		model = fcn_8(pretrained=True, base=4)
 	tg = DataGenerator(image_paths=image_paths,
                     annot_paths=annot_paths,
                     batch_size=5)
-	checkpoint = ModelCheckpoint(os.path.join('models', model_name+'.model'),
+	checkpoint = ModelCheckpoint(model_name+'.h5',
 	monitor='dice', verbose=1, mode='max', save_best_only=True,
     save_weights_only=False, period=10)
 	model.fit_generator(generator=tg,
                      steps_per_epoch=len(tg),
-                     epochs=500,
+                     epochs=10,
                      verbose=1,
                      callbacks=[checkpoint])
 
-def semantic_predict(filename, CALC_CRF=True):
-    model = load_model(os.path.join('models', model_name+'.model'),
-                       custom_objects={'dice': dice})
+def predict(filename, CALC_CRF=True):
+    model = load_model(model_name+'.h5',custom_objects={'dice': dice})
     im_cv = cv2.imread(filename)
     im = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB).copy()
     tmp = np.expand_dims(im, axis=0)
