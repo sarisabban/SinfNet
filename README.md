@@ -263,18 +263,8 @@ python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS                               
 python SinfNet.py -yp WEIGHTS FILENAME LABELS                                                     |YOLOv3 network predict                                                     |
 python SinfNet.py -ct CNN                                                                         |CNN network train                                                          |
 python SinfNet.py -cp CNN WEIGHTS FILENAME                                                        |CNN network classify                                                       |
-
-
-
-
-
-
-
-
-
-python SinfNet.py -sp FILENAME                                                  |UNet network predict                                                  |
-python SinfNet.py -st MODE LABELS                                                                       |UNet network train                                                    |
-                       |
+python SinfNet.py -sp FILENAME                                                                    |UNet network predict                                                       |
+python SinfNet.py -st MODE LABELS                                                                 |UNet network train                                                         |
 
 ## Funders:
 * [Experiment](https://experiment.com/)
