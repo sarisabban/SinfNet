@@ -75,9 +75,9 @@ Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file f
 
 `python SinfNet.py --via` or `python SinfNet.py -v`
 
-You must have FireFox for this to work. There is a bug with this tool where the boxes are described in an unconventional way: the fix is to define the width and hight from the start of the image instead of an addition to the axis value [VIA->BBOX W: x+w H: y+h | BBOX->VIA W: x-w H: y-h]
+You must have FireFox for this to work.
 
-Use this tool only for polygon annotation that will be used with semantic segmentation, use the following command for bounding box annotation:
+Use this tool for or bounding box annotation that will be used with object detection or polygon annotation that will be used with semantic segmentation. There is another tool only for bounding box annotation,  but it is prefeared not to used it, yet can be accessed using the following command:
 
 `python SinfNet.py --bbox` or `python SinfNet.py -b`
 
