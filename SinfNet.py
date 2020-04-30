@@ -11,20 +11,20 @@ from PIL import Image
 from collections import defaultdict
 
 parser = argparse.ArgumentParser(description='Collection of datasets and networks for organism classification')
-parser.add_argument('-ct', '--cnn_train',     nargs='+', help='Train on CNN')
-parser.add_argument('-cp', '--cnn_predict',   nargs='+', help='Predict from CNN')
-parser.add_argument('-yt', '--yolo_train',    nargs='+', help='Train on YOLOv3')
-parser.add_argument('-yp', '--yolo_predict',  nargs='+', help='Predict from YOLOv3')
-parser.add_argument('-mt', '--mrcnn_train',   nargs='+', help='Train on Mask-RCNN')
-parser.add_argument('-mp', '--mrcnn_predict', nargs='+', help='Predict from Mask-RCNN')
-parser.add_argument('-c' , '--convert',       nargs='+', help='Convert Bash terminal output to .txt files')
-parser.add_argument('-tb', '--translate_bbox',nargs='+', help='Translate between bounding box annotation file formats')
-parser.add_argument('-tp', '--translate_poly',nargs='+', help='Translate between polygon annotation file formats')
-parser.add_argument('-ap', '--augment_poly',  nargs='+', help='Augment images with bounding polygons')
-parser.add_argument('-ab', '--augment_bbox',  nargs='+', help='Augment images with bounding boxes')
-parser.add_argument('-a' , '--augment',       action='store_true', help='Augment images')
-parser.add_argument('-v' , '--via',           action='store_true', help='Open the VIA image labeling tool')
-parser.add_argument('-b' , '--bbox',          action='store_true', help='Open the BBox image labeling tool')
+parser.add_argument('-ct', '--cnn_train',       nargs='+', help='Train on CNN')
+parser.add_argument('-cp', '--cnn_predict',     nargs='+', help='Predict from CNN')
+parser.add_argument('-yt', '--yolo_train',      nargs='+', help='Train on YOLOv3')
+parser.add_argument('-yp', '--yolo_predict',    nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-st', '--semantic_train',  nargs='+', help='Train on UNet')
+parser.add_argument('-sp', '--semantic_predict',nargs='+', help='Predict from UNet')
+parser.add_argument('-c' , '--convert',         nargs='+', help='Convert Bash terminal output to .txt files')
+parser.add_argument('-tb', '--translate_bbox',  nargs='+', help='Translate between bounding box annotation file formats')
+parser.add_argument('-tp', '--translate_poly',  nargs='+', help='Translate between polygon annotation file formats')
+parser.add_argument('-ap', '--augment_poly',    nargs='+', help='Augment images with bounding polygons')
+parser.add_argument('-ab', '--augment_bbox',    nargs='+', help='Augment images with bounding boxes')
+parser.add_argument('-a' , '--augment',         action='store_true', help='Augment images')
+parser.add_argument('-v' , '--via',             action='store_true', help='Open the VIA image labeling tool')
+parser.add_argument('-b' , '--bbox',            action='store_true', help='Open the BBox image labeling tool')
 args = parser.parse_args()
 
 def translate_bbox(	image_path='./dataset/Train',
@@ -470,15 +470,11 @@ def main():
 	elif args.bbox:
 		from sources import BBox
 		BBox.main()
-	elif args.mrcnn_predict:
-		from sources import MaskRCNN
-		LABELS = ' '.join(sys.argv[4:])
-		MaskRCNN.predict(LABELS, sys.argv[2], sys.argv[3], )
-	elif args.mrcnn_train:
-		from sources import MaskRCNN
-		try:
-			MaskRCNN.train(sys.argv[2], sys.argv[3])
-		except:
-			MaskRCNN.train(sys.argv[2], '')
+	elif args.semantic_train:
+		from sources import semantic
+		semantic.semantic_train()
+	elif args.semantic_predict:
+		from sources import semantic
+		semantic.semantic_predict(sys.argv[2])
 
 if __name__ == '__main__': main()

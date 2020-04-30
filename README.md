@@ -26,7 +26,7 @@ All datasets used are available here for download, along with their neural netwo
 |[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
 |[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
 |[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
-|[Nematode Biomass Dataset](https://www.dropbox.com/s/0b7g35dsg9nywy5/Nematodes_Segment.tar.bz2?dl=0)            |Mask-RCNN   |[Weights]()|               |
+|[Nematode Biomass Dataset](https://www.dropbox.com/s/0b7g35dsg9nywy5/Nematodes_Segment.tar.bz2?dl=0)            |UNet        |[Weights]()|               |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
@@ -44,7 +44,7 @@ This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this scrip
 
 `source env/bin/activate`
 
-`pip3 install numpy keras tensorflow seaborn tkintertable matplotlib imgaug scipy scipy pillow scikit-image imutils h5py opencv-contrib-python "IPython[all]"`
+`pip3 install numpy keras tensorflow seaborn tkintertable matplotlib imgaug scipy scipy pillow scikit-image imutils h5py opencv-contrib-python pydensecrf`
 
 `deactivate`
 
@@ -77,7 +77,7 @@ Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file f
 
 You must have FireFox for this to work. There is a bug with this tool where the boxes are described in an unconventional way: the fix is to define the width and hight from the start of the image instead of an addition to the axis value [VIA->BBOX W: x+w H: y+h | BBOX->VIA W: x-w H: y-h]
 
-Use this tool only for polygon annotation that will be used with instance segmentation, use the following command for bounding box annotation:
+Use this tool only for polygon annotation that will be used with semantic segmentation, use the following command for bounding box annotation:
 
 `python SinfNet.py --bbox` or `python SinfNet.py -b`
 
@@ -99,11 +99,18 @@ identify only the sigle file for the .csv and .json formats, txt and xml must id
 
 8. Do not delete the .csv file, rather save it in case you want to rename any label.
 
-#### For instance segmentation
+#### For semantic segmentation
 
-1. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a JSON file [from top right Annotations > Export Annotations (as json)] and add this file to the directory of the images it annotates (train annotation in the Train directory and validation annotations to the Valid directory). If you want to onvert the .csv file to a .json file using the following command:
+1. The *dataset* directory structure will be as follows:
 
-`python SinfNet.py --translate_poly IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tp ./dataset/Train ./dataset/Annotations ./dataset/Translations csv json`
+        ./dataset/Test
+        ./dataset/Test_Annotations
+        ./dataset/Train
+        ./dataset/Train_Annotations
+
+2. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a .csv file [from top right Annotations > Export Annotations (as csv)] and rename appropriatly. Then you will have to convert the .csv file to multiple .json files using the following command:
+
+`python SinfNet.py --translate_poly IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tp ./dataset/Train ./dataset/Nematode.csv ./dataset/Train_Annotations csv json`
 
 Where IMAGE_DIRECTORY is the path to the directory of images, ANNOTATION_INPUT the path to the directory with the files to be converted, ANNOTATION_OUTPUT the path to the directory where the converted files are to be saved, INPUT_FORMAT the input file format OUTPUTFORMAT the format to convert to. identify only the sigle file for the single .csv file or the directory with the .json files.
 
@@ -111,7 +118,7 @@ If you would like to augment the images use the following command:
 
 `python SinfNet.py --augment_polygon CSV NUMBER` example `python SinfNet.py -ap ./dataset/Train/Nematodes.csv 10`
 
-Where CSV is the .csv file that contains the polygone annotations for the entire dataset, should be stationed within the *./dataset/Train* directory
+Where CSV is the .csv file that contains the polygone annotations for the entire dataset. Then translate the .csv to .json files as above for training (augmented images go to *./dataset/Train* and the augmented annotation to *./dataset/Train_Annotations*, while the original images go to *./dataset/Test* and their annotations to *./dataset/Test_Annotations*).
 
 #### For classification
 1. The dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
@@ -170,15 +177,16 @@ The WEIGHTS is the name of the output weight.h5 file, the PROJECT_NAME is just a
 
 5. If the training is interrupted, you can use the .h5 file to continue where you left off using the exact same training command in step 1.
 
-#### For instance segmentation
-
+#### For semantic segmentation
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --mrcnn_train LABEL` for example `python SinfNet.py -mt Active`
+`python SinfNet.py --semantic_train MODE LABELS` for example `python SinfNet.py -st multi Active Inactive Inactive`
 
-At this moment, the script only takes one label at a time. But labels can be added by including pre-trained weights as such:
+Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background). And as with object detection, including pre-trained weights is possible:
 
-`python SinfNet.py --mrcnn_train LABEL WEIGHTS.h5` for example `python SinfNet.py -mt Active Amoeba.h5`
+`python SinfNet.py --semantic_train LABELS` for example `python SinfNet.py -st Active Inactive`
+
+The weights directory (*./models*) must be present in the same working directory as the SinfNet.py script for this command to work.
 
 At the end of the training a directory will be generated which includes the log files and weight files. You should save the last weight file that results from the full run of the neural network.
 
@@ -201,13 +209,12 @@ Where CNN is the name of the convolutional neural network that you want to use. 
 
 Where WEIGHTS.h5 is the weights file, the FILENAME can be either a .jpg image, .mp4 video, or a webcam input, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them).
 
-#### For instance segmentation
+#### For semantic segmentation
+1. Use the following command to predict/detect:
 
-1. Follow the same steps as object detection, use the following command to predict/detect:
+`python SinfNet.py --semantic_predict FILENAME` example `python SinfNet.py -sp image.jpg`
 
-`python SinfNet.py --mrcnn_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -mp Amoeba.h5 image.jpg BG Active Inactive`
-
-Always include BG (Background) as the first label.
+The weights directory (*./models*) must be present in the same working directory as the SinfNet.py script for this command to work.
 
 #### For classification
 1. Download the relevant weights file (links available in table above) or generate the file from the steps above.
@@ -256,9 +263,18 @@ python SinfNet.py -yt WEIGHTS PROJECT_NAME LABELS                               
 python SinfNet.py -yp WEIGHTS FILENAME LABELS                                                     |YOLOv3 network predict                                                     |
 python SinfNet.py -ct CNN                                                                         |CNN network train                                                          |
 python SinfNet.py -cp CNN WEIGHTS FILENAME                                                        |CNN network classify                                                       |
-python SinfNet.py -mp WEIGHTS.h5 FILENAME LABELS                                                  |Mask-RCNN network predict                                                  |
-python SinfNet.py -mt LABEL                                                                       |Mask-RCNN network train                                                    |
-python SinfNet.py -mt LABEL WEIGHTS.h5                                                            |Mask-RCNN network train with pre-trained weights                           |
+
+
+
+
+
+
+
+
+
+python SinfNet.py -sp FILENAME                                                  |UNet network predict                                                  |
+python SinfNet.py -st MODE LABELS                                                                       |UNet network train                                                    |
+                       |
 
 ## Funders:
 * [Experiment](https://experiment.com/)
