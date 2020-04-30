@@ -466,11 +466,11 @@ def main():
 								iters)
 		translate_poly(	image_path='./dataset/Augmented',
 						ann_input='./dataset/Augmented_Annotations',
-						ann_output='./dataset/Augmented',
+						ann_output='./dataset',
 						input_format='json',
 						output_format='csv')
-		os.rename(	'./dataset/Augmented/Translated.csv',
-					'./dataset/Augmented/Aug_{}.csv'.format(Fname))
+		os.rename(	'./dataset/Translated.csv',
+					'./dataset/Aug_{}.csv'.format(Fname))
 		shutil.rmtree('./dataset/Translated_Annotations')
 		shutil.rmtree('./dataset/Augmented_Annotations')
 	elif args.augment_bbox:
