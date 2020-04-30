@@ -32,6 +32,7 @@ import cv2
 import json
 import random
 import numpy as np
+from PIL import Image
 import tensorflow as tf
 import pydensecrf.densecrf as dcrf
 from tensorflow.keras import backend as K
@@ -43,8 +44,11 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dropout, Lambda, Conv2DTranspose, Add
 from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, concatenate
 
-imshape = (256, 256, 3)
-mode = sys.argv[2]			# classification mode (binary or multi)
+for exam in os.listdir('./dataset/Train'): exam = exam
+WW, HH = Image.open('./dataset/Train/{}'.format(exam)).size
+imshape = (WW, HH, 3)
+#imshape = (256, 256, 3)
+mode = sys.argv[2]		# classification mode (binary or multi)
 model_name = 'unet_'+mode	# model_name (unet or fcn_8)
 LABELS = sys.argv[3:]
 hues = {}
@@ -311,7 +315,7 @@ def train():
     save_weights_only=False, period=10)
 	model.fit_generator(generator=tg,
                      steps_per_epoch=len(tg),
-                     epochs=10,
+                     epochs=500,
                      verbose=1,
                      callbacks=[checkpoint])
 
