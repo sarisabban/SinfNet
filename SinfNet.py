@@ -8,6 +8,7 @@ import json
 import shutil
 import datetime
 import argparse
+from math import pi
 from PIL import Image
 from collections import defaultdict
 
@@ -23,7 +24,8 @@ parser.add_argument('-tb', '--translate_bbox',  nargs='+', help='Translate betwe
 parser.add_argument('-tp', '--translate_poly',  nargs='+', help='Translate between polygon annotation file formats')
 parser.add_argument('-ap', '--augment_poly',    nargs='+', help='Augment images with bounding polygons')
 parser.add_argument('-ab', '--augment_bbox',    nargs='+', help='Augment images with bounding boxes')
-parser.add_argument('-C', '--crop',             nargs='+', help='Crop images to make their dimentions multiples of 32')
+parser.add_argument('-C' , '--crop',            nargs='+', help='Crop images to make their dimentions multiples of 32')
+parser.add_argument('-B' , '--biomass',         nargs='+', help='Calculate nematode biomass from binary semantic segmentation output white pixels')
 parser.add_argument('-a' , '--augment',         action='store_true', help='Augment images')
 parser.add_argument('-v' , '--via',             action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',            action='store_true', help='Open the BBox image labeling tool')
@@ -410,6 +412,21 @@ def crop(directory):
 		c_img = img.crop(area)
 		c_img.save('./dataset/Cropped/{}'.format(i))
 
+def Biomass(W, H, D, w, h, white):
+	''' Approximate biomass from semantic segmentation '''
+	''' Adapted from https://doi.org/10.1016/j.soilbio.2019.03.021 '''
+	Width_img = W # size of image in micrometers
+	Hight_img = H # size of image in micrometers
+	Depth_img = D # size of image in micrometers
+	width = w # size of image in pixels
+	hight = h # size of image in pixels
+	pixel = Width_img/width # micrometer value of a pixel
+	volume = pixel*white*Depth_img
+	print('Volume = {:,} μm^3'.format(round(volume, 3)))
+	x = volume*1.7
+	biomass = x/1.6e6
+	print('Biomass = {:,} μg'.format(biomass))
+
 def main():
 	if args.cnn_train:
 		from sources import CNN
@@ -493,5 +510,13 @@ def main():
 		semantic.semantic_predict(sys.argv[2])
 	elif args.crop:
 		crop(sys.argv[2])
+	elif args.biomass:
+		Width_img = sys.argv[2]
+		Hight_img = sys.argv[3]
+		Depth_img = sys.argv[4]
+		width     = sys.argv[5]
+		hight     = sys.argv[6]
+		white     = sys.argv[7]
+		Biomass(Width_img, Hight_img, Depth_img, width, hight, white)
 
 if __name__ == '__main__': main()

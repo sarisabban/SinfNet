@@ -339,6 +339,9 @@ def predict(filename, CALC_CRF=True):
             roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
         elif n_classes > 1:
             roi_mask = crf(roi_pred.squeeze(), im)
+    pos = np.count_nonzero(roi_mask)/3 # Number of white pixels
+    neg = np.count_nonzero(roi_mask==0)/3
+    print('Positive white pixels {}'.format(pos))
     cv2.imwrite('output.jpg', roi_mask)
 
 if __name__ == '__main__':

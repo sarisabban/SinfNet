@@ -14,7 +14,7 @@ This is a collection of datasets and neural networks to detect or classify micro
 
 <p align="center">Nematodes:</p>
 
-<sub>*Either detection of generic nematodes for biomass calculation or classifies nematodes according to feeding habits*</sub>
+<sub>*Either classifies nematodes according to trophic level (CNN), or detects generic nematodes (Object Detection), or detects nematodes pixel wise (Semantic Segmentation) for biomass calculation*</sub>
 
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
@@ -253,6 +253,11 @@ The annotations are as good as the training of the network, which is not 100%, t
 **Contributing to our dataset**
 If you would like to add images to our dataset (any type of microscopic organism) make sure that each species has 200 annotated images where each image is sharp and taken from a bright-field light microscope at 400x magnification. Please contact me so we can work together.
 
+## Nematode Biomass Approximation:
+`python SinfNet.py --biomass W H D w h P` or `python SinfNet.py -B 1000 1000 100 256 256 15892`
+
+Where W is the width of the image in μm, H is the hight of the image in μm, D is the depth of the image in μm, w is the width of the image in pixels, h is the hight of the image in pixels, P is the number of white (positive detection) pixels in the detection/prediction output of the UNet semantic segmentation neural network.
+
 ## Table of commands:
 |Command                                                                                          |Description                                                                |
 |-------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
@@ -272,6 +277,7 @@ python SinfNet.py -ct CNN                                                       
 python SinfNet.py -cp CNN WEIGHTS FILENAME                                                        |CNN network classify                                                       |
 python SinfNet.py -sp FILENAME                                                                    |UNet network predict                                                       |
 python SinfNet.py -st MODE LABELS                                                                 |UNet network train                                                         |
+python SinfNet.py -B W H D w h P                                                                  |Calculates nematode biomass from UNet output                               |
 
 ## Funders:
 * [Experiment](https://experiment.com/)
@@ -285,5 +291,3 @@ When using any part of this project kindly reference the following:
 ## TODO:
 
 * Make Video
-
-* Add reference
