@@ -19,14 +19,14 @@ This is a collection of datasets and neural networks to detect or classify micro
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
 
-|Dataset Name                                                                                                    |Network     |Weights                                                                    |mAP or Accuracy|
-|----------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------|---------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                 |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
-|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                          |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
-|[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)           |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
-|[Nematode Feeding Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Feed.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
-|[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                    |YOLOv3      |[Weights]()|               |
-|[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematode_Semantic.tar.bz2?dl=0)           |UNet        |[Weights]()|               |
+|Dataset Name                                                                                                       |Network     |Weights                                                                    |mAP or Accuracy|
+|-------------------------------------------------------------------------------------------------------------------|------------|---------------------------------------------------------------------------|---------------|
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                    |YOLOv3      |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
+|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                             |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)              |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
+|[Nematode Trophic Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
+|[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                       |YOLOv3      |[Weights]()|               |
+|[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)             |UNet        |[Weights]()|               |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
