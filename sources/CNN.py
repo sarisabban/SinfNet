@@ -117,7 +117,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 		y_pred = np.argmax(Y_pred, axis=1)
 		matrix = confusion_matrix(tests.classes, y_pred)
 		df_cm  = pd.DataFrame(matrix, index=classes, columns=classes)
-		plt.figure(figsize=(10,7))
+		plt.figure(figsize=(10, 7))
 		sn.heatmap(df_cm, annot=True)
 		print(classification_report(tests.classes,y_pred,target_names=classes))
 		model.save_weights('weights.h5')
