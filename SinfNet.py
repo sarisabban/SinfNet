@@ -504,10 +504,10 @@ def main():
 		BBox.main()
 	elif args.semantic_train:
 		from sources import semantic
-		semantic.semantic_train()
+		semantic.train()
 	elif args.semantic_predict:
 		from sources import semantic
-		semantic.semantic_predict(sys.argv[2])
+		semantic.predict(sys.argv[2])
 	elif args.crop:
 		crop(sys.argv[2])
 	elif args.biomass:
