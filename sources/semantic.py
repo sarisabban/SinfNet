@@ -345,5 +345,5 @@ def predict(filename, CALC_CRF=True):
     cv2.imwrite('output.jpg', roi_mask)
 
 if __name__ == '__main__':
-	semantic_train()
-	semantic_predict('0.jpg')
+	train()
+	predict('test.jpg')
