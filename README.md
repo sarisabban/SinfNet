@@ -44,7 +44,7 @@ This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this scrip
 
 `source env/bin/activate`
 
-`pip3 install numpy keras tensorflow seaborn tkintertable matplotlib imgaug scipy scipy pillow scikit-image imutils h5py opencv-contrib-python pydensecrf`
+`pip3 install numpy keras tensorflow seaborn tkintertable matplotlib imgaug scipy pillow scikit-image imutils h5py opencv-contrib-python pydensecrf`
 
 `deactivate`
 
