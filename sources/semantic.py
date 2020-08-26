@@ -136,13 +136,6 @@ class DataGenerator(tf.keras.utils.Sequence):
         return X, Y
 
 def unet(pretrained=False, base=4):
-    if pretrained:
-        path = model_name+'.h5'
-        if os.path.exists(path):
-            model = load_model(path, custom_objects={'dice': dice})
-            return model
-        else:
-            print('Failed to load existing model at: {}'.format(path))
     if n_classes == 1:
         loss = 'binary_crossentropy'
         final_act = 'sigmoid'
@@ -195,16 +188,16 @@ def unet(pretrained=False, base=4):
     model = Model(inputs=i, outputs=o, name=model_name)
     model.compile(optimizer=Adam(1e-4), loss=loss, metrics=[dice])
     #model.summary()
-    return model
-
-def fcn_8(pretrained=False, base=4):
     if pretrained:
         path = model_name+'.h5'
         if os.path.exists(path):
-            model = load_model(path, custom_objects={'dice': dice})
-            return model
+            model.load_weights(path)
+            print('Loaded weights')
         else:
             print('Failed to load existing model at: {}'.format(path))
+    return model
+
+def fcn_8(pretrained=False, base=4):
     if n_classes == 1:
         loss = 'binary_crossentropy'
         final_act = 'sigmoid'
@@ -249,6 +242,13 @@ def fcn_8(pretrained=False, base=4):
     model = Model(inputs=i, outputs=o, name=model_name)
     model.compile(optimizer=Adam(1e-4), loss=loss, metrics=[dice])
     #model.summary()
+    if pretrained:
+        path = model_name+'.h5'
+        if os.path.exists(path):
+            model.load_weights(path)
+            print('Loaded weights')
+        else:
+            print('Failed to load existing model at: {}'.format(path))
     return model
 
 def sorted_fns(dir):
@@ -312,7 +312,7 @@ def train():
                     batch_size=5)
 	checkpoint = ModelCheckpoint(model_name+'.h5',
 	monitor='dice', verbose=1, mode='max', save_best_only=True,
-    save_weights_only=False, period=10)
+    save_weights_only=True, period=10)
 	model.fit_generator(generator=tg,
                      steps_per_epoch=len(tg),
                      epochs=500,
