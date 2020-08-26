@@ -194,7 +194,7 @@ def unet(pretrained=False, base=4):
             model.load_weights(path)
             print('Loaded weights')
         else:
-            print('Failed to load existing model at: {}'.format(path))
+            print('Failed to load existing weights at: {}'.format(path))
     return model
 
 def fcn_8(pretrained=False, base=4):
@@ -248,7 +248,7 @@ def fcn_8(pretrained=False, base=4):
             model.load_weights(path)
             print('Loaded weights')
         else:
-            print('Failed to load existing model at: {}'.format(path))
+            print('Failed to load existing weights at: {}'.format(path))
     return model
 
 def sorted_fns(dir):
