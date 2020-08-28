@@ -25,7 +25,7 @@ All datasets used are available here for download, along with their neural netwo
 |[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                             |YOLOv3      |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
 |[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)              |YOLOv3      |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
 |[Nematode Trophic Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50 CNN|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
-|[Algae Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Algae.tar.bz2?dl=0)                       |YOLOv3      |[Weights]()|               |
+|[Protist Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Protists.tar.bz2?dl=0)                  |YOLOv3      |[Weights]()|               |
 |[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)             |UNet        |[Weights]()|               |
 
 ## How to use:
@@ -54,7 +54,11 @@ If you want to develop your own dataset and train it follow these steps otherwis
 `python SinfNet.py --help` or `python SinfNet.py -h`
 
 #### For object detection
-1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
+1.1 Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
+
+1.2 If you can generate a total-slide scan (a single image of an entire slide) you can segment this large image into smaller images to build your dataset, use the following command to segment:
+
+`python SinfNet.py --segment FILENAME WIDTH HIGHT` or `python SinfNet.py -S diatoms.jpg `
 
 2. Make a directory called *dataset* and within it in make the following directories:
 
@@ -278,6 +282,7 @@ python SinfNet.py -cp CNN WEIGHTS FILENAME                                      
 python SinfNet.py -sp FILENAME                                                                    |UNet network predict                                                       |
 python SinfNet.py -st MODE LABELS                                                                 |UNet network train                                                         |
 python SinfNet.py -B W H D w h P                                                                  |Calculates nematode biomass from UNet output                               |
+python SinfNet.py --segment FILENAME WIDTH HIGHT                                                  |Segments a large total-slide scan image into smaller images                |
 
 ## Funders:
 * [Experiment](https://experiment.com/)
