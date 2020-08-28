@@ -26,6 +26,7 @@ parser.add_argument('-ap', '--augment_poly',    nargs='+', help='Augment images 
 parser.add_argument('-ab', '--augment_bbox',    nargs='+', help='Augment images with bounding boxes')
 parser.add_argument('-C' , '--crop',            nargs='+', help='Crop images to make their dimentions multiples of 32')
 parser.add_argument('-B' , '--biomass',         nargs='+', help='Calculate nematode biomass from binary semantic segmentation output white pixels')
+parser.add_argument('-S' , '--segment',         nargs='+', help='Segment a large total-slide scan image into smaller images')
 parser.add_argument('-a' , '--augment',         action='store_true', help='Augment images')
 parser.add_argument('-v' , '--via',             action='store_true', help='Open the VIA image labeling tool')
 parser.add_argument('-b' , '--bbox',            action='store_true', help='Open the BBox image labeling tool')
@@ -503,11 +504,11 @@ def main():
 		from sources import BBox
 		BBox.main()
 	elif args.semantic_train:
-		from sources import semantic
-		semantic.train()
+		from sources import Semantic
+		Semantic.train()
 	elif args.semantic_predict:
-		from sources import semantic
-		semantic.predict(sys.argv[2])
+		from sources import Semantic
+		Semantic.predict(sys.argv[2])
 	elif args.crop:
 		crop(sys.argv[2])
 	elif args.biomass:
@@ -518,5 +519,8 @@ def main():
 		hight     = sys.argv[6]
 		white     = sys.argv[7]
 		Biomass(Width_img, Hight_img, Depth_img, width, hight, white)
-
+	elif args.segment:
+		from sources import Segment
+		Segment.segment(argv[2], size=(argv[3], argv[4]))
+		
 if __name__ == '__main__': main()
