@@ -58,7 +58,7 @@ If you want to develop your own dataset and train it follow these steps otherwis
 
 1.2 If you can generate a total-slide scan (a single image of an entire slide) you can segment this large image into smaller images to build your dataset, use the following command to segment:
 
-`python SinfNet.py --segment FILENAME WIDTH HIGHT` or `python SinfNet.py -S diatoms.jpg `
+`python SinfNet.py --segment FILENAME WIDTH HIGHT` or `python SinfNet.py -S diatoms.jpg 2584 1936`
 
 2. Make a directory called *dataset* and within it in make the following directories:
 
