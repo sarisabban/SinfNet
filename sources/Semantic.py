@@ -320,7 +320,9 @@ def train():
                      callbacks=[checkpoint])
 
 def predict(filename, CALC_CRF=True):
-    model = load_model(model_name+'.h5',custom_objects={'dice': dice})
+    model = model_name(pretrained=True, base=4)
+    model.model.load_weights(model_name+'.h5')
+#    model = load_model(model_name+'.h5',custom_objects={'dice': dice})
     im_cv = cv2.imread(filename)
     im = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB).copy()
     tmp = np.expand_dims(im, axis=0)
