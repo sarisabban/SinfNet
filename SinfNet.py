@@ -130,7 +130,8 @@ def translate_bbox(	image_path='./dataset/Train',
 					size=os.stat('./{}/{}'.format(image_path, name)).st_size
 					items += 1
 					TheLine = '{},{},"{{}}",{},{},"{{""name"":""rect"",""x"":{},""y"":{},""width"":{},""height"":{}}}","{{""{}"":""""}}"\n'\
-					.format(filename, size, total, items, x, y, w, h, label)
+					#.format(filename, size, total, items, x, y, w, h, label)## MAKES A MISTAKE??? CHECK
+					.format(name, size, total, items, x, y, w, h, label)
 					f.write(TheLine)
 	elif output_format == 'xml':
 		for name in BBOX:
