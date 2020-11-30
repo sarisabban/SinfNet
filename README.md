@@ -6,6 +6,8 @@ Sari Sabban
 
 Tarik Alafif
 
+Abdullah Alotebi
+
 ## Description:
 This is a collection of datasets and neural networks to detect or classify microorganisms from microscope images. Provided here are all the necessary scripts, datasets, and weights. So far this project either detects or classifies the following organisms:
 
