@@ -3,6 +3,7 @@ A collection of datasets and neural networks for microorganism image classificat
 
 ## Contributers:
 Sari Sabban
+
 Tarik Alafif
 
 ## Description:
