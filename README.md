@@ -11,9 +11,9 @@ Abdullah Alotebi
 ## Description:
 This is a collection of datasets and neural networks to detect or classify microorganisms from microscope images. Provided here are all the necessary scripts, datasets, and weights. So far this project either detects or classifies the following organisms:
 
-<p align="center">Protists - 10 species:</p>
+<p align="center">Protists - 17 genuses:</p>
 
-<sub>*Colsterium ehrenbergii - Cylindrocystis brebissonii - Lepocinclis spirogyroides - Micrasterias rotata - Paramecium bursaria - Peridinium spec. - Pinnularia neomajor - Pleurotaenium ehrenbergii - Pyrocystis lunula - Volvox tertius*</sub>
+<sub>*Colsterium - Cylindrocystis - Lepocinclis - Micrasterias - Paramecium - Peridinium - Pinnularia - Pleurotaenium - Pyrocystis - Volvox - Ceratium - Coleps - Collodictyon - Didinium - Dinobryon - Frontonia - Phacus*</sub>
 
 <p align="center">Amoebas:</p>
 
