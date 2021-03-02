@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
 MIT License
 
@@ -44,21 +46,32 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dropout, Lambda, Conv2DTranspose, Add
 from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, concatenate
 
-for exam in os.listdir('./dataset/Train'): exam = exam
-WW, HH = Image.open('./dataset/Train/{}'.format(exam)).size
-imshape = (WW, HH, 3)
-#imshape = (256, 256, 3)
-mode = sys.argv[2]		# classification mode (binary or multi)
-model_name = 'unet_'+mode	# model_name (unet or fcn_8)
-LABELS = sys.argv[3:]
-hues = {}
-for l in LABELS:
-	hues[l] = random.randint(0, 360)
-labels = sorted(hues.keys())
-if mode == 'binary': n_classes = 1
-elif mode == 'multi': n_classes = len(labels) + 1
-assert imshape[0]%32 == 0 and imshape[1]%32 == 0,\
-    "imshape should be multiples of 32. comment out to test different imshapes."
+if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
+	if sys.argv[1] == '-st':
+		TRAIN = sys.argv[4]
+		ANNOT = sys.argv[5]
+		for exam in os.listdir(TRAIN): exam = exam
+		WW, HH = Image.open('{}/{}'.format(TRAIN, exam)).size
+		imshape = (WW, HH, 3)
+		mode = sys.argv[3]             # classification mode (binary or multi)
+		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
+		model_name = MODEL+'_'+mode
+		LABELS = sys.argv[5:]
+		hues = {}
+		for l in LABELS: hues[l] = random.randint(0, 360)
+		labels = sorted(hues.keys())
+		if mode == 'binary': n_classes = 1
+		elif mode == 'multi': n_classes = len(labels) + 1
+		assert imshape[0]%32 == 0 and imshape[1]%32 == 0,\
+			"imshape should be multiples of 32. comment out to test different imshapes."
+	elif sys.argv[1] == '-sp':
+		mode = sys.argv[3]             # classification mode (binary or multi)
+		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
+		model_name = MODEL+'_'+mode
+		if mode == 'binary': n_classes = 1
+		elif mode == 'multi': n_classes = len(labels) + 1
+		WW, HH = Image.open(sys.argv[4]).size
+		imshape = (WW, HH, 3)
 
 class DataGenerator(tf.keras.utils.Sequence):
     def __init__(self, image_paths, annot_paths, batch_size=32, shuffle=True):
@@ -187,7 +200,6 @@ def unet(pretrained=False, base=4):
     o = Conv2D(n_classes, (1, 1), activation=final_act) (c9)
     model = Model(inputs=i, outputs=o, name=model_name)
     model.compile(optimizer=Adam(1e-4), loss=loss, metrics=[dice])
-    #model.summary()
     if pretrained:
         path = model_name+'.h5'
         if os.path.exists(path):
@@ -241,7 +253,6 @@ def fcn_8(pretrained=False, base=4):
     o = Conv2DTranspose(n_classes, kernel_size=(8, 8), strides=(8, 8), padding='same', activation=final_act)(u4_skip)
     model = Model(inputs=i, outputs=o, name=model_name)
     model.compile(optimizer=Adam(1e-4), loss=loss, metrics=[dice])
-    #model.summary()
     if pretrained:
         path = model_name+'.h5'
         if os.path.exists(path):
@@ -269,8 +280,10 @@ def dice(y_true, y_pred, smooth=1.):
 def add_masks(pred):
     blank = np.zeros(shape=imshape, dtype=np.uint8)
     for i, label in enumerate(labels):
-        hue = np.full(shape=(imshape[0], imshape[1]), fill_value=hues[label], dtype=np.uint8)
-        sat = np.full(shape=(imshape[0], imshape[1]), fill_value=255, dtype=np.uint8)
+        hue = np.full(shape=(imshape[0], imshape[1]),
+		fill_value=hues[label], dtype=np.uint8)
+        sat = np.full(shape=(imshape[0], imshape[1]),
+		fill_value=255, dtype=np.uint8)
         val = pred[:,:,i].astype(np.uint8)
         im_hsv = cv2.merge([hue, sat, val])
         im_rgb = cv2.cvtColor(im_hsv, cv2.COLOR_HSV2RGB)
@@ -293,59 +306,57 @@ def crf(im_softmax, im_rgb):
                            normalization=dcrf.NORMALIZE_SYMMETRIC)
     Q = d.inference(5)
     res = np.argmax(Q, axis=0).reshape((im_rgb.shape[0], im_rgb.shape[1]))
-    if mode is 'binary':
+    if mode == 'binary':
         return res * 255.0
-    if mode is 'multi':
+    if mode == 'multi':
         res_hot = to_categorical(res) * 255.0
         res_crf = add_masks(res_hot)
         return res_crf
 
 def train():
-	image_paths=[os.path.join('./dataset/Train', x) for x in sorted_fns('./dataset/Train')]
-	annot_paths=[os.path.join('./dataset/Train_Annotations', x) for x in sorted_fns('./dataset/Train_Annotations')]
+	image_paths=[os.path.join(TRAIN, x) for x in sorted_fns(TRAIN)]
+	annot_paths=[os.path.join(ANNOT, x) for x in sorted_fns(ANNOT)]
 	if 'unet' in model_name:
 		model = unet(pretrained=True, base=4)
 	elif 'fcn_8' in model_name:
 		model = fcn_8(pretrained=True, base=4)
 	tg = DataGenerator(image_paths=image_paths,
-                    annot_paths=annot_paths,
-                    batch_size=5)
+		annot_paths=annot_paths,
+		batch_size=5)
 	checkpoint = ModelCheckpoint(model_name+'.h5',
 	monitor='dice', verbose=1, mode='max', save_best_only=True,
-    save_weights_only=True, period=10)
+	save_weights_only=True, period=10)
 	model.fit_generator(generator=tg,
-                     steps_per_epoch=len(tg),
-                     epochs=500,
-                     verbose=1,
-                     callbacks=[checkpoint])
+		steps_per_epoch=len(tg),
+		epochs=500,
+		verbose=1,
+		callbacks=[checkpoint])
 
 def predict(filename, CALC_CRF=True):
-    model = model_name(pretrained=True, base=4)
-    model.model.load_weights(model_name+'.h5')
-#    model = load_model(model_name+'.h5',custom_objects={'dice': dice})
-    im_cv = cv2.imread(filename)
-    im = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB).copy()
-    tmp = np.expand_dims(im, axis=0)
-    roi_pred = model.predict(tmp)
-    if n_classes == 1:
-        roi_mask = roi_pred.squeeze()*255.0
-        roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
-    elif n_classes > 1:
-        roi_mask = add_masks(roi_pred.squeeze()*255.0)
-    if CALC_CRF:
-        if n_classes == 1:
-            roi_pred = roi_pred.squeeze()
-            roi_softmax = np.stack([1-roi_pred, roi_pred], axis=2)
-            roi_mask = crf(roi_softmax, im)
-            roi_mask = np.array(roi_mask, dtype=np.float32)
-            roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
-        elif n_classes > 1:
-            roi_mask = crf(roi_pred.squeeze(), im)
-    pos = np.count_nonzero(roi_mask)/3 # Number of white pixels
-    neg = np.count_nonzero(roi_mask==0)/3
-    print('Positive white pixels {}'.format(pos))
-    cv2.imwrite('masked_{}'.format(filename), roi_mask)
-
-if __name__ == '__main__':
-	train()
-	predict('test.jpg')
+	if 'unet' in model_name:
+		model = unet(pretrained=True, base=4)
+	elif 'fcn_8' in model_name:
+		model = fcn_8(pretrained=True, base=4)
+	model.load_weights(model_name+'.h5')
+	im_cv = cv2.imread(filename)
+	im = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB).copy()
+	tmp = np.expand_dims(im, axis=0)
+	roi_pred = model.predict(tmp)
+	if n_classes == 1:
+		roi_mask = roi_pred.squeeze()*255.0
+		roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
+	elif n_classes > 1:
+		roi_mask = add_masks(roi_pred.squeeze()*255.0)
+	if CALC_CRF:
+		if n_classes == 1:
+			roi_pred = roi_pred.squeeze()
+			roi_softmax = np.stack([1-roi_pred, roi_pred], axis=2)
+			roi_mask = crf(roi_softmax, im)
+			roi_mask = np.array(roi_mask, dtype=np.float32)
+			roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
+		elif n_classes > 1:
+			roi_mask = crf(roi_pred.squeeze(), im)
+	pos = np.count_nonzero(roi_mask)/3 # Number of white pixels
+	neg = np.count_nonzero(roi_mask==0)/3
+	print('Positive white pixels {}'.format(pos))
+	cv2.imwrite('masked_{}'.format(filename.split('/')[-1]), roi_mask)

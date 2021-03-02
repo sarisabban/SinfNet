@@ -6,6 +6,7 @@ import keras
 import numpy as np
 import imgaug as ia
 import matplotlib.pyplot as plt
+import xml.etree.ElementTree as ET
 from collections import defaultdict
 from imgaug import augmenters as iaa
 from keras.preprocessing import image
@@ -14,11 +15,10 @@ from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from PIL import Image
 from .DAOD import *
 
-def augment(input_path='./dataset/Train',
+def augment_cnn(input_path='./dataset/Train',
 				output_path='./dataset/Augmented',
 				count=10):
 	''' Augments images and saves them into a new directory '''
-	os.makedirs('./dataset/Augmented', exist_ok=True)
 	for Images in os.listdir(input_path):
 		gen = ImageDataGenerator(	featurewise_center=False,
 									samplewise_center=False,
@@ -47,7 +47,7 @@ def augment(input_path='./dataset/Train',
 		name  = Images.split('.')[0]
 		size  = img.size
 		image = img_to_array(img)
-		image = image.reshape(1, size[0], size[1], 3)
+		image = image.reshape(1, size[1], size[0], 3)
 		image = image.astype('float32')
 		gen.fit(image)
 		images_flow = gen.flow(image, batch_size=1)
@@ -64,10 +64,8 @@ def augment_bbox(image_input='./dataset/Train',
 				bbox_output='./dataset/Augmented_Annotations',
 				count=10,
 				input_format='csv',
-				output_format='xml'):
-	''' Augment images with bounding boxes and saves them into a new directory '''
-	os.makedirs('./dataset/Augmented', exist_ok=True)
-	os.makedirs('./dataset/Augmented_Annotations', exist_ok=True)
+				output_format='csv'):
+	'''Augment images with bounding boxes and saves them into a new directory'''
 	if input_format == 'txt':
 		BBOX = defaultdict(list)
 		for filename in os.listdir(bbox_input):
@@ -83,7 +81,7 @@ def augment_bbox(image_input='./dataset/Train',
 					y = int(line[1])
 					w = int(line[2])
 					h = int(line[3])
-					BBOX[filename].append([x, y, w, h, label])
+					BBOX[filename].append([x, y, x+w, y+h, label])
 	elif input_format == 'csv':
 		TheLines = []
 		BBOX = defaultdict(list)
@@ -97,41 +95,29 @@ def augment_bbox(image_input='./dataset/Train',
 				y = int(line[3].split(',')[0])
 				w = int(line[4].split(',')[0])
 				h = int(line[5].split(',')[0].split('}')[0])
-				BBOX[filename].append([x, y, w, h, label])
+				BBOX[filename].append([x, y, x+w, y+h, label])
 	elif input_format == 'xml':
 		TheLines = []
 		BBOX = defaultdict(list)
 		for item in os.listdir(bbox_input):
-			with open('{}/{}'.format(bbox_input, item), 'r') as F:
-				next(F)
-				filename = F.readline().strip().split()[0].split('>')[1].split('<')[0]
-				Xx = []
-				Yy = []
-				Ww = []
-				Hh = []
-				Llabel = []
-				for line in F:
-					line = line.strip().split()[0]
-					if '<xmin>' in line:
-						Xx.append(line.split('>')[1].split('<')[0])
-					elif '<ymin>' in line:
-						Yy.append(line.split('>')[1].split('<')[0])
-					elif '<xmax>' in line:
-						Ww.append(line.split('>')[1].split('<')[0])
-					elif '<ymax>' in line:
-						Hh.append(line.split('>')[1].split('<')[0])
-					elif '<name>' in line:
-						Llabel.append(line.split('>')[1].split('<')[0])
-				for x, y, w, h, label in zip(Xx, Yy, Ww, Hh, Llabel):
-					x = int(x)
-					y = int(y)
-					w = int(w)
-					h = int(h)
-					BBOX[filename].append([x, y, w, h, label])
+			root = ET.parse('{}/{}'.format(bbox_input, item)).getroot()
+			for o in root:
+				if o.tag == 'filename':
+					filename = o.text
+				if o.tag == 'object':
+					for b in o:
+						if b.tag == 'name':
+							label = b.text
+						if b.tag == 'bndbox':
+							x = float(b[0].text)
+							y = float(b[1].text)
+							w = float(b[2].text)
+							h = float(b[3].text)
+							BBOX[filename].append([x, y, x+w, y+h, label])
 	for Images in os.listdir(image_input):
 		Iname = Images.split('.')[0]
-		bboxes = np.array(BBOX[Images], dtype=object)
 		img = cv2.imread('{}/{}'.format(image_input, Images))[:,:,::-1]
+		bboxes = np.array(BBOX[Images], dtype=object)
 		for i in range(count):
 			seq = Sequence([
 				RandomHorizontalFlip(0.5),
@@ -156,7 +142,10 @@ def augment_bbox(image_input='./dataset/Train',
 			elif output_format == 'csv':
 				Boutput = '{}/Augmented.csv'.format(bbox_output)
 				with open(Boutput, 'a+') as f:
-					header = 'filename,file_size,file_attributes,region_count,region_id,region_shape_attributes,region_attributes\n'
+					header1 = 'filename,file_size,file_attributes,'
+					header2 = 'region_count,region_id,region_shape_attributes,'
+					header2 = 'region_attributes\n'
+					header = header1 + header2 + header3
 					line = f.seek(0)
 					if f.readline() != header:
 						f.write(header)
@@ -171,7 +160,7 @@ def augment_bbox(image_input='./dataset/Train',
 						label = line[4]
 						filename = 'Aug_{}-{}.jpg'.format(Iname, i+1)
 						total = bboxes_.shape[0]
-						size=os.stat('{}/{}'.format(image_input, Images)).st_size
+						size=os.stat('{}/{}'.format(image_input,Images)).st_size
 						items += 1
 						TheLine = '{},{},"{{}}",{},{},"{{""name"":""rect"",""x"":{},""y"":{},""width"":{},""height"":{}}}","{{""{}"":""""}}"\n'\
 						.format(filename, size, total, items, x, y, w, h, label)
@@ -186,7 +175,8 @@ def augment_bbox(image_input='./dataset/Train',
 					f.write('<annotation>\n')
 					f.write('\t<filename>{}.jpg</filename>\n'.format(filename))
 					f.write('\t<source>{}</source>\n'.format(source))
-					f.write('\t<path>../dataset/Train/{}.jpg</path>\n'.format(filename))
+					f.write('\t<path>../dataset/Train/{}.jpg</path>\n'\
+					.format(filename))
 					f.write('\t<size>\n')
 					f.write('\t\t<width>{}</width>\n'.format(W))
 					f.write('\t\t<height>{}</height>\n'.format(H))
@@ -213,12 +203,9 @@ def augment_bbox(image_input='./dataset/Train',
 						f.write('\t\t</bndbox>\n')
 						f.write('\t</object>\n')
 					f.write('</annotation>')
-			#plotted_img = draw_rect(img_, bboxes_)
-			#plt.imshow(plotted_img)
-			#plt.show()
 			print('Completed: {} {}'.format(Ioutput, Boutput))
 
-def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
+def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_input='dataset/1.json', poly_output='/dataset', count=2):
 	'''
 	MIT License
 
@@ -247,84 +234,64 @@ def augment_poly(TheImage, im_out, ann_path, ann_output, iterations):
 	https://www.youtube.com/watch?v=-Z7Sx2sS8z8
 	'''
 	''' Augment images with polygons and saves them into a new directory '''
-	try:
-		for iters in range(int(iterations)):
-			seq = iaa.Sequential([
-				iaa.Fliplr(0.5),
-				iaa.Flipud(0.5),
-				iaa.Multiply((0.7, 1.0)),
-				iaa.Affine(
-						translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
-						rotate=(-90, 90),
-						shear=(-16, 16),
-						mode=ia.ALL),
-				iaa.Sometimes(0.5, iaa.Dropout((0.001, 0.01), per_channel=0.5))
-				], random_order=True)
-			seq_det = seq.to_deterministic()
-			im = cv2.imread(TheImage, 1)
-			#im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-			with open(ann_path) as handle: data = json.load(handle)
-			shape_dicts = data['shapes']
-			points = []
-			aug_shape_dicts = []
-			i = 0
-			for shape in shape_dicts:
-				for pairs in shape['points']:
-					points.append(ia.Keypoint(x=pairs[0], y=pairs[1]))
-				_d = {}
-				_d['label'] = shape['label']
-				_d['index'] = (i, i+len(shape['points']))
-				aug_shape_dicts.append(_d)
-				i += len(shape['points'])
-			W, H = Image.open(TheImage).size
-			keypoints = ia.KeypointsOnImage(points, shape=(W,H,3))###### Switch if incorrect
-			image_aug = seq_det.augment_images([im])[0]
-			keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
-			for shape in aug_shape_dicts:
-				start, end = shape['index']
-				aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
-				shape['points'] = aug_points
-			NewName = TheImage.split('/')[-1].split('.')[0]
-			print('{}/Aug_{}-{}.jpg'.format(im_out, NewName, str(iters+1)))
-			cv2.imwrite('{}/Aug_{}-{}.jpg'.format(im_out, NewName, str(iters+1)), image_aug)
-			with open('{}/Aug_{}-{}.json'.format(ann_output, NewName, str(iters+1)), 'w+') as f:
-				version = data['version']
-				flags = data['flags']
-				lineColor = data['lineColor']
-				fillColor = data['fillColor']
-				path = '.{}/Aug_{}'.format(im_out, TheImage.split('/')[-1])
-				imageData = data['imageData']
-				W, H = Image.open(TheImage).size
-				header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
-				.format(version, flags, lineColor, fillColor, path, imageData, W, H)
-				f.write(header)
-				for info in aug_shape_dicts:
-					shape_type = 'polygon'
-					line_color = 'null'
-					fill_color = 'null'
-					label = info['label']
-					points = info['points']
-					body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
-					.format(label, line_color, fill_color, points, shape_type)
-					f.write(body)
-				loc = f.seek(0, os.SEEK_END)
-				f.seek(loc-1)
-				f.write(']}')
-	except Exception as error: pass
-
-if __name__ == '__main__':
-	augment(input_path='./dataset/Train',
-			output_path='./dataset/Augmented',
-			count=10)
-	augment_bbox(image_input='./I',
-		image_output='./AI',
-		bbox_input='./A',
-		bbox_output='./AA',
-		count=2,
-		input_format='txt',
-		output_format='txt')
-	augment_poly('../dat/images/1.jpg',
-				'../dat/aug_images',
-				'../dat/annotated/1.json',
-				'../dat/aug_annoted',
-				3)
+	for iters in range(int(count)):
+		seq = iaa.Sequential([
+			iaa.Fliplr(0.5),
+			iaa.Flipud(0.5),
+			iaa.Multiply((0.7, 1.0)),
+			iaa.Affine(
+					translate_percent={"x": (-0.2, 0.2), "y": (-0.2, 0.2)},
+					rotate=(-90, 90),
+					shear=(-16, 16),
+					mode=ia.ALL),
+			iaa.Sometimes(0.5, iaa.Dropout((0.001, 0.01), per_channel=0.5))
+			], random_order=True)
+		seq_det = seq.to_deterministic()
+		im = cv2.imread(image_input, 1)
+		with open(poly_input) as handle: data = json.load(handle)
+		shape_dicts = data['shapes']
+		points = []
+		aug_shape_dicts = []
+		i = 0
+		for shape in shape_dicts:
+			for pairs in shape['points']:
+				points.append(ia.Keypoint(x=pairs[0], y=pairs[1]))
+			_d = {}
+			_d['label'] = shape['label']
+			_d['index'] = (i, i+len(shape['points']))
+			aug_shape_dicts.append(_d)
+			i += len(shape['points'])
+		W, H = Image.open(image_input).size
+		keypoints = ia.KeypointsOnImage(points, shape=(H,W,3))# Switch if polygons are in the wrong location
+		image_aug = seq_det.augment_images([im])[0]
+		keypoints_aug = seq_det.augment_keypoints([keypoints])[0]
+		for shape in aug_shape_dicts:
+			start, end = shape['index']
+			aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
+			shape['points'] = aug_points
+		NewName = image_input.split('/')[-1].split('.')[0]
+		print('{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1)))
+		cv2.imwrite('{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1)), image_aug)
+		with open('{}/Aug_{}-{}.json'.format(poly_output, NewName, str(iters+1)), 'w+') as f:
+			version = data['version']
+			flags = data['flags']
+			lineColor = data['lineColor']
+			fillColor = data['fillColor']
+			path = '.{}/Aug_{}'.format(image_output, image_input.split('/')[-1])
+			imageData = data['imageData']
+			W, H = Image.open(image_input).size
+			header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
+			.format(version, flags, lineColor, fillColor, path, imageData, W, H)
+			f.write(header)
+			for info in aug_shape_dicts:
+				shape_type = 'polygon'
+				line_color = 'null'
+				fill_color = 'null'
+				label = info['label']
+				points = info['points']
+				body = '\n\t{{"label": "{}",\n\t\t"line_color": {},\n\t\t"fill_color": {},\n\t\t"points": {},\n\t\t"shape_type": "{}"}},'\
+				.format(label, line_color, fill_color, points, shape_type)
+				f.write(body)
+			loc = f.seek(0, os.SEEK_END)
+			f.seek(loc-1)
+			f.write(']}')

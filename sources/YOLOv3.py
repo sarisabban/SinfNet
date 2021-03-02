@@ -26,7 +26,6 @@ SOFTWARE.
 This script is modified from https://github.com/experiencor/keras-yolo3
 '''
 
-
 import os
 import sys
 import cv2
@@ -36,8 +35,8 @@ import scipy
 import keras
 import pickle
 import numpy as np
-import tensorflow as tf
 from scipy import special
+import tensorflow.compat.v1 as tf
 import xml.etree.ElementTree as ET
 from keras.utils import Sequence
 from keras.optimizers import Adam
@@ -47,40 +46,76 @@ from keras.layers.merge import add, concatenate
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Lambda, concatenate, ZeroPadding2D, UpSampling2D, Lambda, Conv2D, Input, BatchNormalization, LeakyReLU
 
-WEIGHTS = sys.argv[2]
-FILE = sys.argv[3]
-LABELS = ' '.join(sys.argv[4:])
-
-config = {"model":{
-			"min_input_size":       288,
-			"max_input_size":       448,
-			"anchors":              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
-			"labels":               LABELS},
-		"train":{
-			"train_image_folder":   "./dataset/Train/",
-			"train_annot_folder":   "./dataset/Annotations/",
-			"tensorboard_dir":      "./logs",
-			"saved_weights_name":   './{}.h5'.format(WEIGHTS),
-			"cache_name":           "./{}.pkl".format(WEIGHTS),
-			"pretrained_weights":   "",
-			"train_times":          8,
-			"batch_size":           16,
-			"learning_rate":        1e-4,
-			"nb_epochs":            1000,
-			"warmup_epochs":        0,
-			"ignore_thresh":        0.5,
-			"gpus":                 "0,1",
-			"grid_scales":          [1,1,1],
-			"obj_scale":            5,
-			"noobj_scale":          1,
-			"xywh_scale":           1,
-			"class_scale":          1,
-			"debug":                False},
-		"valid":{
-			"valid_image_folder":   "./dataset/Valid/",
-			"valid_annot_folder":   "./dataset/Valid_Annotations/",
-			"cache_name":           "",
-			"valid_times":          1}}
+if sys.argv[1] == '-yt' or sys.argv[1] == '-yp':
+	if sys.argv[1] == '-yt':
+		WEIGHTS = sys.argv[2]
+		LABELS = sys.argv[5:]
+		TRAIN = sys.argv[3]
+		ANNOT = sys.argv[4]
+		config = {'model':{
+					'min_input_size':       288,
+					'max_input_size':       448,
+					'anchors':              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
+					'labels':               LABELS},
+				'train':{
+					'train_image_folder':   TRAIN,
+					'train_annot_folder':   ANNOT,
+					'tensorboard_dir':      './logs',
+					'saved_weights_name':   './{}.h5'.format(WEIGHTS),
+					'cache_name':           './{}.pkl'.format(WEIGHTS),
+					'pretrained_weights':   '',
+					'train_times':          8,
+					'batch_size':           16,
+					'learning_rate':        1e-4,
+					'nb_epochs':            100,
+					'warmup_epochs':        0,
+					'ignore_thresh':        0.5,
+					'gpus':                 '0,1',
+					'grid_scales':          [1,1,1],
+					'obj_scale':            5,
+					'noobj_scale':          1,
+					'xywh_scale':           1,
+					'class_scale':          1,
+					'debug':                False},
+				'valid':{
+					'valid_image_folder':   '',
+					'valid_annot_folder':   '',
+					'cache_name':           '',
+					'valid_times':          1}}
+	elif sys.argv[1] == '-yp':
+		WEIGHTS = sys.argv[2]
+		with open(sys.argv[3], 'rb') as f: LABELS = pickle.load(f)
+		print(LABELS)
+		config = {'model':{
+					'min_input_size':       288,
+					'max_input_size':       448,
+					'anchors':              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
+					'labels':               LABELS},
+				'train':{
+					'train_image_folder':   '',
+					'train_annot_folder':   '',
+					'tensorboard_dir':      '',
+					'saved_weights_name':   './{}'.format(WEIGHTS),
+					'cache_name':           '',
+					'pretrained_weights':   '',
+					'train_times':          8,
+					'batch_size':           16,
+					'learning_rate':        1e-4,
+					'nb_epochs':            100,
+					'warmup_epochs':        0,
+					'ignore_thresh':        0.5,
+					'gpus':                 '0,1',
+					'grid_scales':          [1,1,1],
+					'obj_scale':            5,
+					'noobj_scale':          1,
+					'xywh_scale':           1,
+					'class_scale':          1,
+					'debug':                False},
+				'valid':{
+					'valid_image_folder':   '',
+					'valid_annot_folder':   '',
+					'cache_name':           '',
+					'valid_times':          1}}
 
 class YoloLayer(Layer):
 	def __init__(self, anchors, max_grid, batch_size, warmup_batches, ignore_thresh, grid_scale, obj_scale, noobj_scale, xywh_scale, class_scale, **kwargs):
@@ -908,6 +943,7 @@ class BatchGenerator(Sequence):
 		return np.array(annots)
 	def load_image(self, i):
 		return cv2.imread(self.instances[i]['filename'])
+
 def parse_voc_annotation(ann_dir, img_dir, cache_name, labels=[]):
 	if os.path.exists(cache_name):
 		with open(cache_name, 'rb') as handle:
@@ -1128,8 +1164,10 @@ def create_model(
 	train_model.compile(loss=dummy_loss, optimizer=optimizer)
 	return train_model, infer_model
 
-def main_train():
+def train():
 	'''Parse the annotations'''
+	L = config['model']['labels']
+	with open('labels.pkl', 'wb') as f: pickle.dump(L, f)
 	train_ints, valid_ints, labels, max_box_per_image = create_training_instances(
 		config['train']['train_annot_folder'],
 		config['train']['train_image_folder'],
@@ -1201,9 +1239,9 @@ def main_train():
 		print(labels[label] + ': {:.4f}'.format(average_precision))
 	print('mAP: {:.4f}'.format(sum(average_precisions.values()) / len(average_precisions)))
 
-def main_predict(WEIGHTS, FILENAME, output_path):
-	config_path		= config
-	input_path		= FILENAME
+def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
+	config_path	= config
+	input_path = FILENAME
 	net_h, net_w = 416, 416
 	obj_thresh, nms_thresh = 0.5, 0.45
 	os.environ['CUDA_VISIBLE_DEVICES'] = config['train']['gpus']
@@ -1260,11 +1298,7 @@ def main_predict(WEIGHTS, FILENAME, output_path):
 		image_paths = [inp_file for inp_file in image_paths if (inp_file[-4:] in ['.jpg', '.png', 'JPEG'])]
 		for image_path in image_paths:
 			image = cv2.imread(image_path)
-			print(image_path)
 			boxes = get_yolo_boxes(infer_model, [image], net_h, net_w, config['model']['anchors'], obj_thresh, nms_thresh)[0]
-			draw_boxes(image, boxes, config['model']['labels'], obj_thresh)
-			cv2.imwrite(output_path + image_path.split('/')[-1], np.uint8(image))
-
-if __name__ == '__main__':
-	main_train()
-	main_predict(sys.argv[2], sys.argv[3], './')
+			draw_boxes(image, boxes, config['model']['labels'], obj_thresh)			
+			cv2.imwrite('object_{}'.format(FILENAME), np.uint8(image))
+			print('[+] Exported object_{}'.format(FILENAME))

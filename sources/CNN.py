@@ -17,11 +17,12 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from sklearn.metrics import classification_report, confusion_matrix
 
-def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./dataset/Test/image.jpg'):
+def CNN(network='VGG16', choice='predict', weights='weights.h5',
+									Train     ='./dataset/Train',
+									Valid     ='./dataset/Valid',
+									Tests     ='./dataset/Tests',
+									prediction='./dataset/Test/image.jpg'):
 	''' Train images using one of several CNNs '''
-	Train   = './dataset/Train'
-	Valid   = './dataset/Valid'
-	Tests   = './dataset/Test'
 	shape   = (224, 224)
 	epochs  = 20
 	batches = 16
@@ -31,11 +32,11 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg16.preprocess_input)
-		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+		valid =IDG.flow_from_directory(Valid,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+		tests =IDG.flow_from_directory(Tests,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=False)
 		input_shape = train.image_shape
 		model = VGG16(weights=None, input_shape=input_shape,
@@ -44,11 +45,11 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg19.preprocess_input)
-		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+		valid =IDG.flow_from_directory(Valid,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+		tests =IDG.flow_from_directory(Tests,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=False)
 		input_shape = train.image_shape
 		model = VGG16(weights=None, input_shape=input_shape,
@@ -57,11 +58,11 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.resnet50.preprocess_input)
-		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+		valid =IDG.flow_from_directory(Valid,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+		tests =IDG.flow_from_directory(Tests,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=False)
 		input_shape = train.image_shape
 		model = ResNet50(weights=None, input_shape=input_shape,
@@ -70,11 +71,11 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.densenet.preprocess_input)
-		train = IDG.flow_from_directory(Train, target_size=shape, color_mode='rgb',
+		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		valid = IDG.flow_from_directory(Valid, target_size=shape, color_mode='rgb',
+		valid =IDG.flow_from_directory(Valid,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=True)
-		tests = IDG.flow_from_directory(Tests, target_size=shape, color_mode='rgb',
+		tests =IDG.flow_from_directory(Tests,target_size=shape,color_mode='rgb',
 			classes=classes, batch_size=batches, shuffle=False)
 		input_shape = train.image_shape
 		model = DenseNet201(weights=None, input_shape=input_shape,
@@ -144,9 +145,3 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5', prediction='./d
 			prediction = model.predict(im)
 			print(prediction)
 			print(keras.applications.densenet201.decode_predictions(prediction))
-
-if __name__ == '__main__':
-	CNN(network='VGG16',
-		choice='predict',
-		weights='weights.h5',
-		prediction='./dataset/Test/image.jpg')
