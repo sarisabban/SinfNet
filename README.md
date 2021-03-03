@@ -151,7 +151,7 @@ Where NETWORK is the name of the convolutional neural network that you want to u
 #### For object detection
 1. Use the following command to train the network on your dataset:
 
-`python SinfNet.py --object_train WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...` for example `python SinfNet.py -ot Amoeba ./dataset/Images ./dataset/Annotations Active Inactive`
+`python SinfNet.py --object_train WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python SinfNet.py -ot Amoeba ./dataset/Images ./dataset/Annotations Active Inactive`
 
 The WEIGHTS is the name of the output weight.h5 file, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). The network is resource heavy and requires a multiple GPUs and more than 32GB of RAM to run (depending on dataset size). Therefore some cloud GPU services may not work and a larger system is required.
 
@@ -166,7 +166,7 @@ The WEIGHTS is the name of the output weight.h5 file, TRAIN is the directory of 
 #### For semantic segmentation
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` for example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive Inactive`
+`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive Inactive`
 
 Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background), the NETWORK can be wither unet or fcn_8, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). As with object detection, including pre-trained weights is possible:
 
@@ -184,135 +184,23 @@ Where MODE can be either binary (for single or multiple classes being coloured w
 
 Where the NETWORK is the name of the network that was used to generate the WEIGHTS.h5 file (using different a network than the weights file does not work), WEIGHTS is the name of the .h5 weights file, and FILENAME is the name of the image file.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #### For object detection
-1. Download the relevant weights file (links available in table above) or generate the file from the steps above (Setting up a dataset and Training the neural network).
+1. Download the relevant weights and labels files (links available in table above) or generate the file from the steps above (Setting up a dataset and Training the neural network).
 
-2. Detect objects in your image/video/webcam using the following command:
+2. Detect objects in your image, video, or webcam using the following command:
 
-`python SinfNet.py --object_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -op Amoeba.h5 image.jpg Active Inactive`
+`python SinfNet.py --object_predict WEIGHTS LABELS FILENAME` example `python SinfNet.py -op Amoeba.h5 labels.pkl image.jpg`
 
-Where WEIGHTS.h5 is the weights file, the FILENAME can be either a .jpg image, .mp4 video, or a webcam input, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Where WEIGHTS is the weights.h5 file, LABELS is the labels.pkl file, and FILENAME can be either a .jpg image, .mp4 video, or a webcam input.
 
 #### For semantic segmentation
-1. Use the following command to predict/detect:
+1. Download the relevant weights and labels files (links available in table above) or generate the file from the steps above (Setting up a dataset and Training the neural network).
 
-`python SinfNet.py --semantic_predict FILENAME` example `python SinfNet.py -sp image.jpg`
+2. Detect objects in your image using the following command:
 
-The weights directory (*./models*) must be present in the same working directory as the SinfNet.py script for this command to work.
+`python SinfNet.py --semantic_predict NETWORK MODE FILENAME` example `python SinfNet.py -sp unet binary image.jpg`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Where NETWORK can be wither unet or fcn_8, MODE either binary or multi, and FILENAME is the name of the image file.
 
 ## Nematode Biomass Approximation:
 `python SinfNet.py --biomass W H D w h P` or `python SinfNet.py -B 1000 1000 100 256 256 15892`
