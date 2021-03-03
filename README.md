@@ -30,8 +30,7 @@ All datasets used are available here for download, along with their neural netwo
 |[Nematode Trophic Classification by Head Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
 |[Nematode Trophic Classification by Body Dataset]()|ResNet50|[Weights]()|         |
 |[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)                     |UNet    |[Weights](https://www.dropbox.com/s/cf7g62fil44r2mj/unet_binary.h5?dl=0)   |0.95896        |
-|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)           |YOLOv3\ |[Object Weights]()\ |       \        |
-|                                                                                                                           |UNet    |[Semantic Weights]()|                |
+|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)           |YOLOv3 <br /> UNet |[Object Weights]() <br /> [Semantic Weights]() |       <br />        |
 
 ## How to use:
 This is a [Video]() on how to use this whole setup.
