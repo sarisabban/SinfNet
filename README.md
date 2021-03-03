@@ -19,17 +19,6 @@ This is a collection of datasets and neural networks to detect or classify micro
 
 <sub>*Either classifies nematodes according to trophic level (CNN), or detects generic nematodes (Object Detection), or detects nematodes pixel wise (Semantic Segmentation) for biomass calculation*</sub>
 
-
-
-
-
-
-
-
-
-
-
-
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
 
@@ -38,44 +27,14 @@ All datasets used are available here for download, along with their neural netwo
 |[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                    |YOLOv3  |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
 |[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                             |YOLOv3  |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
 |[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)              |YOLOv3  |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
-|[Nematode Trophic Classification Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
+|[Nematode Trophic Classification Dataset by Head](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
+|[Nematode Trophic Classification Dataset by Body]()|ResNet50|[Weights]()|         |
 |[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)             |UNet    |[Weights](https://www.dropbox.com/s/cf7g62fil44r2mj/unet_binary.h5?dl=0)   |0.95896        |
-|[Protist Classification Dataset](https://www.dropbox.com/s/ioiw2pcynpcaq4k/Protists.tar.bz2?dl=0)                  |YOLOv3  |[Weights]()|               |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)   |YOLOv3\ |[Object Weights]()\ |       \        |
+|                                                                                                                   |UNet    |[Semantic Weights]()|                |
 
 ## How to use:
 This is a [Video]() on how to use this setup.
-
-
-
-
-
-
-
-
-
-
 
 ### Update your system and install libraries.
 This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this script you will need to first update your system and install the dependencies, within a virtual environment, using the following commands:
@@ -94,209 +53,110 @@ This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this scrip
 
 `deactivate`
 
-
-
-
-
-
-
-
-
-
-
-
-
 ### Setting up a dataset
-If you want to develop your own dataset and train it follow these steps otherwise skip to section **Detection**. For help use this command:
+If you want to develop your own dataset and train it follow these steps, otherwise skip to the **Detection** section. For help use this command:
 
 `python SinfNet.py --help` or `python SinfNet.py -h`
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### For object detection
-1.1 Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format.
-
-1.2 If you can generate a total-slide scan (a single image of an entire slide) you can segment this large image into smaller images to build your dataset, use the following command to segment:
-
-`python SinfNet.py --segment FILENAME WIDTH HIGHT` or `python SinfNet.py -S diatoms.jpg 2584 1936`
-
-2. Make a directory called *dataset* and within it in make the following directories:
-
-        ./dataset/Annotations
-        ./dataset/Train
-        ./dataset/Valid
-        ./dataset/Valid_Annotations
-
-Your images should be in *./dataset/Train*. It is best to stick to this structure with these names exactly, otherwise you will have to change these path names within each relevant script, so stick to these names and keep it simple.
-
-If you would like to augment the images that have object detection annotations (bounding boxes) use the following command:
-
-`python SinfNet.py --augment_bbox NUMBER INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -ab 10 txt xml`
-
-Where NUMBER is the number of augments to each image, INPUT_FORMAT is the file format of the images annotations, and OUTPUT_FORMAT is the desired output format of the augmented annotations. This will generate a new directory called *Augmented* (and *Augmented_Annotations* for object detection) with all the saved augmented images in it. Only these augmented images should be used for training (by moving them to *./dataset/Train*) and not mixed with the original images (by moving the original images to *./dataset/Valid* and their .xml annotation to *./dataset/Valid_Annotations*).
-
-3. Open the web-based GUI annotation tool using the following command:
-
-`python SinfNet.py --via` or `python SinfNet.py -v`
-
-You must have FireFox for this to work.
-
-Use this tool for or bounding box annotation that will be used with object detection or polygon annotation that will be used with semantic segmentation. There is another tool only for bounding box annotation,  but it is prefeared not to used it, yet can be accessed using the following command:
-
-`python SinfNet.py --bbox` or `python SinfNet.py -b`
-
-You will be prompted to add the labels, then type *end* to finish adding the label and start the GUI program. A new directory called *BBox_Annotations* will be generated that will contain the annotations in .txt format.
-
-4. Watch the video to understand how to annotate using this tool, or read the manual under *Help > Getting Started*.
-
-5. Use the mouse to generate a bounding box around each object of interest and label it.
-
-6. Once finished, download your annotations as a .csv file.
-
-7. Convert the .csv file to a .xml file using the following command:
-
-`python SinfNet.py --translate_bbox IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tb ./dataset/Train ./dataset/Annotations ./dataset/Translations csv xml`
-
-Make sure to make the *./dataset/Translations* otherwise you will get an error.
-
-Where IMAGE_DIRECTORY is the path to the directory of images, ANNOTATION_INPUT the path to the directory with the files to be converted, ANNOTATION_OUTPUT the path to the directory where the converted files are to be saved, INPUT_FORMAT the input file format OUTPUTFORMAT the format to convert to.
-
-identify only the sigle file for the .csv and .json formats, txt and xml must identify the directory the multiple files reside in.
-
-8. Do not delete the .csv file, rather save it in case you want to rename any label.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### For semantic segmentation
-
-1. The *dataset* directory structure will be as follows:
-
-        ./dataset/Test
-        ./dataset/Test_Annotations
-        ./dataset/Train
-        ./dataset/Train_Annotations
-
-2. The neural network only takes images with dimentions that are multiples of 32, therefore it is possible to crop the images to satisfy this restriction using the following command:
-
-`python SinfNet.py --crop IMAGE_DIRECTORY` or `python SinfNet.py -C ./dataset/Train`
-
-A new direcory called Cropped will be generated with the cropped images in it.
-
-3. Follow the same steps as object detection except use polygons instead of squares to annotate the objects. The difference is to save the annotation as a .csv file [from top right Annotations > Export Annotations (as csv)] and rename appropriatly. Then you will have to convert the .csv file to multiple .json files using the following command:
-
-`python SinfNet.py --translate_poly IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUTFORMAT` or `python SinfNet.py -tp ./dataset/Train ./dataset/Nematode.csv ./dataset/Train_Annotations csv json`
-
-Where IMAGE_DIRECTORY is the path to the directory of images, ANNOTATION_INPUT the path to the directory with the files to be converted, ANNOTATION_OUTPUT the path to the directory where the converted files are to be saved, INPUT_FORMAT the input file format OUTPUTFORMAT the format to convert to. identify only the sigle file for the single .csv file or the directory with the .json files.
-
-If you would like to augment the images use the following command:
-
-`python SinfNet.py --augment_polygon CSV NUMBER` example `python SinfNet.py -ap ./dataset/Train/Nematodes.csv 10`
-
-Where CSV is the .csv file that contains the polygone annotations for the entire dataset. Then translate the .csv to .json files as above for training (augmented images go to *./dataset/Train* and the augmented annotation to *./dataset/Train_Annotations*, while the original images go to *./dataset/Test* and their annotations to *./dataset/Test_Annotations*).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### For classification
-1. The dataset should be have the following directory architecture. Within each directory a directory of the classes that includes all the images of that class, as such:
-
-    ./dataset/Test/
-                  class1/
-                        image1.jpg
-                        image2.jpg
-                  class2/
-                        image1.jpg
-                        image2.jpg
-
-    ./dataset/Train
-                  class1/
-                        image1.jpg
-                        image2.jpg
-                  class2/
-                        image1.jpg
-                        image2.jpg
-                        
-    ./dataset/Valid
-                  class1/
-                        image1.jpg
-                        image2.jpg
-                  class2/
-                        image1.jpg
-                        image2.jpg
+#### For whole image classification
+1. Start by collecting enough images of the organism, more than 100 images is preferable.
 
 2. If you would like to augment the images use the following command:
 
-`python SinfNet.py --augment NUMBER` example `python SinfNet.py -a 10`
+`python SinfNet.py --augment_cnn IMAGE_INPUT IMAGE_OUTPUT NUMBER` example `python SinfNet.py -ac dataset/Images dataset/Augmented 10`
 
-Where NUMBER is the number of augments to each image. This will generate a new directory called *Augmented* with all the saved augmented images in it. Only these augmented images should be used for training (by moving them to *./dataset/Train/CLASS*) and not mixed with the original images (by moving the original images to *./dataset/Test/CLASS*).
+Where IMAGE_INPUT is the directory that contains the original images, IMAGE_OUTPUT is the directory to output the augmented images, and NUMBER is the number of augments to each image.
 
-3. Shuffle your dataset and randomly split each class into a *Training* (60% of images), *Testing* (20% of images), and *Validation* (20% of images) sets using the following command:
+3. Generate three directories: Train, Valid, and Tests. Then shuffle your dataset and randomly split each class into a *Training* (60% of images), *Testing* (20% of images), and *Validation* (20% of images) sets using the following command:
 
-`shuf -n NUMBER -e ./dataset/Train/CLASS | xargs -i mv {} ./dataset/Valid/CLASS`
+`shuf -n NUMBER -e Train/CLASS | xargs -i mv {} Valid/CLASS`
+`shuf -n NUMBER -e Train/CLASS | xargs -i mv {} Tests/CLASS`
 
-Where NUMBER is the number of images that will be moved (calculated as 60% or 20% of the total images in the dataset), and CLASS is the specific class for the images. This is to ensure that the sets are randomly split before training the neural network.
+Where NUMBER is the number of images that will be moved (calculated as 60% or 20% of the total images in the dataset), and CLASS is the specific class (label) for the images. This is to ensure that the sets are randomly split before training the neural network.
+
+#### For object detection
+1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format. If you can generate a total-slide scan (a single image of an entire slide) you can segment this large image into smaller images to build your dataset, use the following command to segment:
+
+`python SinfNet.py --segment FILENAME WIDTH HIGHT` example `python SinfNet.py -S Diatoms.jpg 2584 1936`
+
+2. Open the web-based GUI annotation tool using the following command:
+
+`python SinfNet.py --via` example `python SinfNet.py -v`
+
+You must have FireFox for this to work. Add the labels under Attributes > Attribute name found in the bottom left, then start annotating each image.
+
+3. Once finished, download and save your annotations as a .csv file from Annotations > Export Annotations (as csv) found in the top left.
+
+4. Do not delete the .csv file, rather save it in case you want to rename/fix/change any of the labels.
+
+5. Convert the .csv file to .xml files using the following command:
+
+`python SinfNet.py --translate_bbox IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -tb ./dataset/Images ./dataset/Annotations ./dataset/Translations csv xml`
+
+Where IMAGE_DIRECTORY is the directory where the images are located, ANNOTATION_INPUT is the the directory or file (.csv) where the annotations are located, ANNOTATION_OUTPUT is the the directory where the translated annotation will be outputted, INPUT_FORMAT is the format of the input annotations, OUTPUT_FORMAT is the format of the output annotations. Identify only the sigle file for the .csv, while .json .txt .xml files must identify the directory the multiple files reside in.
+
+6. If you would like to augment the images that have object detection annotations (bounding boxes) use the following command:
+
+`python SinfNet.py --augment_bbox IMAGE_INPUT IMAGE_OUTPUT ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT NUMBER` example `python SinfNet.py -ab ./dataset/Images ./dataset/Augmented_Images ./dataset/Augments.csv ./dataset/Augmented_Annotations csv xml 10`
+
+Where IMAGE_INPUT is the directory where the images are located, IMAGE_OUTPUT is the directory where the augmented images will be outputted, ANNOTATION_INPUT is the directory or file where the annotations are located, ANNOTATION_OUTPUT is the directory where the augmented annotations will be outputted, INPUT_FORMAT is the format of the input annotations, OUTPUT_FORMAT is the format of the output annotations, and NUMBER is the number of augments per image. Identify only a sigle file for the .csv, while .json .txt .xml files must identify the directory the multiple files reside in.
+
+7. To check that the bounding box augmentations was performed correctly (the augmented boxes are ontop on the object in the augmented images) use the following command:
+
+`python SinfNet.py --check_box IMAGE_INPUT ANNOTATION_INPUT` exmaple `python SinfNet.py -Cb ./dataset/Augmented_Images ./dataset/Augmented_Annotations`
+
+Where IMAGE_INPUT is the directory where the images are located and ANNOTATION_INPUT is the directory where the annotations are located.
+
+#### For semantic segmentation
+
+1. The UNet neural network in this project only takes images with dimentions that are multiples of 32, therefore it is possible to crop the images to satisfy this restriction using the following command:
+
+`python SinfNet.py --crop FILENAME` example `python SinfNet.py -C ./dataset/Images/1.jpg`
+
+This command works on single images, if you have multiple images you will have to construct a loop to go through all of them.
+
+2. Follow the same steps as object detection except use polygons instead of squares to annotate the organisms.
+
+3. Convert the .csv file to .json files using the following command:
+
+`python SinfNet.py --translate_poly IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT` example `python SinfNet.py -tp ./dataset/Images ./dataset/Annotations.csv ./dataset/Translations csv json`
+
+Where IMAGE_DIRECTORY is the directory where the images are located, ANNOTATION_INPUT is the directory where the annotations are located, ANNOTATION_OUTPUT is the directory where the translated annotations will be outputted, INPUT_FORMAT is the format of the input annotations, OUTPUT_FORMAT is the format of the output annotations.
+
+4. If you would like to augment the images that have semantic detection annotations (bounding polygons) use the following command:
+
+`python SinfNet.py ---augment_poly IMAGE_DIRECTORY ANNOTATION_INPUT TRANSLATED_ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT IMAGE_OUTPUT ANNOTATION_OUTPUT NUMBER` example `python SinfNet.py -ap ./dataset/Images ./dataset/Annotations.csv ./dataset/Translated_Annotations csv json ./dataset/Augmented_Images ./dataset/Augmented_Annotations 10`
+
+Where IMAGE_DIRECTORY is the directory where the images are located, ANNOTATION_INPUT is the directory where the annotations are located, TRANSLATED_ANNOTATION_OUTPUT is the directory where the translated annotations will be outputted, INPUT_FORMAT is the format of the input annotations, OUTPUT_FORMAT is the format of the output annotations, IMAGE_OUTPUT is the directory where the augmented images will be outputted, ANNOTATION_OUTPUT is the directory where the augmented annotations will be outputted, and NUMBER is the number of augments per image. Identify only a sigle file for the .csv, while .json .txt .xml files must identify the directory the multiple files reside in.
+
+5. To check that the bounding polygon augmentations was performed correctly (the augmented polygons are ontop on the object in the augmented images) use the following command:
+
+`python SinfNet.py --check_poly IMAGE_INPUT ANNOTATION_INPUT` example `python SinfNet.py -Cp ./dataset/Augmented_Images ./dataset/Augmented_Annotations`
+
+Where IMAGE_INPUT is the directory where the images are located and ANNOTATION_INPUT is the directory where the annotations are located.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -573,58 +433,14 @@ If you would like to add images to our dataset (any type of microscopic organism
 ## Nematode Biomass Approximation:
 `python SinfNet.py --biomass W H D w h P` or `python SinfNet.py -B 1000 1000 100 256 256 15892`
 
-Where W is the width of the image in μm, H is the hight of the image in μm, D is the depth of the image in μm, w is the width of the image in pixels, h is the hight of the image in pixels, P is the number of white (positive detection) pixels in the detection/prediction output of the UNet semantic segmentation neural network.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Augment images with bounding polygons, where IMAGE_DIRECTORY is the directory of images to be augmented, ANNOTATION_INPUT is the directory of .csv file of annotations, ANNOTATION_OUTPUT is the directory where the annotations are translated to .json files, INPUT_FORMAT is the input format (.csv), IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_OUTPUT is the directory to output the augmented annotations, NUMBER is the number of augmentations|
-
-
-python SinfNet.py -ap images 1.csv anout csv json aug_im aug_an 2
-
-
-
-
-
-
-
-
-
+Where W is the width of the image in μm, H is the hight of the image in μm, D is the depth of the image in μm, w is the width of the image in pixels, h is the hight of the image in pixels, P is the number of white (positive detected) pixels in the detection/prediction output of the UNet semantic segmentation neural network.
 
 ## Table of commands:
 |Command                                                                                                                                  |Description                                  |
 |-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|
 |python SinfNet.py -ac IMAGE_INPUT IMAGE_OUTPUT NUMBER                                                                                    |Augment whole images of a CNN, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, and NUMBER is the number of augments to each image|
-|python SinfNet.py -ab IMAGE_INPUT IMAGE_OUTPUT ANNOTATION_INPUT ANNOTATION_OUTPUT NUMBER INPUT_FORMAT OUTPUT_FORMAT                      |Augment images with bounding boxes, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_INPUT is the input file or directory of the annotations, ANNOTATION_OUTPUT is the output file or directory of the annotations, and NUMBER is the number of augments to each image, INPUT_FORMAT is the input format, OUTPUT_FORMAT is the output format|
-|python SinfNet.py -ap IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT IMAGE_OUTPUT ANNOTATION_OUTPUT NUMBER|Augment images with bounding polygons, where IMAGE_DIRECTORY is the directory of images to be augmented, ANNOTATION_INPUT is the directory of .csv file of annotations, ANNOTATION_OUTPUT is the directory where the annotations are translated to .json files, INPUT_FORMAT is the input format (.csv), IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_OUTPUT is the directory to output the augmented annotations, NUMBER is the number of augmentations|
+|python SinfNet.py -ab IMAGE_INPUT IMAGE_OUTPUT ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT NUMBER                     |Augment images with bounding boxes, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_INPUT is the input file or directory of the annotations, ANNOTATION_OUTPUT is the output file or directory of the annotations, and NUMBER is the number of augments to each image, INPUT_FORMAT is the input format, OUTPUT_FORMAT is the output format|
+|python SinfNet.py -ap IMAGE_DIRECTORY ANNOTATION_INPUT TRANSLATED_ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT IMAGE_OUTPUT ANNOTATION_OUTPUT NUMBER|Augment images with bounding polygons, where IMAGE_DIRECTORY is the directory of images to be augmented, ANNOTATION_INPUT is the directory of .csv file of annotations, TRANSLATED_ANNOTATION_OUTPUT is the directory where the annotations are translated to .json files, INPUT_FORMAT is the input format (.csv), IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_OUTPUT is the directory to output the augmented annotations, NUMBER is the number of augmentations|
 |python SinfNet.py -B W H D w h P                                                                                                         |Calculates nematode biomass from UNet binary semantic segmentation output. Width Hight Depth of image in micrometers, width hight of image in pixels, number of white Pixels|
 |python SinfNet.py -C FILENAME                                                                                                            |Crops an image FILENAME to make its dimentions multiples of 32|
 |python SinfNet.py -Cb IMAGE_INPUT ANNOTATION_INPUT                                                                                       |Check that the bounding boxes got augmented correctly where IMAGE_INPUT is the directory of images and ANNOTATION_INPUT is the directory of .xml annotations|
@@ -638,8 +454,8 @@ python SinfNet.py -ap images 1.csv anout csv json aug_im aug_an 2
 |python SinfNet.py -tb IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT                                      |Convert between different bbox annotation formats (txt, csv, coco-json, xml) where you have to include location of images in IMAGE_DIRECTORY, location of annotations or annotation file in ANNOTATION_INPUT, where to output translated annotations in ANNOTATION_OUTPUT, INPUT_FORMAT and OUTPUT_FORMAT formats|
 |python SinfNet.py -tp IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT                                      |Convert between different polygon formats (csv, json) where you have to include location of images in IMAGE_DIRECTORY, location of annotations or annotation file in ANNOTATION_INPUT, where to output translated annotations in ANNOTATION_OUTPUT, INPUT_FORMAT and OUTPUT_FORMAT formats|
 |python SinfNet.py -v                                                                                                                     |Open web-based image annotator (FireFox only)|
-|python SinfNet.py -yt WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                         |Object detection network train using output WEIGHTS filename, TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
-|python SinfNet.py -yp WEIGHTS LABELS FILENAME                                                                                            |Object detection network predict using WEIGHTS filename .h5, LABELS .pkl filename (labels.pkl) the image FILENAME as .jpg, .png, or .mp4|
+|python SinfNet.py -ot WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                         |Object detection network train using output WEIGHTS filename, TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
+|python SinfNet.py -op WEIGHTS LABELS FILENAME                                                                                            |Object detection network predict using WEIGHTS filename .h5, LABELS .pkl filename (labels.pkl) the image FILENAME as .jpg, .png, or .mp4|
 
 ## Funders:
 * [Experiment](https://experiment.com/)
@@ -652,5 +468,6 @@ When using any part of this project kindly reference the following:
 
 ## TODO:
 
-* Make Video
+* Make Video -> YouTub -> link here
 * compelete Datasets and weights files
+* add result images and GIF video

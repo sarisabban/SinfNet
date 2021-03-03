@@ -17,7 +17,7 @@ parser.add_argument('-ap', '--augment_poly',    nargs='+', help='Augment images 
 parser.add_argument('-ab', '--augment_bbox',    nargs='+', help='Augment images with bounding boxes')
 parser.add_argument('-B' , '--biomass',         nargs='+', help='Calculate biomass')
 parser.add_argument('-C' , '--crop',            nargs='+', help='Make image dimentions multiples of 32')
-parser.add_argument('-Chb', '--check_box',       nargs='+', help='Check bounding box annotation after augmentation')
+parser.add_argument('-Cb', '--check_box',       nargs='+', help='Check bounding box annotation after augmentation')
 parser.add_argument('-Cp', '--check_poly',      nargs='+', help='Check bounding polygon annotation after augmentation')
 parser.add_argument('-ct', '--cnn_train',       nargs='+', help='Train on CNN')
 parser.add_argument('-cp', '--cnn_predict',     nargs='+', help='Predict from CNN')
@@ -27,8 +27,8 @@ parser.add_argument('-sp', '--semantic_predict',nargs='+', help='Predict from UN
 parser.add_argument('-tb', '--translate_bbox',  nargs='+', help='Translate between annotation file formats for bounding boxes')
 parser.add_argument('-tp', '--translate_poly',  nargs='+', help='Translate between annotation file formats for bounding polygons')
 parser.add_argument('-v' , '--via',             action='store_true', help='Open image labeling tool')
-parser.add_argument('-yt', '--yolo_train',      nargs='+', help='Train on YOLOv3')
-parser.add_argument('-yp', '--yolo_predict',    nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-ot', '--object_train',    nargs='+', help='Train on YOLOv3')
+parser.add_argument('-op', '--object_predict',  nargs='+', help='Predict from YOLOv3')
 args = parser.parse_args()
 
 def main():
@@ -41,9 +41,9 @@ def main():
 								image_output=sys.argv[3],
 								bbox_input=sys.argv[4],
 								bbox_output=sys.argv[5],
-								count=int(sys.argv[6]),
-								input_format=sys.argv[7],
-								output_format=sys.argv[8])
+								input_format=sys.argv[6],
+								output_format=sys.argv[7],
+								count=int(sys.argv[8]))
 	elif args.augment_poly:
 		Translate.translate_poly(image_path=sys.argv[2],
 								ann_input=sys.argv[3],
@@ -131,9 +131,9 @@ def main():
 								output_format=sys.argv[6])
 	elif args.via:
 		os.system('firefox ./sources/VIA.html')
-	elif args.yolo_train:
+	elif args.object_train:
 		YOLOv3.train()
-	elif args.yolo_predict:
+	elif args.object_predict:
 		YOLOv3.predict(sys.argv[2], sys.argv[4], './')
 
 if __name__ == '__main__': main()
