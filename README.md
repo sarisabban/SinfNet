@@ -13,7 +13,7 @@ This is a collection of datasets and neural networks to detect or classify micro
 
 <p align="center">Amoebas:</p>
 
-<sub>*Just detection of generic cells and differentiates between the active and inactive stages of the life cycle.*</sub>
+<sub>*Just detection of generic cells and differentiates between the active and inactive stages of their life cycle.*</sub>
 
 <p align="center">Nematodes:</p>
 
@@ -22,19 +22,19 @@ This is a collection of datasets and neural networks to detect or classify micro
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
 
-|Dataset Name                                                                                                       |Network |Weights                                                                    |mAP or Accuracy|
-|-------------------------------------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------|---------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                    |YOLOv3  |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
-|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                             |YOLOv3  |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
-|[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)              |YOLOv3  |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
-|[Nematode Trophic Classification Dataset by Head](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
-|[Nematode Trophic Classification Dataset by Body]()|ResNet50|[Weights]()|         |
-|[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)             |UNet    |[Weights](https://www.dropbox.com/s/cf7g62fil44r2mj/unet_binary.h5?dl=0)   |0.95896        |
-|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)   |YOLOv3\ |[Object Weights]()\ |       \        |
-|                                                                                                                   |UNet    |[Semantic Weights]()|                |
+|Dataset Name                                                                                                               |Network |Weights                                                                    |mAP or Accuracy|
+|---------------------------------------------------------------------------------------------------------------------------|--------|---------------------------------------------------------------------------|---------------|
+|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                            |YOLOv3  |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)        |0.6473         |
+|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                                     |YOLOv3  |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)         |0.9549         |
+|[Nematode Detection Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Detect.tar.bz2?dl=0)                      |YOLOv3  |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes.h5?dl=0)     |0.8867         |
+|[Nematode Trophic Classification by Head Dataset](https://www.dropbox.com/s/dwhvmdx6xc4chaf/Nematodes_Trophic.tar.bz2?dl=0)|ResNet50|[Weights](https://www.dropbox.com/s/oba72fd9nlryauf/Nematodes_Feed.h5?dl=0)|0.9909         |
+|[Nematode Trophic Classification by Body Dataset]()|ResNet50|[Weights]()|         |
+|[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)                     |UNet    |[Weights](https://www.dropbox.com/s/cf7g62fil44r2mj/unet_binary.h5?dl=0)   |0.95896        |
+|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)           |YOLOv3\ |[Object Weights]()\ |       \        |
+|                                                                                                                           |UNet    |[Semantic Weights]()|                |
 
 ## How to use:
-This is a [Video]() on how to use this setup.
+This is a [Video]() on how to use this whole setup.
 
 ### Update your system and install libraries.
 This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this script you will need to first update your system and install the dependencies, within a virtual environment, using the following commands:
@@ -211,7 +211,7 @@ Where W is the width of the image in μm, H is the hight of the image in μm, D 
 |Command                                                                                                                                  |Description                                  |
 |-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------|
 |python SinfNet.py -ac IMAGE_INPUT IMAGE_OUTPUT NUMBER                                                                                    |Augment whole images of a CNN, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, and NUMBER is the number of augments to each image|
-|python SinfNet.py -ab IMAGE_INPUT IMAGE_OUTPUT ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT NUMBER                     |Augment images with bounding boxes, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_INPUT is the input file or directory of the annotations, ANNOTATION_OUTPUT is the output file or directory of the annotations, and NUMBER is the number of augments to each image, INPUT_FORMAT is the input format, OUTPUT_FORMAT is the output format|
+|python SinfNet.py -ab IMAGE_INPUT IMAGE_OUTPUT ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT NUMBER                      |Augment images with bounding boxes, where IMAGE_INPUT is the directory of images, IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_INPUT is the input file or directory of the annotations, ANNOTATION_OUTPUT is the output file or directory of the annotations, and NUMBER is the number of augments to each image, INPUT_FORMAT is the input format, OUTPUT_FORMAT is the output format|
 |python SinfNet.py -ap IMAGE_DIRECTORY ANNOTATION_INPUT TRANSLATED_ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT IMAGE_OUTPUT ANNOTATION_OUTPUT NUMBER|Augment images with bounding polygons, where IMAGE_DIRECTORY is the directory of images to be augmented, ANNOTATION_INPUT is the directory of .csv file of annotations, TRANSLATED_ANNOTATION_OUTPUT is the directory where the annotations are translated to .json files, INPUT_FORMAT is the input format (.csv), IMAGE_OUTPUT is the directory to output the augmented images, ANNOTATION_OUTPUT is the directory to output the augmented annotations, NUMBER is the number of augmentations|
 |python SinfNet.py -B W H D w h P                                                                                                         |Calculates nematode biomass from UNet binary semantic segmentation output. Width Hight Depth of image in micrometers, width hight of image in pixels, number of white Pixels|
 |python SinfNet.py -C FILENAME                                                                                                            |Crops an image FILENAME to make its dimentions multiples of 32|
@@ -241,5 +241,8 @@ When using any part of this project kindly reference the following:
 ## TODO:
 
 * Make Video -> YouTub -> link here
-* compelete Datasets and weights files
+* Compelete nematode body Dataset
+* Compelete nematode body weights
+* Compelete protist object weights
+* Compelete protist semantic weights
 * add result images and GIF video
