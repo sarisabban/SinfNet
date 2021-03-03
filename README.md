@@ -58,6 +58,9 @@ If you want to develop your own dataset and train it follow these steps, otherwi
 
 `python SinfNet.py --help` or `python SinfNet.py -h`
 
+**Contributing to the dataset**
+If you would like to add images to our dataset (any type of microscopic organism) make sure that each species has 50-100 annotated images (both object and semantic) where each image is sharp and taken from a bright-field light microscope at 400x magnification and the size of the image is width = 2584 px and hight = 1936 px. Please contact me so we can work together.
+
 #### For whole image classification
 1. Start by collecting enough images of the organism, more than 100 images is preferable.
 
@@ -69,8 +72,8 @@ Where IMAGE_INPUT is the directory that contains the original images, IMAGE_OUTP
 
 3. Generate three directories: Train, Valid, and Tests. Then shuffle your dataset and randomly split each class into a *Training* (60% of images), *Testing* (20% of images), and *Validation* (20% of images) sets using the following command:
 
-`shuf -n NUMBER -e Train/CLASS | xargs -i mv {} Valid/CLASS`
-`shuf -n NUMBER -e Train/CLASS | xargs -i mv {} Tests/CLASS`
+`shuf -n NUMBER -e ./dataset/Train/CLASS | xargs -i mv {} ./dataset/Valid/CLASS`
+`shuf -n NUMBER -e ./dataset/Train/CLASS | xargs -i mv {} ./dataset/Tests/CLASS`
 
 Where NUMBER is the number of images that will be moved (calculated as 60% or 20% of the total images in the dataset), and CLASS is the specific class (label) for the images. This is to ensure that the sets are randomly split before training the neural network.
 
@@ -135,164 +138,76 @@ Where IMAGE_DIRECTORY is the directory where the images are located, ANNOTATION_
 
 Where IMAGE_INPUT is the directory where the images are located and ANNOTATION_INPUT is the directory where the annotations are located.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Training the neural network
+#### For classification
+1. You can train the images on a CNN using the following command:
+
+`python SinfNet.py --cnn_train NETWORK TRAIN VALID TESTS` example `python SinfNet.py -ct CNN ./dataset/Train ./dataset/Valid ./dataset/Tests`
+
+Where NETWORK is the name of the convolutional neural network that you want to use. Choose one of the following [VGG16, VGG19, ResNet50, DenseNet201], TRAIN is the directory that contains the training set, VALID is the directory that contains the validation set, and TESTS is the directory that contains the test sets.
+
+2. Training, loss, and confusion matrix figures will be generated after the training is done. An evaluation on the test set will be performed and the result printed on the terminal.
+
 #### For object detection
 1. Use the following command to train the network on your dataset:
 
-`python SinfNet.py --yolo_train WEIGHTS PROJECT_NAME LABELS` for example `python SinfNet.py -yt Amoeba Amoeba Active Inactive`
+`python SinfNet.py --object_train WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...` for example `python SinfNet.py -ot Amoeba ./dataset/Images ./dataset/Annotations Active Inactive`
 
-The WEIGHTS is the name of the output weight.h5 file, the PROJECT_NAME is just a name for your project (must be included), and LABELS is a list of all the labels in the dataset (just the labels written with space between them).
+The WEIGHTS is the name of the output weight.h5 file, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). The network is resource heavy and requires a multiple GPUs and more than 32GB of RAM to run (depending on dataset size). Therefore some cloud GPU services may not work and a larger system is required.
 
-2. The network is resource heavy and requires a large GPU and more than 16GB of RAM to run (depending on dataset size). Therefore some cloud GPU services may not work and a larger system is required.
-
-3. A logs directory will be generated containing the training logs. View the data using the following command if you have tensorboard installed:
+2. A logs directory will be generated containing the training logs. View the data using the following command if you have tensorboard installed:
 
 `tensorboard --logdir=./logs`
 
-4. The .h5 file is the weights file used for image detection.
+3. The .h5 file is the weights file, it is the result of the training and will be used for image detection, save this file.
 
-5. If the training is interrupted, you can use the .h5 file to continue where you left off using the exact same training command in step 1.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+4. If the training is interrupted, you can use the .h5 file to continue where you left off using the exact same training command in step 1, just make sure the .h5 weights file is included in the same directory as the SingNet.py script.
 
 #### For semantic segmentation
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --semantic_train MODE LABELS` for example `python SinfNet.py -st multi Active Inactive Inactive`
+`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` for example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive Inactive`
 
-Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background). And as with object detection, including pre-trained weights is possible:
+Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background), the NETWORK can be wither unet or fcn_8, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). As with object detection, including pre-trained weights is possible:
 
-`python SinfNet.py --semantic_train LABELS` for example `python SinfNet.py -st Active Inactive`
+2. The .h5 file is the weights file, it is the result of the training and will be used for image detection, save this file.
 
-The weights directory (*./models*) must be present in the same working directory as the SinfNet.py script for this command to work.
-
-At the end of the training a directory will be generated which includes the log files and weight files. You should save the last weight file that results from the full run of the neural network.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### For classification
-1. You can train the images on a CNN using the following command:
-
-`python SinfNet.py --cnn_train CNN` or `python SinfNet.py -ct CNN`
-
-Where CNN is the name of the convolutional neural network that you want to use. Choose one of the following [VGG16, VGG19, ResNet50, DenseNet201].
-
-2. Training, loss, and confusion matrix figures will be generated after the training is done. An evaluation on the test set will be performed and the result printed on the terminal.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+3. If the training is interrupted, you can use the .h5 file to continue where you left off using the exact same training command in step 1, just make sure the .h5 weights file is included in the same directory as the SingNet.py script.
 
 ### Detection
+#### For classification
+1. Download the relevant weights file (links available in table above) or generate the file from the steps above (Setting up a dataset and Training the neural network).
+
+2. To run a classification use the following command:
+
+`python SinfNet.py --cnn_predict NETWORK WEIGHTS FILENAME` example `python SinfNet.py -cp ResNet50 Nematodes.h5 image.jpg`
+
+Where the NETWORK is the name of the network that was used to generate the WEIGHTS.h5 file (using different a network than the weights file does not work), WEIGHTS is the name of the .h5 weights file, and FILENAME is the name of the image file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #### For object detection
-1. Download the relevant weights file (links available in table above) or generate the file from the steps above.
+1. Download the relevant weights file (links available in table above) or generate the file from the steps above (Setting up a dataset and Training the neural network).
 
-2. Predict/Detect objects in your image/video/webcam using the following command:
+2. Detect objects in your image/video/webcam using the following command:
 
-`python SinfNet.py --yolo_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -yp Amoeba.h5 image.jpg Active Inactive`
+`python SinfNet.py --object_predict WEIGHTS.h5 FILENAME LABELS` example `python SinfNet.py -op Amoeba.h5 image.jpg Active Inactive`
 
 Where WEIGHTS.h5 is the weights file, the FILENAME can be either a .jpg image, .mp4 video, or a webcam input, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them).
 
@@ -347,14 +262,6 @@ The weights directory (*./models*) must be present in the same working directory
 
 
 
-#### For classification
-1. Download the relevant weights file (links available in table above) or generate the file from the steps above.
-
-2. To run a classification use the following command:
-
-`python SinfNet.py --cnn_predict CNN WEIGHTS FILENAME` or `python SinfNet.py -cp ResNet50 Nematodes.h5 image.jpg`
-
-Where the CNN is the name of the network that was used to generate the WEIGHTS.h5 file (using different networks from the weights file does not work), WEIGHTS is the name of the .h5 weights file, and FILENAME is the name of the image file.
 
 
 
@@ -378,29 +285,6 @@ Where the CNN is the name of the network that was used to generate the WEIGHTS.h
 
 
 
-
-
-## Auto Annotation:
-Since manual annotations are time consuming, we can use the neural network to annotate new images to build a new dataset (instead of annotating 1000s of images manually), make sure you use the Cell.h5 weights file if you want to predict only the cells in the images. You must insure your images are made up of a pure cell strain.
-
-1. Change the prediction threshold from 0.5 to 0.8 in line 1207: `obj_thresh, nms_thresh = 0.50, 0.45` to `obj_thresh, nms_thresh = 0.80, 0.45`, and comment out the last line of the script `#cv2.imwrite ...` line 1265 of the YOLOv3.py script as to not generate images.
-
-3. Use the following command to loop through all images and predict the cells:
-
-`for f in ./DIRECTORY/*; do python YOLOv3.py -d WEIGHTS.h5 $f >> DIRECTORY; done`
-
-Where DIRECTORY is the name of the directory that contains all the images.
-
-4. Then use the following command to generate the Annotation text files:
-
-`python SinfNet.py --convert DIRECTORY` or `python SinfNet.py -c amoeba`
-
-5. Check all images to make sure the the annotations are correct, and to correct minor errors.
-
-The annotations are as good as the training of the network, which is not 100%, therefore a human must go over the annotated images to fix any minor mistakes.
-
-**Contributing to our dataset**
-If you would like to add images to our dataset (any type of microscopic organism) make sure that each species has 200 annotated images where each image is sharp and taken from a bright-field light microscope at 400x magnification. Please contact me so we can work together.
 
 
 
