@@ -313,7 +313,7 @@ def translate_poly(	image_path='./dataset/Train',
 					num += 1
 	elif output_format == 'json':
 		for name in POLY:
-			filename = name[0].split('.')[0]
+			filename = name[0][:-4]
 			with open('{}/{}.json'.format(ann_output, filename), 'w+') as f:
 				version = '3.11.2'
 				flags = ''
