@@ -50,8 +50,8 @@ def main():
 								ann_output=sys.argv[4],
 								input_format=sys.argv[5],
 								output_format=sys.argv[6])
-		for image in os.listdir(sys.argv[2]):
-			name = image[:-4]
+		for filename in os.listdir(sys.argv[2]):
+			name = filename[:-4]
 			image = '{}/{}.jpg'.format(sys.argv[2], name)
 			annot = '{}/{}.json'.format(sys.argv[4], name)
 			Augment.augment_poly(image_input=image,
