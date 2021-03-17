@@ -49,16 +49,16 @@ def main():
 								ann_input=sys.argv[3],
 								ann_output=sys.argv[4],
 								input_format=sys.argv[5],
-								output_format='json')
+								output_format=sys.argv[6])
 		for image in os.listdir(sys.argv[2]):
 			name = image.split('.')[0]
 			image = '{}/{}.jpg'.format(sys.argv[2], name)
 			annot = '{}/{}.json'.format(sys.argv[4], name)
 			Augment.augment_poly(image_input=image,
-								image_output=sys.argv[5],
+								image_output=sys.argv[7],
 								poly_input=annot,
-								poly_output=sys.argv[6],
-								count=sys.argv[7])
+								poly_output=sys.argv[8],
+								count=sys.argv[9])
 	elif args.biomass:
 		Width_img = int(sys.argv[2])
 		Hight_img = int(sys.argv[3])
