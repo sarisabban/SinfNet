@@ -269,7 +269,7 @@ def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_inpu
 			start, end = shape['index']
 			aug_points = [[keypoint.x, keypoint.y] for keypoint in keypoints_aug.keypoints[start:end]]
 			shape['points'] = aug_points
-		NewName = image_input.split('/')[-1].split('.')[0]
+		NewName = image_input.split('/')[-1][:-4]
 		print('{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1)))
 		cv2.imwrite('{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1)), image_aug)
 		with open('{}/Aug_{}-{}.json'.format(poly_output, NewName, str(iters+1)), 'w+') as f:
