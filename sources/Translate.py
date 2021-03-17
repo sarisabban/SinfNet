@@ -208,7 +208,7 @@ def translate_bbox(	image_path='./dataset/Train',
 				for line in fin:
 					fout.write(line.replace("'", ""))
 		os.remove('{}/temp'.format(ann_output))
-	print('[+] Done')
+	print('[+] Translate done')
 
 def translate_poly(	image_path='./dataset/Train',
 					ann_input='./dataset/Annotations',
@@ -337,4 +337,4 @@ def translate_poly(	image_path='./dataset/Train',
 				loc = f.seek(0, os.SEEK_END)
 				f.seek(loc-1)
 				f.write(']}')
-	print('[+] Done')
+	print('[+] Translate done')
