@@ -44,7 +44,7 @@ def augment_cnn(input_path='./dataset/Train',
 									#interpolation_order=1,
 									dtype='float32')
 		img   = load_img('{}/{}'.format(input_path, Images))
-		name  = Images.split('.')[0]
+		name  = Images[:-4]
 		size  = img.size
 		image = img_to_array(img)
 		image = image.reshape(1, size[1], size[0], 3)
@@ -115,7 +115,7 @@ def augment_bbox(image_input='./dataset/Train',
 							h = float(b[3].text)
 							BBOX[filename].append([x, y, x+w, y+h, label])
 	for Images in os.listdir(image_input):
-		Iname = Images.split('.')[0]
+		Iname = Images[:-4]
 		img = cv2.imread('{}/{}'.format(image_input, Images))[:,:,::-1]
 		bboxes = np.array(BBOX[Images], dtype=object)
 		for i in range(count):
@@ -203,7 +203,7 @@ def augment_bbox(image_input='./dataset/Train',
 						f.write('\t\t</bndbox>\n')
 						f.write('\t</object>\n')
 					f.write('</annotation>')
-			print('Completed: {} {}'.format(Ioutput, Boutput))
+			print('{}'.format(Ioutput))
 
 def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_input='dataset/1.json', poly_output='/dataset', count=2):
 	'''
