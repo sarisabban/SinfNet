@@ -42,13 +42,13 @@ This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this scrip
 
 `sudo apt full-upgrade`
 
-`sudo apt install python3-pip python3-tk`
+`sudo apt install python3-pip`
 
 `python3 -m venv env`
 
 `source env/bin/activate`
 
-`pip3 install numpy keras tensorflow seaborn tkintertable matplotlib imgaug scipy pillow scikit-image imutils h5py opencv-contrib-python pydensecrf`
+`pip3 install numpy keras tensorflow seaborn matplotlib imgaug scipy pillow scikit-image imutils h5py opencv-contrib-python pydensecrf`
 
 `deactivate`
 
