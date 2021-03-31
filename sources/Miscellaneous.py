@@ -37,7 +37,7 @@ def crop(filename='test.jpg'):
 	h = 32* math.floor(H/32)
 	area = (0, 0, w, h)
 	c_img = img.crop(area)
-	c_img.save('cropped_{}'.format(filename))
+	c_img.save('{}_cropped.jpg'.format(filename[:-4]))
 
 def segment(filename='test.jpg', size=(1000, 1000)):
 	''' Segments a large image into smaller images '''
