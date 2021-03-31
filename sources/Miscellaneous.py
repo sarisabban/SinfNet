@@ -7,7 +7,7 @@ import math
 import json
 import numpy as np
 import imgaug as ia
-from PIL import Image
+from PIL import Image, ImageFile
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 from collections import defaultdict
@@ -31,6 +31,7 @@ def Biomass(W, H, D, w, h, whitePX):
 
 def crop(filename='test.jpg'):
 	''' Crops an image to make its dimetions multiples of 32 '''
+	ImageFile.LOAD_TRUNCATED_IMAGES = True
 	img = Image.open(filename)
 	W, H = img.size
 	w = 32* math.floor(W/32)
