@@ -52,7 +52,7 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		ANNOT = sys.argv[5]
 		for exam in os.listdir(TRAIN): exam = exam
 		WW, HH = Image.open('{}/{}'.format(TRAIN, exam)).size
-		imshape = (WW, HH, 3)
+		imshape = (HH, WW, 3)
 		mode = sys.argv[3]             # classification mode (binary or multi)
 		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
 		model_name = MODEL+'_'+mode
@@ -71,7 +71,7 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		if mode == 'binary': n_classes = 1
 		elif mode == 'multi': n_classes = len(labels) + 1
 		WW, HH = Image.open(sys.argv[4]).size
-		imshape = (WW, HH, 3)
+		imshape = (HH, WW, 3)
 
 class DataGenerator(tf.keras.utils.Sequence):
     def __init__(self, image_paths, annot_paths, batch_size=32, shuffle=True):
