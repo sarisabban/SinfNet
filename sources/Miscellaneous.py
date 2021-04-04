@@ -80,7 +80,7 @@ def confirm_box(image_path='dataset/1.jpg', annotation_path='dataset/1.xml'):
 					y = float(b[1].text)
 					w = float(b[2].text)
 					h = float(b[3].text)
-					BBOX[filename].append([x, y, w, h, label])
+					BBOX[filename].append([x, y, x+w, y+h, label])
 	bboxes = np.array(BBOX[filename])
 	cords = bboxes[:,:4]
 	cords = cords.reshape(-1,4)
