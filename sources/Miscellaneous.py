@@ -85,7 +85,7 @@ def confirm_box(image_path='dataset/1.jpg', annotation_path='dataset/1.xml'):
 	cords = bboxes[:,:4]
 	cords = cords.reshape(-1,4)
 	for cord in cords:
-		pt1, pt2 = (cord[0], cord[1]) , (cord[2], cord[3])
+		pt1,pt2=(float(cord[0]),float(cord[1])),(float(cord[2]),float(cord[3]))
 		pt1 = int(pt1[0]), int(pt1[1])
 		pt2 = int(pt2[0]), int(pt2[1])
 		im = cv2.rectangle(img, pt1, pt2, (255, 69, 0), 10)
