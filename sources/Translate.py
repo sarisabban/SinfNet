@@ -102,7 +102,7 @@ def translate_bbox(	image_path='./dataset/Train',
 					h = line[3]
 					label = line[4]
 					total = str(len(BBOX[name]))
-					size=os.stat('./{}/{}'.format(image_path, name)).st_size
+					size = os.stat('{}/{}'.format(image_path, name)).st_size
 					items += 1
 					TheLine = '{},{},"{{}}",{},{},"{{""name"":""rect"",""x"":{},""y"":{},""width"":{},""height"":{}}}","{{""{}"":""""}}"\n'\
 					.format(name, size, total, items, x, y, w, h, label)
@@ -176,7 +176,7 @@ def translate_bbox(	image_path='./dataset/Train',
 				code[n] = l
 				codeR[l]= n
 			for name in BBOX:
-				size=str(os.stat('./{}/{}'.format(image_path, name)).st_size)
+				size=str(os.stat('{}/{}'.format(image_path, name)).st_size)
 				ID = name+size
 				for line in BBOX[name]:
 					line = [str(i) for i in line]
