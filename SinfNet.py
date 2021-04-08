@@ -29,6 +29,7 @@ parser.add_argument('-tp', '--translate_poly',  nargs='+', help='Translate betwe
 parser.add_argument('-v' , '--via',             action='store_true', help='Open image labeling tool')
 parser.add_argument('-ot', '--object_train',    nargs='+', help='Train on YOLOv3')
 parser.add_argument('-op', '--object_predict',  nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-bb', '--bbox_results',    nargs='+', help='Plot bounding box results')
 args = parser.parse_args()
 
 def main():
@@ -135,5 +136,11 @@ def main():
 		YOLOv3.train()
 	elif args.object_predict:
 		YOLOv3.predict(sys.argv[2], sys.argv[4], './')
+	elif args.bbox_results:
+		directory = sys.argv[1]
+		gt = sys.argv[2]
+		pr = sys.argv[3]
+		for image in os.listdir(directory):
+			plot_bbox_results('{}/{}'.format(directory, image), gt=gt, pr=pr)
 
 if __name__ == '__main__': main()
