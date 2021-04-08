@@ -227,6 +227,7 @@ python SinfNet.py -bb IMAGES_DIRECTORY BBOX_ANNOTATIONS BBOX_RESULTS            
 |python SinfNet.py -v                                                                                                                     |Open web-based image annotator (FireFox only)|
 |python SinfNet.py -ot WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                         |Object detection network train using output WEIGHTS filename, TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
 |python SinfNet.py -op WEIGHTS LABELS FILENAME                                                                                            |Object detection network predict using WEIGHTS filename .h5, LABELS .pkl filename (labels.pkl) the image FILENAME as .jpg, .png, or .mp4|
+python SinfNet.py -mAP BBOX_ANNOTATIONS BBOX_RESULTS                                                                                      |Calculates the mean average precision of bounding box predictions, where BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file
 
 ## Funders:
 * [Experiment](https://experiment.com/)
@@ -242,6 +243,5 @@ When using any part of this project kindly reference the following:
 * Make Video -> YouTub -> link here
 * Compelete nematode body Dataset
 * Compelete nematode body weights
-* Compelete protist object weights
 * Compelete protist semantic weights
 * add result images and GIF video
