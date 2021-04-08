@@ -143,8 +143,8 @@ def main():
 		gt = sys.argv[3]
 		pr = sys.argv[4]
 		for image in os.listdir(directory):
-			plot_bbox_results('{}/{}'.format(directory, image), gt=gt, pr=pr)
+			Miscellaneous.plot_bbox_results('{}/{}'.format(directory, image), gt=gt, pr=pr)
 	elif args.mAP_calc:
-		mAP(sys.argv[2], sys.argv[3])
+		mAP.mAP(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()
