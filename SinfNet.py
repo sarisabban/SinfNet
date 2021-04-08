@@ -17,11 +17,13 @@ parser.add_argument('-ac',  '--augment_cnn',      nargs='+', help='Augment whole
 parser.add_argument('-ap',  '--augment_poly',     nargs='+', help='Augment images with bounding polygons')
 parser.add_argument('-ab',  '--augment_bbox',     nargs='+', help='Augment images with bounding boxes')
 parser.add_argument('-B' ,  '--biomass',          nargs='+', help='Calculate biomass')
+parser.add_argument('-bb',  '--bbox_results',     nargs='+', help='Plot bounding box results')
 parser.add_argument('-C' ,  '--crop',             nargs='+', help='Make image dimentions multiples of 32')
 parser.add_argument('-Cb',  '--check_box',        nargs='+', help='Check bounding box annotation after augmentation')
 parser.add_argument('-Cp',  '--check_poly',       nargs='+', help='Check bounding polygon annotation after augmentation')
 parser.add_argument('-ct',  '--cnn_train',        nargs='+', help='Train on CNN')
 parser.add_argument('-cp',  '--cnn_predict',      nargs='+', help='Predict from CNN')
+parser.add_argument('-mAP', '--mAP_calc',         nargs='+', help='Calculate the mean average precision of bounding box results')
 parser.add_argument('-S' ,  '--segment',          nargs='+', help='Segment a large image')
 parser.add_argument('-st',  '--semantic_train',   nargs='+', help='Train on UNet')
 parser.add_argument('-sp',  '--semantic_predict', nargs='+', help='Predict from UNet')
@@ -30,8 +32,6 @@ parser.add_argument('-tp',  '--translate_poly',   nargs='+', help='Translate bet
 parser.add_argument('-v' ,  '--via',              action='store_true', help='Open image labeling tool')
 parser.add_argument('-ot',  '--object_train',     nargs='+', help='Train on YOLOv3')
 parser.add_argument('-op',  '--object_predict',   nargs='+', help='Predict from YOLOv3')
-parser.add_argument('-bb',  '--bbox_results',     nargs='+', help='Plot bounding box results')
-parser.add_argument('-mAP', '--mAP_calc',         nargs='+', help='Calculate the mean average precision of bounding box results')
 args = parser.parse_args()
 
 def main():
@@ -75,6 +75,12 @@ def main():
 								width,
 								hight,
 								whitePX)
+	elif args.bbox_results:
+		directory = sys.argv[2]
+		gt = sys.argv[3]
+		pr = sys.argv[4]
+		for image in os.listdir(directory):
+			Miscellaneous.plot_bbox_results('{}/{}'.format(directory, image), gt=gt, pr=pr)
 	elif args.check_box:
 		images = sys.argv[2]
 		annots = sys.argv[3]
@@ -113,6 +119,8 @@ def main():
 				Valid='',
 				Tests='',
 				prediction=sys.argv[4])
+	elif args.mAP_calc:
+		mAP.mAP(sys.argv[2], sys.argv[3])
 	elif args.segment:
 		Miscellaneous.segment(	filename=sys.argv[2],
 								size=(int(sys.argv[3]), int(sys.argv[4])))
@@ -138,13 +146,5 @@ def main():
 		YOLOv3.train()
 	elif args.object_predict:
 		YOLOv3.predict(sys.argv[2], sys.argv[4], './')
-	elif args.bbox_results:
-		directory = sys.argv[2]
-		gt = sys.argv[3]
-		pr = sys.argv[4]
-		for image in os.listdir(directory):
-			Miscellaneous.plot_bbox_results('{}/{}'.format(directory, image), gt=gt, pr=pr)
-	elif args.mAP_calc:
-		mAP.mAP(sys.argv[2], sys.argv[3])
 
 if __name__ == '__main__': main()
