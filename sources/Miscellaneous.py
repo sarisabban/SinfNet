@@ -102,3 +102,48 @@ def confirm_poly(image_path='dataset/1.jpg',annotation_path='dataset/1.json'):
 		image = cv2.polylines(img, [points], True, (255, 69, 0), 10)
 	plt.imshow(image)
 	plt.show()
+
+def plot_bbox_results(path='./dataset/Images', gt='Object.csv', pr='Object_results.csv'):
+	''' Plots ground truth and predicted boxes for a single image from .csv files'''
+	name = path.split('/')[-1]
+	img = cv2.imread(path)[:,:,::-1].copy()
+	GT = defaultdict(list)
+	with open(gt) as f:
+		next(f)
+		for line in f:
+			line = line.strip().split(',')
+			filename = line[0]
+			size = int(line[1])
+			confidence = line[2]
+			x = int(line[6].split(':')[-1])
+			y = int(line[7].split(':')[-1])
+			w = int(line[8].split(':')[-1])
+			h = int(line[9].split(':')[-1][:-2])
+			label = line[10].split('"')[3]
+			GT[filename].append([size, confidence, x, y, x+w, y+h, label])
+	PR = defaultdict(list)
+	with open(pr) as f:
+		next(f)
+		for line in f:
+			line = line.strip().split(',')
+			filename = line[0]
+			size = int(line[1])
+			confidence = float(line[2])
+			x = int(line[6].split(':')[-1])
+			y = int(line[7].split(':')[-1])
+			w = int(line[8].split(':')[-1])
+			h = int(line[9].split(':')[-1][:-2])
+			label = line[10].split('"')[3]
+			PR[filename].append([size, confidence, x, y, w, h, label])
+	GTboxes = np.array(GT[name])
+	coords = GTboxes[:,:7]
+	for coord in coords:
+		pt1, pt2 = (int(coord[2]),int(coord[3])), (int(coord[4]),int(coord[5]))
+		im = cv2.rectangle(img, pt1, pt2, (0, 255, 0), 10)
+	PRboxes = np.array(PR[name])
+	coords = PRboxes[:,:7]
+	for coord in coords:
+		pt1, pt2 = (int(coord[2]),int(coord[3])), (int(coord[4]),int(coord[5]))
+		im = cv2.rectangle(img, pt1, pt2, (255, 0, 0), 10)
+	plt.imshow(im)
+	plt.show()
