@@ -219,6 +219,7 @@ python SinfNet.py -bb IMAGES_DIRECTORY BBOX_ANNOTATIONS BBOX_RESULTS            
 |python SinfNet.py -ct NETWORK TRAIN VALID TESTS                                                                                          |Train a dataset using a CNN network given the NETWORK type (VGG16, VGG19, ResNet50, DenseNet201) and the locations of the TRAIN VALID TESTS directorie|
 |python SinfNet.py -cp NETWORK WEIGHTS FILENAME                                                                                           |Predict an image FILENAME using a CNN network given the training  NETWORK type (VGG16, VGG19, ResNet50, DenseNet201) the WEIGHTS|
 |python SinfNet.py -h                                                                                                                     |Help                                         |
+python SinfNet.py -mAP BBOX_ANNOTATIONS BBOX_RESULTS                                                                                      |Calculates the mean average precision of bounding box predictions, where BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file
 |python SinfNet.py -S FILENAME WIDTH HIGHT                                                                                                |Segments a large image into smaller images with the defined WIDTH and HIGHT|
 |python SinfNet.py -st NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                    |Semantic detection training using NETWORK (unet, fcn_8), MODE (binary, multi), TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
 |python SinfNet.py -sp NETWORK MODE FILENAME                                                                                              |Semantic detection prediction using NETWORK (unet, fcn_8), MODE (binary, multi), and FILENAME .jpg image|
@@ -227,7 +228,6 @@ python SinfNet.py -bb IMAGES_DIRECTORY BBOX_ANNOTATIONS BBOX_RESULTS            
 |python SinfNet.py -v                                                                                                                     |Open web-based image annotator (FireFox only)|
 |python SinfNet.py -ot WEIGHTS TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                         |Object detection network train using output WEIGHTS filename, TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
 |python SinfNet.py -op WEIGHTS LABELS FILENAME                                                                                            |Object detection network predict using WEIGHTS filename .h5, LABELS .pkl filename (labels.pkl) the image FILENAME as .jpg, .png, or .mp4|
-python SinfNet.py -mAP BBOX_ANNOTATIONS BBOX_RESULTS                                                                                      |Calculates the mean average precision of bounding box predictions, where BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file
 
 ## Funders:
 * [Experiment](https://experiment.com/)
