@@ -147,3 +147,134 @@ def plot_bbox_results(path='./dataset/Images', gt='Object.csv', pr='Object_resul
 		im = cv2.rectangle(img, pt1, pt2, (255, 0, 0), 10)
 	plt.imshow(im)
 	plt.show()
+
+def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
+	''' Convert the ground truth and predicted .csv files to coco .json '''
+	# Ground truths
+	labels = []
+	images = []
+	boxes = []
+	with open(gt) as f:
+		next(f)
+		for line in f:
+			line = line.strip().split(',')
+			filen = line[0]
+			size = int(line[1])
+			conf = line[2]
+			x = int(line[6].split(':')[-1])
+			y = int(line[7].split(':')[-1])
+			w = int(line[8].split(':')[-1])
+			h = int(line[9].split(':')[-1][:-2])
+			w = x+w
+			h = y+h
+			label = line[10].split('"')[3]
+			labels.append(label)
+			images.append(filen)
+			bbox = [filen, label, x, y, w, h]
+			boxes.append(bbox)
+	data = {}
+	data['info'] = {}
+	data['licenses'] = []
+	cats = set(labels)
+	categories = []
+	cat_ids = {}
+	for ids, name in enumerate(cats):
+		cat_temp = {}
+		cat_temp['id'] = ids+1
+		cat_temp['name'] = name
+		categories.append(cat_temp)
+		cat_ids[name] = ids+1
+	data['categories'] = categories
+	images = set(images)
+	IMGs = []
+	img_ids = {}
+	for ids, file_name in enumerate(images):
+		W, H = Image.open('{}/{}'.format(img_dir, file_name)).size
+		img_temp = {}
+		img_temp['file_name'] = file_name
+		img_temp['id'] = ids+1
+		img_temp['width']  = W
+		img_temp['height'] = H
+		IMGs.append(img_temp)
+		img_ids[file_name] = ids+1
+	data['images'] = IMGs
+	annotations = []
+	for b in boxes:
+		ann_temp = {}
+		i_id = img_ids[b[0]]
+		c_id = cat_ids[b[1]]
+		x = b[2]
+		y = b[3]
+		w = b[4]
+		h = b[5]
+		ann_temp['image_id'] = i_id
+		ann_temp['category_id'] = c_id
+		ann_temp['bbox'] = [x, y, w, h]
+		annotations.append(ann_temp)
+	data['annotations'] = annotations
+	with open('Object.json', 'w') as json_file:
+		json.dump(data, json_file, indent=4, sort_keys=True)
+	# Predictions
+	labels = []
+	images = []
+	boxes = []
+	with open(pr) as f:
+		next(f)
+		for line in f:
+			line = line.strip().split(',')
+			filen = line[0]
+			size = int(line[1])
+			conf = float(line[2])
+			x = int(line[6].split(':')[-1])
+			y = int(line[7].split(':')[-1])
+			w = int(line[8].split(':')[-1])
+			h = int(line[9].split(':')[-1][:-2])
+			label = line[10].split('"')[3]
+			labels.append(label)
+			images.append(filen)
+			bbox = [filen, label, x, y, w, h, conf]
+			boxes.append(bbox)
+	data = {}
+	data['info'] = {}
+	data['licenses'] = []
+	cats = set(labels)
+	categories = []
+	cat_ids = {}
+	for ids, name in enumerate(cats):
+		cat_temp = {}
+		cat_temp['id'] = ids+1
+		cat_temp['name'] = name
+		categories.append(cat_temp)
+		cat_ids[name] = ids+1
+	data['categories'] = categories
+	images = set(images)
+	IMGs = []
+	img_ids = {}
+	for ids, file_name in enumerate(images):
+		W, H = Image.open('{}/{}'.format(img_dir, file_name)).size
+		img_temp = {}
+		img_temp['file_name'] = file_name
+		img_temp['id'] = ids+1
+		img_temp['width']  = W
+		img_temp['height'] = H
+		IMGs.append(img_temp)
+		img_ids[file_name] = ids+1
+	data['images'] = IMGs
+	annotations = []
+	for b in boxes:
+		ann_temp = {}
+		i_id = img_ids[b[0]]
+		c_id = cat_ids[b[1]]
+		x = b[2]
+		y = b[3]
+		w = b[4]
+		h = b[5]
+		c = b[6]
+		ann_temp['image_id'] = i_id
+		ann_temp['category_id'] = c_id
+		ann_temp['bbox'] = [x, y, w, h]
+		ann_temp['score'] = c
+		annotations.append(ann_temp)
+	data['annotations'] = annotations
+	with open('Object_results.json', 'w') as json_file:
+		json.dump(data, json_file, indent=4, sort_keys=True)
