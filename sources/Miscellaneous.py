@@ -148,6 +148,9 @@ def plot_bbox_results(path='./dataset/Images', gt='Object.csv', pr='Object_resul
 	plt.imshow(im)
 	plt.show()
 
+import json
+from PIL import Image
+
 def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
 	''' Convert the ground truth and predicted .csv files to coco .json '''
 	# Ground truths
@@ -212,7 +215,7 @@ def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
 		ann_temp['bbox'] = [x, y, w, h]
 		annotations.append(ann_temp)
 	data['annotations'] = annotations
-	with open('Object.json', 'w') as json_file:
+	with open('{}.json'.format(gt[:-4]), 'w') as json_file:
 		json.dump(data, json_file, indent=4, sort_keys=True)
 	# Predictions
 	labels = []
@@ -276,5 +279,7 @@ def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
 		ann_temp['score'] = c
 		annotations.append(ann_temp)
 	data['annotations'] = annotations
-	with open('Object_results.json', 'w') as json_file:
+	with open('{}.json'.format(pr[:-4]), 'w') as json_file:
 		json.dump(data, json_file, indent=4, sort_keys=True)
+
+csv_to_coco(gt='Object.csv', pr='Object_results.csv')
