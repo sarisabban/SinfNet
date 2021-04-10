@@ -21,6 +21,7 @@ parser.add_argument('-bb',  '--bbox_results',     nargs='+', help='Plot bounding
 parser.add_argument('-C' ,  '--crop',             nargs='+', help='Make image dimentions multiples of 32')
 parser.add_argument('-Cb',  '--check_box',        nargs='+', help='Check bounding box annotation after augmentation')
 parser.add_argument('-Cp',  '--check_poly',       nargs='+', help='Check bounding polygon annotation after augmentation')
+parser.add_argument('-Cob', '--csv_coco',         nargs='+', help='Convert .csv to coco .json for bounding boxes')
 parser.add_argument('-ct',  '--cnn_train',        nargs='+', help='Train on CNN')
 parser.add_argument('-cp',  '--cnn_predict',      nargs='+', help='Predict from CNN')
 parser.add_argument('-mAP', '--mAP_calc',         nargs='+', help='Calculate the mean average precision of bounding box results')
@@ -101,6 +102,11 @@ def main():
 			Miscellaneous.confirm_poly(
 								'{}/{}.jpg'.format(I, f),
 								'{}/{}.json'.format(A, f))
+	elif args.csv_coco:
+		Miscellaneous.csv_to_coco(
+								img_dir=sys.argv[2],
+								gt=sys.argv[3],
+								pr=sys.argv[4])
 	elif args.crop:
 		Miscellaneous.crop(filename=sys.argv[2])
 	elif args.cnn_train:
