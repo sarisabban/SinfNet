@@ -164,7 +164,7 @@ The WEIGHTS is the name of the output weight.h5 file, TRAIN is the directory of 
 #### For semantic segmentation
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive Inactive`
+`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive`
 
 Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background), the NETWORK can be wither unet or fcn_8, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). As with object detection, including pre-trained weights is possible:
 
@@ -196,7 +196,7 @@ Where WEIGHTS is the weights.h5 file, LABELS is the labels.pkl file, and FILENAM
 
 2. Detect objects in your image using the following command:
 
-`python SinfNet.py --semantic_predict NETWORK MODE FILENAME` example `python SinfNet.py -sp unet binary image.jpg`
+`python SinfNet.py --semantic_predict NETWORK MODE LABELS FILENAME` example `python SinfNet.py -sp unet binary labels.pkl image.jpg`
 
 Where NETWORK can be wither unet or fcn_8, MODE either binary or multi, and FILENAME is the name of the image file.
 
@@ -223,7 +223,7 @@ python SinfNet.py -bb IMAGES_DIRECTORY BBOX_ANNOTATIONS BBOX_RESULTS            
 python SinfNet.py -mAP BBOX_ANNOTATIONS BBOX_RESULTS                                                                                      |Calculates the mean average precision of bounding box predictions, where BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file
 |python SinfNet.py -S FILENAME WIDTH HIGHT                                                                                                |Segments a large image into smaller images with the defined WIDTH and HIGHT|
 |python SinfNet.py -st NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...                                                                    |Semantic detection training using NETWORK (unet, fcn_8), MODE (binary, multi), TRAIN directory of images, ANNOTATION directory of annotations, and LABEL1 LABEL2 ...|
-|python SinfNet.py -sp NETWORK MODE FILENAME                                                                                              |Semantic detection prediction using NETWORK (unet, fcn_8), MODE (binary, multi), and FILENAME .jpg image|
+|python SinfNet.py -sp NETWORK MODE LABELS FILENAME                                                                                              |Semantic detection prediction using NETWORK (unet, fcn_8), MODE (binary, multi), LABELS .pkl filename (labels.pkl) , and FILENAME .jpg image|
 |python SinfNet.py -tb IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT                                      |Convert between different bbox annotation formats (txt, csv, coco-json, xml) where you have to include location of images in IMAGE_DIRECTORY, location of annotations or annotation file in ANNOTATION_INPUT, where to output translated annotations in ANNOTATION_OUTPUT, INPUT_FORMAT and OUTPUT_FORMAT formats|
 |python SinfNet.py -tp IMAGE_DIRECTORY ANNOTATION_INPUT ANNOTATION_OUTPUT INPUT_FORMAT OUTPUT_FORMAT                                      |Convert between different polygon formats (csv, json) where you have to include location of images in IMAGE_DIRECTORY, location of annotations or annotation file in ANNOTATION_INPUT, where to output translated annotations in ANNOTATION_OUTPUT, INPUT_FORMAT and OUTPUT_FORMAT formats|
 |python SinfNet.py -v                                                                                                                     |Open web-based image annotator (FireFox only)|
