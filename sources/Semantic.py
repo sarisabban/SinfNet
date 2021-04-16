@@ -33,6 +33,7 @@ import sys
 import cv2
 import json
 import random
+import pickle
 import numpy as np
 from PIL import Image
 import tensorflow as tf
