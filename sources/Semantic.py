@@ -57,6 +57,7 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
 		model_name = MODEL+'_'+mode
 		LABELS = sys.argv[5:]
+		with open('labels.pkl', 'wb') as f: pickle.dump(LABELS, f)
 		hues = {}
 		for l in LABELS: hues[l] = random.randint(0, 360)
 		labels = sorted(hues.keys())
@@ -68,9 +69,13 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		mode = sys.argv[3]             # classification mode (binary or multi)
 		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
 		model_name = MODEL+'_'+mode
+		with open(sys.argv[4], 'rb') as f: LABELS = pickle.load(f)
+		hues = {}
+		for l in LABELS: hues[l] = random.randint(0, 360)
+		labels = sorted(hues.keys())
 		if mode == 'binary': n_classes = 1
 		elif mode == 'multi': n_classes = len(labels) + 1
-		WW, HH = Image.open(sys.argv[4]).size
+		WW, HH = Image.open(sys.argv[5]).size
 		imshape = (HH, WW, 3)
 
 class DataGenerator(tf.keras.utils.Sequence):
@@ -356,7 +361,7 @@ def predict(filename, CALC_CRF=True):
 			roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
 		elif n_classes > 1:
 			roi_mask = crf(roi_pred.squeeze(), im)
-	pos = np.count_nonzero(roi_mask)/3 # Number of white pixels
+	pos = np.count_nonzero(roi_mask)/3 # Number of detected pixels
 	neg = np.count_nonzero(roi_mask==0)/3
-	print('Positive white pixels {}'.format(pos))
+	print('Positive detected pixels {}'.format(pos))
 	cv2.imwrite('masked_{}'.format(filename.split('/')[-1]), roi_mask)
