@@ -31,6 +31,7 @@ import sys
 import cv2
 import copy
 import json
+import tqdm
 import scipy
 import keras
 import pickle
