@@ -22,7 +22,7 @@ This is a collection of datasets and neural networks to detect or classify micro
 ## Available datasets and trained weight files
 All datasets used are available here for download, along with their neural network weights for detection/classification.
 
-|Dataset Name                                                                                                                    |Network |Weights                                                                            |mAP or Accuracy|
+|Dataset Name                                                                                                                    |Network |Weights                                                                            |Accuracy or mAP or Dice|
 |--------------------------------------------------------------------------------------------------------------------------------|--------|-----------------------------------------------------------------------------------|---------------|
 |[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                                 |YOLOv3  |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)                |0.6473         |
 |[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                                          |YOLOv3  |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)                 |0.9549         |
@@ -30,7 +30,8 @@ All datasets used are available here for download, along with their neural netwo
 |[Nematode Trophic Classification by Body Dataset]()|ResNet50|[Weights]()|         |
 |[Nematode Object Dataset](https://www.dropbox.com/s/5leewk48vj6ip6l/Nematodes_Object.tar.bz2?dl=0)                              |YOLOv3  |[Weights](https://www.dropbox.com/s/z638ml32x7i3kef/Nematodes_Object.h5?dl=0)      |0.8867         |
 |[Nematode Semantic Dataset](https://www.dropbox.com/s/779le560wt159x4/Nematodes_Semantic.tar.bz2?dl=0)                          |UNet    |[Weights](https://www.dropbox.com/s/cf7g62fil44r2mj/Nematodes_Semantic.h5?dl=0)    |0.95896        |
-|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)                |YOLOv3 <br /> UNet |[Object Weights](https://www.dropbox.com/s/uo396owrvnfa1gq/Protists_Object.h5?dl=0) <br /> [Semantic Weights](https://www.dropbox.com/s/zb9d39p4r97c1f6/unet_multi.h5?dl=0) |0.9625 <br />           |               |
+|[Protist Object and Simantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)                |YOLOv3 <br /> UNet |[Object Weights](https://www.dropbox.com/s/uo396owrvnfa1gq/Protists_Object.h5?dl=0) <br /> [Semantic Weights](https://www.dropbox.com/s/zb9d39p4r97c1f6/unet_multi.h5?dl=0) |0.9625 <br />0.9674   |
+
 ## How to use:
 This is a [Video]() on how to use this whole setup.
 
