@@ -148,9 +148,6 @@ def plot_bbox_results(path='./dataset/Images', gt='Object.csv', pr='Object_resul
 	plt.imshow(im)
 	plt.show()
 
-import json
-from PIL import Image
-
 def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
 	''' Convert the ground truth and predicted .csv files to coco .json '''
 	# Ground truths
