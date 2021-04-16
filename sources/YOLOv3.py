@@ -1264,7 +1264,7 @@ def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
 				break
 		cv2.destroyAllWindows()
 	elif input_path[-4:] == '.mp4':
-		video_out = output_path + input_path.split('/')[-1]
+		video_out = output_path + 'object_' + input_path.split('/')[-1]
 		video_reader = cv2.VideoCapture(input_path)
 		nb_frames = int(video_reader.get(cv2.CAP_PROP_FRAME_COUNT))
 		frame_h = int(video_reader.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -1274,7 +1274,7 @@ def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
 		images      = []
 		start_point = 0
 		show_window = False
-		for i in tqdm(range(nb_frames)):
+		for i in tqdm.tqdm(range(nb_frames)):
 			_, image = video_reader.read()
 			if (float(i+1)/nb_frames) > start_point/100.:
 				images += [image]
