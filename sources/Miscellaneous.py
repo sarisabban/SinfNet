@@ -281,5 +281,3 @@ def csv_to_coco(img_dir='Images', gt='Object.csv', pr='Object_results.csv'):
 	data['annotations'] = annotations
 	with open('{}.json'.format(pr[:-4]), 'w') as json_file:
 		json.dump(data, json_file, indent=4, sort_keys=True)
-
-csv_to_coco(gt='Object.csv', pr='Object_results.csv')
