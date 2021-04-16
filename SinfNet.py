@@ -133,7 +133,7 @@ def main():
 	elif args.semantic_train:
 		Semantic.train()
 	elif args.semantic_predict:
-		Semantic.predict(sys.argv[4])
+		Semantic.predict(sys.argv[5])
 	elif args.translate_bbox:
 		Translate.translate_bbox(image_path=sys.argv[2],
 								ann_input=sys.argv[3],
