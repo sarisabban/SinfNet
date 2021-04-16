@@ -532,7 +532,7 @@ class BoundBox:
 	def get_label(self):
 		if self.label == -1:
 			self.label = np.argmax(self.classes)
-		print(self.xmin, self.ymin, self.xmax, self.ymax, config['model']['labels'][self.label])
+		#print(self.xmin, self.ymin, self.xmax, self.ymax, config['model']['labels'][self.label])
 		return self.label
 	def get_score(self):
 		if self.score == -1:
