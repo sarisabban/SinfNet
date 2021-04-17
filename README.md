@@ -2,7 +2,7 @@
 A collection of datasets and neural networks for microorganism image classification.
 
 ## Contributers:
-Sari Sabban - Tarik Alafif - Abdullah Alotebi
+Sari Sabban - Tarik Alafif - Abdullah Alotebi - Sally Warring
 
 ## Description:
 This is a collection of datasets and neural networks to detect or classify microorganisms from microscope images. Provided here are all the necessary scripts, datasets, and weights. So far this project either detects or classifies the following organisms:
