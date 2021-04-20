@@ -247,8 +247,8 @@ When using any part of this project kindly reference the following:
 
 ## TODO:
 
-* Make Video -> YouTub -> link here
+* Make Video -> YouTube -> link here
 * Compelete nematode body Dataset
 * Compelete nematode body weights
 * Compelete protist semantic weights
-* add result images and GIF video
+* add semantic result GIFs
