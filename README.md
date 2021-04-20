@@ -1,6 +1,11 @@
 # Microorganism Image Classifier
 A collection of datasets and neural networks for microorganism image classification.
 
+![Alt Text](sources/Object_result_1.gif)
+![Alt Text](sources/Object_result_4.gif)
+![Alt Text](sources/Object_result_3.gif)
+![Alt Text](sources/Object_result_2.gif)
+
 ## Contributers:
 Sari Sabban - Tarik Alafif - Abdullah Alotebi - Sally Warring
 
