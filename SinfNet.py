@@ -13,26 +13,28 @@ from sources import Translate
 from sources import Miscellaneous
 
 parser = argparse.ArgumentParser(description='Collection of datasets and networks for microscope organism classification')
-parser.add_argument('-ac',  '--augment_cnn',      nargs='+', help='Augment whole images for a CNN')
-parser.add_argument('-ap',  '--augment_poly',     nargs='+', help='Augment images with bounding polygons')
-parser.add_argument('-ab',  '--augment_bbox',     nargs='+', help='Augment images with bounding boxes')
-parser.add_argument('-B' ,  '--biomass',          nargs='+', help='Calculate biomass')
-parser.add_argument('-bb',  '--bbox_results',     nargs='+', help='Plot bounding box results')
-parser.add_argument('-C' ,  '--crop',             nargs='+', help='Make image dimentions multiples of 32')
-parser.add_argument('-Cb',  '--check_box',        nargs='+', help='Check bounding box annotation after augmentation')
-parser.add_argument('-Cp',  '--check_poly',       nargs='+', help='Check bounding polygon annotation after augmentation')
-parser.add_argument('-Cob', '--csv_coco',         nargs='+', help='Convert .csv to coco .json for bounding boxes')
-parser.add_argument('-ct',  '--cnn_train',        nargs='+', help='Train on CNN')
-parser.add_argument('-cp',  '--cnn_predict',      nargs='+', help='Predict from CNN')
-parser.add_argument('-mAP', '--mAP_calc',         nargs='+', help='Calculate the mean average precision of bounding box results')
-parser.add_argument('-S' ,  '--segment',          nargs='+', help='Segment a large image')
-parser.add_argument('-st',  '--semantic_train',   nargs='+', help='Train on UNet')
-parser.add_argument('-sp',  '--semantic_predict', nargs='+', help='Predict from UNet')
-parser.add_argument('-tb',  '--translate_bbox',   nargs='+', help='Translate between annotation file formats for bounding boxes')
-parser.add_argument('-tp',  '--translate_poly',   nargs='+', help='Translate between annotation file formats for bounding polygons')
-parser.add_argument('-v' ,  '--via',              action='store_true', help='Open image labeling tool')
-parser.add_argument('-ot',  '--object_train',     nargs='+', help='Train on YOLOv3')
-parser.add_argument('-op',  '--object_predict',   nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-ac',  '--augment_cnn',         nargs='+', help='Augment whole images for a CNN')
+parser.add_argument('-ap',  '--augment_poly',        nargs='+', help='Augment images with bounding polygons')
+parser.add_argument('-ab',  '--augment_bbox',        nargs='+', help='Augment images with bounding boxes')
+parser.add_argument('-B' ,  '--biomass',             nargs='+', help='Calculate biomass')
+parser.add_argument('-bb',  '--bbox_results',        nargs='+', help='Plot bounding box results')
+parser.add_argument('-C' ,  '--crop',                nargs='+', help='Make image dimentions multiples of 32')
+parser.add_argument('-Cb',  '--check_box',           nargs='+', help='Check bounding box annotation after augmentation')
+parser.add_argument('-Cp',  '--check_poly',          nargs='+', help='Check bounding polygon annotation after augmentation')
+parser.add_argument('-Cob', '--csv_coco',            nargs='+', help='Convert .csv to coco .json for bounding boxes')
+parser.add_argument('-ct',  '--cnn_train',           nargs='+', help='Train on CNN')
+parser.add_argument('-cp',  '--cnn_predict',         nargs='+', help='Predict from CNN')
+parser.add_argument('-mAP', '--mAP_calc',            nargs='+', help='Calculate the mean average precision of bounding box results')
+parser.add_argument('-S' ,  '--segment',             nargs='+', help='Segment a large image')
+parser.add_argument('-st',  '--semantic_train',      nargs='+', help='Train on UNet')
+parser.add_argument('-sp',  '--semantic_predict',    nargs='+', help='Predict from UNet')
+parser.add_argument('-spr', '--semantic_predict_PR', nargs='+', help='Generates ground truth and predictions from UNet to calculate Dice')
+parser.add_argument('-tb',  '--translate_bbox',      nargs='+', help='Translate between annotation file formats for bounding boxes')
+parser.add_argument('-tp',  '--translate_poly',      nargs='+', help='Translate between annotation file formats for bounding polygons')
+parser.add_argument('-v' ,  '--via',                 action='store_true', help='Open image labeling tool')
+parser.add_argument('-ot',  '--object_train',        nargs='+', help='Train on YOLOv3')
+parser.add_argument('-op',  '--object_predict',      nargs='+', help='Predict from YOLOv3')
+parser.add_argument('-opr', '--object_predict_PR',   nargs='+', help='Generates ground truth and predictions from YOLOv3 to calculate mAP')
 args = parser.parse_args()
 
 def main():
@@ -134,6 +136,9 @@ def main():
 		Semantic.train()
 	elif args.semantic_predict:
 		Semantic.predict(sys.argv[5])
+	elif args.semantic_predict_PR:
+		Semantic.GT_poly(sys.argv[5], sys.argv[6])
+		Semantic.PR_poly(sys.argv[5])
 	elif args.translate_bbox:
 		Translate.translate_bbox(image_path=sys.argv[2],
 								ann_input=sys.argv[3],
@@ -152,5 +157,11 @@ def main():
 		YOLOv3.train()
 	elif args.object_predict:
 		YOLOv3.predict(sys.argv[2], sys.argv[4], './')
+	elif args.object_predict_PR:
+		with open('Object_results.csv', 'a') as f:
+		    f.write('filename,file_size,confidence,region_count,region_id,region_shape_attributes,region_attributes\n')
+		directory = sys.argv[4]
+		for image in os.listdir(directory):
+			YOLOv3.predict(sys.argv[2], directory+'/'+image , './')
 
 if __name__ == '__main__': main()

@@ -47,7 +47,7 @@ from keras.layers.merge import add, concatenate
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from keras.layers import Lambda, concatenate, ZeroPadding2D, UpSampling2D, Lambda, Conv2D, Input, BatchNormalization, LeakyReLU
 
-if sys.argv[1] == '-yt' or sys.argv[1] == '-yp':
+if sys.argv[1] == '-ot' or sys.argv[1] == '-op' or sys.argv[1] == '-opr':
 	if sys.argv[1] == '-yt':
 		WEIGHTS = sys.argv[2]
 		LABELS = sys.argv[5:]
@@ -84,6 +84,40 @@ if sys.argv[1] == '-yt' or sys.argv[1] == '-yp':
 					'cache_name':           '',
 					'valid_times':          1}}
 	elif sys.argv[1] == '-yp':
+		WEIGHTS = sys.argv[2]
+		with open(sys.argv[3], 'rb') as f: LABELS = pickle.load(f)
+		print(LABELS)
+		config = {'model':{
+					'min_input_size':       288,
+					'max_input_size':       448,
+					'anchors':              [55,69,75,234,133,240,136,129,142,363,203,290,228,184,285,359,341,260],
+					'labels':               LABELS},
+				'train':{
+					'train_image_folder':   '',
+					'train_annot_folder':   '',
+					'tensorboard_dir':      '',
+					'saved_weights_name':   './{}'.format(WEIGHTS),
+					'cache_name':           '',
+					'pretrained_weights':   '',
+					'train_times':          8,
+					'batch_size':           16,
+					'learning_rate':        1e-4,
+					'nb_epochs':            100,
+					'warmup_epochs':        0,
+					'ignore_thresh':        0.5,
+					'gpus':                 '0,1',
+					'grid_scales':          [1,1,1],
+					'obj_scale':            5,
+					'noobj_scale':          1,
+					'xywh_scale':           1,
+					'class_scale':          1,
+					'debug':                False},
+				'valid':{
+					'valid_image_folder':   '',
+					'valid_annot_folder':   '',
+					'cache_name':           '',
+					'valid_times':          1}}
+	elif sys.argv[1] == '-ypr':
 		WEIGHTS = sys.argv[2]
 		with open(sys.argv[3], 'rb') as f: LABELS = pickle.load(f)
 		print(LABELS)
@@ -532,7 +566,6 @@ class BoundBox:
 	def get_label(self):
 		if self.label == -1:
 			self.label = np.argmax(self.classes)
-		#print(self.xmin, self.ymin, self.xmax, self.ymax, config['model']['labels'][self.label])
 		return self.label
 	def get_score(self):
 		if self.score == -1:
@@ -1300,6 +1333,22 @@ def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
 		for image_path in image_paths:
 			image = cv2.imread(image_path)
 			boxes = get_yolo_boxes(infer_model, [image], net_h, net_w, config['model']['anchors'], obj_thresh, nms_thresh)[0]
-			draw_boxes(image, boxes, config['model']['labels'], obj_thresh)			
-			cv2.imwrite('object_{}'.format(FILENAME), np.uint8(image))
-			print('[+] Exported object_{}'.format(FILENAME))
+            if sys.argv[1] == '-opr':
+				with open('Object_results.csv', 'a') as f:
+					for box in boxes:
+						for i in range(len(config["model"]["labels"])):
+							if box.classes[i] > 0.5:
+								c = box.classes[i]
+								l = config["model"]["labels"][i]
+								x = box.xmin
+								y = box.ymin
+								w = box.xmax
+								h = box.ymax
+								size = os.stat(FILENAME).st_size
+								line = '{},{},{},{},{},"{{""name"":""rect"",""x"":{},""y"":{},""width"":{},""height"":{}}}","{{""{}"":""""}}"\n'\
+								.format(FILENAME, size, c, '---', '---', x, y, w, h, l)
+								f.write(line)
+			elif sys.argv[1] == '-op':
+				draw_boxes(image, boxes, config['model']['labels'], obj_thresh)			
+				cv2.imwrite('object_{}'.format(FILENAME), np.uint8(image))
+				print('[+] Exported object_{}'.format(FILENAME))
