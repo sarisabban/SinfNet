@@ -48,7 +48,7 @@ from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceL
 from keras.layers import Lambda, concatenate, ZeroPadding2D, UpSampling2D, Lambda, Conv2D, Input, BatchNormalization, LeakyReLU
 
 if sys.argv[1] == '-ot' or sys.argv[1] == '-op' or sys.argv[1] == '-opr':
-	if sys.argv[1] == '-yt':
+	if sys.argv[1] == '-ot':
 		WEIGHTS = sys.argv[2]
 		LABELS = sys.argv[5:]
 		TRAIN = sys.argv[3]
@@ -83,7 +83,7 @@ if sys.argv[1] == '-ot' or sys.argv[1] == '-op' or sys.argv[1] == '-opr':
 					'valid_annot_folder':   '',
 					'cache_name':           '',
 					'valid_times':          1}}
-	elif sys.argv[1] == '-yp':
+	elif sys.argv[1] == '-op':
 		WEIGHTS = sys.argv[2]
 		with open(sys.argv[3], 'rb') as f: LABELS = pickle.load(f)
 		print(LABELS)
@@ -117,7 +117,7 @@ if sys.argv[1] == '-ot' or sys.argv[1] == '-op' or sys.argv[1] == '-opr':
 					'valid_annot_folder':   '',
 					'cache_name':           '',
 					'valid_times':          1}}
-	elif sys.argv[1] == '-ypr':
+	elif sys.argv[1] == '-opr':
 		WEIGHTS = sys.argv[2]
 		with open(sys.argv[3], 'rb') as f: LABELS = pickle.load(f)
 		print(LABELS)
@@ -1333,7 +1333,7 @@ def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
 		for image_path in image_paths:
 			image = cv2.imread(image_path)
 			boxes = get_yolo_boxes(infer_model, [image], net_h, net_w, config['model']['anchors'], obj_thresh, nms_thresh)[0]
-            if sys.argv[1] == '-opr':
+			if sys.argv[1] == '-opr':
 				with open('Object_results.csv', 'a') as f:
 					for box in boxes:
 						for i in range(len(config["model"]["labels"])):
@@ -1346,9 +1346,9 @@ def predict(WEIGHTS='weights.h5', FILENAME='test.jpg', output_path='./'):
 								h = box.ymax
 								size = os.stat(FILENAME).st_size
 								line = '{},{},{},{},{},"{{""name"":""rect"",""x"":{},""y"":{},""width"":{},""height"":{}}}","{{""{}"":""""}}"\n'\
-								.format(FILENAME, size, c, '---', '---', x, y, w, h, l)
+								.format(FILENAME.split('/')[-1], size, c, '---', '---', x, y, w, h, l)
 								f.write(line)
 			elif sys.argv[1] == '-op':
 				draw_boxes(image, boxes, config['model']['labels'], obj_thresh)			
-				cv2.imwrite('object_{}'.format(FILENAME), np.uint8(image))
+				cv2.imwrite('{}object_{}'.format(output_path, FILENAME.split('/')[-1]), np.uint8(image))
 				print('[+] Exported object_{}'.format(FILENAME))
