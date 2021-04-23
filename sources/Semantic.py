@@ -47,15 +47,15 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.layers import Dropout, Lambda, Conv2DTranspose, Add
 from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, concatenate
 
-if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
+if sys.argv[1] == '-st' or sys.argv[1] == '-sp' or sys.argv[1] == '-spr':
 	if sys.argv[1] == '-st':
 		TRAIN = sys.argv[4]
 		ANNOT = sys.argv[5]
 		for exam in os.listdir(TRAIN): exam = exam
 		WW, HH = Image.open('{}/{}'.format(TRAIN, exam)).size
 		imshape = (HH, WW, 3)
-		mode = sys.argv[3]             # classification mode (binary or multi)
-		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
+		mode = sys.argv[3]             # Classification mode (binary or multi)
+		MODEL = sys.argv[2]            # Network architecture (unet or fcn_8)
 		model_name = MODEL+'_'+mode
 		LABELS = sys.argv[5:]
 		with open('labels.pkl', 'wb') as f: pickle.dump(LABELS, f)
@@ -65,10 +65,10 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		if mode == 'binary': n_classes = 1
 		elif mode == 'multi': n_classes = len(labels) + 1
 		assert imshape[0]%32 == 0 and imshape[1]%32 == 0,\
-			"imshape should be multiples of 32. comment out to test different imshapes."
+			"image shape should be a multiple of 32"
 	elif sys.argv[1] == '-sp':
-		mode = sys.argv[3]             # classification mode (binary or multi)
-		MODEL = sys.argv[2]            # model_name (unet or fcn_8)
+		mode = sys.argv[3]
+		MODEL = sys.argv[2]
 		model_name = MODEL+'_'+mode
 		with open(sys.argv[4], 'rb') as f: LABELS = pickle.load(f)
 		hues = {}
@@ -78,6 +78,18 @@ if sys.argv[1] == '-st' or sys.argv[1] == '-sp':
 		elif mode == 'multi': n_classes = len(labels) + 1
 		WW, HH = Image.open(sys.argv[5]).size
 		imshape = (HH, WW, 3)
+	elif sys.argv[1] == '-spr':
+		image_dir = sys.argv[5]
+		annot_dir = sys.argv[6]
+		for exam in os.listdir(image_dir): exam = exam
+		WW, HH = Image.open('{}/{}'.format(image_dir, exam)).size
+		imshape = (HH, WW, 3)
+		mode = sys.argv[3]
+		MODEL = sys.argv[2]
+		model_name = MODEL+'_'+mode
+		with open(sys.argv[4], 'rb') as f: labels = pickle.load(f)
+		if mode == 'binary': n_classes = 1
+		elif mode == 'multi': n_classes = len(labels) + 1
 
 class DataGenerator(tf.keras.utils.Sequence):
 	def __init__(self, image_paths, annot_paths, batch_size=32, shuffle=True):
@@ -366,3 +378,67 @@ def predict(filename, CALC_CRF=True):
 	neg = np.count_nonzero(roi_mask==0)/3
 	print('Positive detected pixels {}'.format(pos))
 	cv2.imwrite('masked_{}'.format(filename.split('/')[-1]), roi_mask)
+
+def GT_poly(image_dir='img', annot_dir='ant'):
+	''' Get ground truth for semantic detection '''
+	GT = {}
+	for images in os.listdir(image_dir):
+		name = images[:-4]
+		GT_im = '{}/{}'.format(image_dir, images)
+		GT_an = '{}/{}.json'.format(annot_dir, name)
+		im = cv2.imread(GT_im)
+		im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+		with open(GT_an) as handle: data = json.load(handle)
+		shape_dicts = data['shapes']
+		channels = []
+		cls = [x['label'] for x in shape_dicts]
+		poly = [np.array(x['points'], dtype=np.int32) for x in shape_dicts]
+		label2poly = dict(zip(cls, poly))
+		background = np.zeros(shape=(im.shape[0], im.shape[1]))
+		for i, label in enumerate(labels):
+			blank = np.zeros(shape=(im.shape[0], im.shape[1]))
+			if label in cls:
+				cv2.fillPoly(blank, [label2poly[label]], 255)
+				cv2.fillPoly(background, [label2poly[label]], 255)
+			channels.append(blank)
+		if 'background' in cls:
+			background = np.zeros(shape=(im.shape[0], im.shape[1]))
+			cv2.fillPoly(background, [label2poly['background']], 255)
+		else:
+			_,background=cv2.threshold(background,127,255,cv2.THRESH_BINARY_INV)
+		channels.append(background)
+		mask = np.stack(channels, axis=2) / 255.0
+		GT[images] = mask
+	with open('GT.pkl', 'wb') as f: pickle.dump(GT, f)
+
+def PR_poly(image_dir='img'):
+	''' Get predictions for semantic detection '''
+	if 'unet' in model_name: model = unet(pretrained=True, base=4)
+	elif 'fcn_8' in model_name: model = fcn_8(pretrained=True, base=4)
+	model.load_weights(model_name+'.h5')
+	PR = {}
+	for images in os.listdir(image_dir):
+		PR_im = image_dir+'/'+images
+		im_cv = cv2.imread(PR_im)
+		im = cv2.cvtColor(im_cv, cv2.COLOR_BGR2RGB).copy()
+		tmp = np.expand_dims(im, axis=0)
+		roi_pred = model.predict(tmp)
+		im_softmax = roi_pred.squeeze()
+		n_classes = im_softmax.shape[2]
+		feat_first = im_softmax.transpose((2, 0, 1)).reshape(n_classes, -1)
+		unary = unary_from_softmax(feat_first)
+		unary = np.ascontiguousarray(unary)
+		im_rgb = cv2.cvtColor(cv2.imread(PR_im), cv2.COLOR_BGR2RGB).copy()
+		im_rgb = np.ascontiguousarray(im_rgb)
+		d = dcrf.DenseCRF2D(im_rgb.shape[1], im_rgb.shape[0], n_classes)
+		d.setUnaryEnergy(unary)
+		d.addPairwiseGaussian(sxy=(5, 5), compat=3, kernel=dcrf.DIAG_KERNEL,
+										normalization=dcrf.NORMALIZE_SYMMETRIC)
+		d.addPairwiseBilateral(sxy=(5, 5), srgb=(13, 13, 13), rgbim=im_rgb,
+										compat=10, kernel=dcrf.DIAG_KERNEL,
+										normalization=dcrf.NORMALIZE_SYMMETRIC)
+		Q = d.inference(5)
+		res = np.argmax(Q, axis=0).reshape((im_rgb.shape[0], im_rgb.shape[1]))
+		res_hot = to_categorical(res)
+		PR[images] = res_hot
+	with open('PR.pkl', 'wb') as f: pickle.dump(PR, f)
