@@ -109,7 +109,7 @@ def translate_bbox(	image_path='./dataset/Train',
 					f.write(TheLine)
 	elif output_format == 'xml':
 		for name in BBOX:
-			filename = name.split('.')[0]
+			filename = name[:-4]#name.split('.')[0]
 			output = '{}/{}.xml'.format(ann_output, filename)
 			with open(output, 'w') as f:
 					source = 'https://github.com/sarisabban/SinfNet'
