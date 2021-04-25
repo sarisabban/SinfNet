@@ -4,6 +4,7 @@ import os
 import sys
 import shutil
 import argparse
+from sources import Dice
 from sources import mAP
 from sources import CNN
 from sources import YOLOv3
@@ -24,7 +25,8 @@ parser.add_argument('-Cp',  '--check_poly',          nargs='+', help='Check boun
 parser.add_argument('-Cob', '--csv_coco',            nargs='+', help='Convert .csv to coco .json for bounding boxes')
 parser.add_argument('-ct',  '--cnn_train',           nargs='+', help='Train on CNN')
 parser.add_argument('-cp',  '--cnn_predict',         nargs='+', help='Predict from CNN')
-parser.add_argument('-mAP', '--mAP_calc',            nargs='+', help='Calculate the mean average precision of bounding box results')
+parser.add_argument('-dce', '--dice_calc',           nargs='+', help='Calculate the Dice metric for polygon (pixel wise) results')
+parser.add_argument('-mAP', '--mAP_calc',            nargs='+', help='Calculate the mean average precision for bounding box results')
 parser.add_argument('-S' ,  '--segment',             nargs='+', help='Segment a large image')
 parser.add_argument('-st',  '--semantic_train',      nargs='+', help='Train on UNet')
 parser.add_argument('-sp',  '--semantic_predict',    nargs='+', help='Predict from UNet')
@@ -127,6 +129,8 @@ def main():
 				Valid='',
 				Tests='',
 				prediction=sys.argv[4])
+	elif args.dice_calc:
+		Dice.dice(sys.argv[2], sys.argv[3])
 	elif args.mAP_calc:
 		mAP.mAP(sys.argv[2], sys.argv[3])
 	elif args.segment:
