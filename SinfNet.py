@@ -27,6 +27,7 @@ parser.add_argument('-ct',  '--cnn_train',           nargs='+', help='Train on C
 parser.add_argument('-cp',  '--cnn_predict',         nargs='+', help='Predict from CNN')
 parser.add_argument('-dce', '--dice_calc',           nargs='+', help='Calculate the Dice metric for polygon (pixel wise) results')
 parser.add_argument('-mAP', '--mAP_calc',            nargs='+', help='Calculate the mean average precision for bounding box results')
+parser.add_argument('-rp' , '--resize_poly',         nargs='+', help='Resize an image and its semantic annotations')
 parser.add_argument('-S' ,  '--segment',             nargs='+', help='Segment a large image')
 parser.add_argument('-st',  '--semantic_train',      nargs='+', help='Train on UNet')
 parser.add_argument('-sp',  '--semantic_predict',    nargs='+', help='Predict from UNet')
@@ -133,6 +134,12 @@ def main():
 		Dice.dice(sys.argv[2], sys.argv[3])
 	elif args.mAP_calc:
 		mAP.mAP(sys.argv[2], sys.argv[3])
+	elif args.resize_poly:
+		Augment.rescale_poly(image=sys.argv[2], 
+							annot=sys.argv[3], 
+							scale=None, 
+							H=int(sys.argv[4]), 
+							show=False)
 	elif args.segment:
 		Miscellaneous.segment(	filename=sys.argv[2],
 								size=(int(sys.argv[3]), int(sys.argv[4])))

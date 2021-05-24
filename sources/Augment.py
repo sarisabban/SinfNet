@@ -295,3 +295,41 @@ def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_inpu
 			loc = f.seek(0, os.SEEK_END)
 			f.seek(loc-1)
 			f.write(']}')
+
+def rescale_poly(image='1.jpg', annot='2.json', scale=None, H=None, show=False):
+	''' Rescale an image and its polygon annotations '''
+	img = cv2.imread(image)
+	scale_percent = scale
+	if H == None:
+		W = int(img.shape[1] * scale_percent / 100)
+		H = int(img.shape[0] * scale_percent / 100)
+		resize = cv2.resize(img, (W, H))
+		data = json.load(open(annot))
+		for p in data['shapes']:
+			points = np.array(p['points'])
+			points = points.reshape((-1, 1, 2))
+			points = np.array(points * scale_percent / 100, dtype=np.int)
+			if show:
+				resize = cv2.polylines(resize, [points], True, (255, 69, 0), 2)
+			points = points.reshape((-1, 2)).tolist()
+			p['points'] = points
+	if scale_percent == None:
+		scale_percent = (img.shape[0] / H)
+		W = int(img.shape[1] / scale_percent)
+		resize = cv2.resize(img, (W, H))
+		data = json.load(open(annot))
+		for p in data['shapes']:
+			points = np.array(p['points'])
+			points = points.reshape((-1, 1, 2))
+			points = np.array(points / scale_percent, dtype=np.int)
+			if show:
+				resize = cv2.polylines(resize, [points], True, (255, 69, 0), 2)
+			points = points.reshape((-1, 2)).tolist()
+			p['points'] = points
+	name = image[:-4].split('/')[1]
+	print(name)
+	print('Original shape:', img.shape)
+	print('Resized shape: ', resize.shape)
+	cv2.imwrite('resized_{}.jpg'.format(name), resize)
+	with open('resized_{}.json'.format(name), 'w') as json_file:
+		json.dump(data, json_file, indent=4, sort_keys=True)
