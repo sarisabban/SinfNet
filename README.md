@@ -120,7 +120,7 @@ Where IMAGE_INPUT is the directory where the images are located and ANNOTATION_I
 
 `python SinfNet.py --crop FILENAME` example `python SinfNet.py -C ./dataset/Images/1.jpg`
 
-This command works on single images, if you have multiple images you will have to construct a loop to go through all of them.
+This command works on single images, if you have multiple images you will have to construct a loop to go through all of them. **Advice:** place the image name between `''` for example `python SinfNet.py -C './dataset/Images/1.jpg'` since this will allow the command to work even if the image's filename has spaces in it.
 
 2. Follow the same steps as object detection except use polygons instead of squares to annotate the organisms.
 
