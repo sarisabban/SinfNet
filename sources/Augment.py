@@ -277,7 +277,8 @@ def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_inpu
 			flags = data['flags']
 			lineColor = data['lineColor']
 			fillColor = data['fillColor']
-			path = '.{}/Aug_{}'.format(image_output, image_input.split('/')[-1])
+			#path = '.{}/Aug_{}'.format(image_output, image_input.split('/')[-1])
+			path = '{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1))
 			imageData = data['imageData']
 			W, H = Image.open(image_input).size
 			header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
