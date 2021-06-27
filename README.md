@@ -250,7 +250,6 @@ When using any part of this project kindly reference the following:
 ## TODO:
 
 * Make Video -> YouTube -> link here
-* Compelete nematode body Dataset
-* Compelete nematode body weights
-* Compelete protist semantic weights
-* add semantic result GIFs
+* Compelete nematode head and body weights
+* Add nematode semantic result GIFs
+* Evaluate biomass calculation with control
