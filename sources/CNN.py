@@ -91,7 +91,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 	Vsteps = int(valid.samples/valid.next()[0].shape[0])
 	Tsteps = int(tests.samples/tests.next()[0].shape[0])
 	if choice == 'train':
-		history= model.fit_generator(train,
+		history = model.fit_generator(train,
 			steps_per_epoch=Esteps,
 			epochs=epochs,
 			validation_data=valid,
@@ -104,8 +104,8 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		plt.xlabel('Epoch')
 		plt.legend(['Train', 'Validation'], loc='upper left')
 		plt.show()
-		plt.plot(history.history['acc'])
-		plt.plot(history.history['val_acc'])
+		plt.plot(history.history['accuracy'])
+		plt.plot(history.history['val_accuracy'])
 		plt.title('Model Accuracy')
 		plt.ylabel('Accuracy')
 		plt.xlabel('Epoch')
