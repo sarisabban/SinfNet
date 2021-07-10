@@ -69,18 +69,9 @@ def main():
 								poly_output=sys.argv[8],
 								count=sys.argv[9])
 	elif args.biomass:
-		Width_img = int(sys.argv[2])
-		Hight_img = int(sys.argv[3])
-		Depth_img = int(sys.argv[4])
-		width     = int(sys.argv[5])
-		hight     = int(sys.argv[6])
-		whitePX   = int(sys.argv[7])
-		Miscellaneous.Biomass(	Width_img,
-								Hight_img,
-								Depth_img,
-								width,
-								hight,
-								whitePX)
+		mask = Semantic.predict(sys.argv[5], px=True)
+		resolution = sys.argv[6]
+		Miscellaneous.Biomass(mask, resolution)
 	elif args.bbox_results:
 		directory = sys.argv[2]
 		gt = sys.argv[3]

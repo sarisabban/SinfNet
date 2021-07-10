@@ -350,7 +350,7 @@ def train():
 		verbose=1,
 		callbacks=[checkpoint])
 
-def predict(filename, CALC_CRF=True):
+def predict(filename, CALC_CRF=True, px=False):
 	if 'unet' in model_name:
 		model = unet(pretrained=True, base=4)
 	elif 'fcn_8' in model_name:
@@ -374,10 +374,13 @@ def predict(filename, CALC_CRF=True):
 			roi_mask = cv2.cvtColor(roi_mask, cv2.COLOR_GRAY2RGB)
 		elif n_classes > 1:
 			roi_mask = crf(roi_pred.squeeze(), im)
-	pos = np.count_nonzero(roi_mask)/3 # Number of detected pixels
-	neg = np.count_nonzero(roi_mask==0)/3
-	print('Positive detected pixels {}'.format(pos))
-	cv2.imwrite('masked_{}'.format(filename.split('/')[-1]), roi_mask)
+	if px == False:
+		pos = math.floor(np.count_nonzero(roi_mask)/3) # Number of detected pixels
+		neg = math.floor(np.count_nonzero(roi_mask==0)/3)
+		print('Positive detected pixels {}'.format(pos))
+		cv2.imwrite('masked_{}'.format(filename.split('/')[-1]), roi_mask)
+	if px == True:
+		return(roi_mask)
 
 def GT_poly(image_dir='img', annot_dir='ant'):
 	''' Get ground truth for semantic detection '''

@@ -29,6 +29,20 @@ def Biomass(W, H, D, w, h, whitePX):
 	biomass = x/1.6e6
 	print('Biomass = {:,} μg'.format(biomass))
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def crop(filename='test.jpg'):
 	''' Crops an image to make its dimetions multiples of 32 '''
 	ImageFile.LOAD_TRUNCATED_IMAGES = True
