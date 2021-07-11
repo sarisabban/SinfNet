@@ -71,7 +71,8 @@ def main():
 	elif args.biomass:
 		mask = Semantic.predict(sys.argv[5], px=True)
 		resolution = sys.argv[6]
-		Miscellaneous.Biomass(mask, resolution)
+		depth = sys.argv[7]
+		Miscellaneous.Biomass(mask, resolution=resolution, depth=depth)
 	elif args.bbox_results:
 		directory = sys.argv[2]
 		gt = sys.argv[3]
