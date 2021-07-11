@@ -12,36 +12,34 @@ import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 
-def Biomass(W, H, D, w, h, whitePX):
+def Biomass(mask, resolution=0.70, depth=100):
 	'''
 	Approximate biomass from semantic segmentation output
 	Adapted from https://doi.org/10.1016/j.soilbio.2019.03.021
 	'''
-	Width_img = W # size of image in micrometers
-	Hight_img = H # size of image in micrometers
-	Depth_img = D # size of image in micrometers
-	width = w # size of image in pixels
-	hight = h # size of image in pixels
-	pixel = Width_img/width # micrometer value of a pixel
-	volume = pixel*whitePX*Depth_img
-	print('Volume = {:,} μm^3'.format(round(volume, 3)))
-	x = volume*1.7
-	biomass = x/1.6e6
+	D = depth                                    # Depth of slide in micrometers
+	resolution = resolution                      # Resolution if image in um/px
+	hight = mask.shape[0]                        # Size of image in pixels
+	width = mask.shape[1]                        # Size of image in pixels
+	H = hight * resolution                       # Hight of image in micrometers
+	W = width * resolution                       # Width of image in micrometers
+	D = D                                        # Depth of image in micrometers
+	px = np.count_nonzero(mask)/3                # Number of nematode pixels
+	volume_pixel = resolution * resolution * D   # Volume of a single pixel
+	V = volume_pixel * px                        # Volume of nematode
+	biomass = (V*1.7)/1.6e6                      # Biomass from volume
+	biomass = round(biomass, 3)
 	print('Biomass = {:,} μg'.format(biomass))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	img_text = cv2.putText(
+			mask,
+			'Biomass = {:,} ug'.format(round(biomass, 7)), # Text
+			(50, 50),                                      # Text position
+			cv2.FONT_HERSHEY_SIMPLEX,                      # Font
+			1,                                             # Font size
+			(0, 0, 255),                                   # Font colour
+			2,                                             # Font thickness
+			cv2.LINE_AA)
+	cv2.imwrite('mask.jpg', img_text)
 
 def crop(filename='test.jpg'):
 	''' Crops an image to make its dimetions multiples of 32 '''
