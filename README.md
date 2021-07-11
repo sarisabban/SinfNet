@@ -207,6 +207,7 @@ Where NETWORK can be wither unet or fcn_8, MODE either binary or multi, and FILE
 
 ## Nematode Biomass Approximation:
 `python SinfNet.py --biomass NETWORK MODE LABELS FILENAME RESOLUTION DEPTH` or `python SinfNet.py -B unet binary Nematode_labels.pkl nematode.jpg 0.58 100`
+
 Where NETWORK (unet, fcn_8), MODE (binary, multi), LABELS .pkl filename (labels.pkl), FILENAME .jpg image, RESOLUTION is the size of 1 pixel in micrometers, and DEPTH is the depth of the slide micrometers (100 is standard for slides and haemocytometers). The calculation for this function is taken from [this paper](https://doi.org/10.1016/j.soilbio.2019.03.021). Finding the resolution depends on your light microscope's setup.
 
 ## Table of commands:
