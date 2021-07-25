@@ -249,6 +249,22 @@ When using any part of this project kindly reference the following:
 
 ## TODO:
 
+* BUG FIX ===> SEMANTIC .json files have the 'imagePath' value incorrect....    should be '../Train/{}'.format('FILENAME.json') ---> look at [Translate.py, Miscellaneous.py, Augment.py]
+  
+  this is a temporary fix:
+```  
+import os
+import json
+os.mkdir('fixed')
+for fn in os.listdir('dataset/Annotations'):
+	name = 'dataset/Annotations/{}'.format(fn)
+	with open(name) as handle: data = json.load(handle)
+	old_path = data['imagePath']
+	data['imagePath'] = '../Train/{}'.format(fn)
+	new_path = data['imagePath']
+	print(old_path, new_path)
+	with open('fixed/{}'.format(fn), 'w') as F: json.dump(data, F, indent=6)
+  ```
 * Make Video -> YouTube -> link here
 * Add nematode semantic result GIFs
 * Evaluate biomass calculation with control
