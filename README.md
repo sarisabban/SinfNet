@@ -2,7 +2,7 @@
 A collection of datasets and neural networks for microorganism image classification.
 
 ## Contributers:
-Sari Sabban - Tarik Alafif - Abdullah Alotebi - Sally Warring - Zainab Alsaeedi
+Sari Sabban - Tarik Alafif - Abdullah Alotebi - Sally Warring - Zainab Alsaeedi - Stefan Geisen - Wenjia Wu
 
 ![Alt Text](sources/Object_result_1.gif)
 ![Alt Text](sources/Object_result_4.gif)
