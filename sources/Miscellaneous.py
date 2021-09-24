@@ -18,7 +18,7 @@ def Biomass(mask, resolution=0.70, depth=100):
 	Adapted from https://doi.org/10.1016/j.soilbio.2019.03.021
 	'''
 	D = depth                                    # Depth of slide (and image) in micrometers
-	resolution = resolution                      # Resolution if image in um/px
+	resolution = resolution                      # Resolution of image in um/px
 	hight = mask.shape[0]                        # Size of image in pixels
 	width = mask.shape[1]                        # Size of image in pixels
 	H = hight * resolution                       # Hight of image in micrometers
