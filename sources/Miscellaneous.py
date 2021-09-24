@@ -17,13 +17,12 @@ def Biomass(mask, resolution=0.70, depth=100):
 	Approximate biomass from semantic segmentation output
 	Adapted from https://doi.org/10.1016/j.soilbio.2019.03.021
 	'''
-	D = depth                                    # Depth of slide in micrometers
+	D = depth                                    # Depth of slide (and image) in micrometers
 	resolution = resolution                      # Resolution if image in um/px
 	hight = mask.shape[0]                        # Size of image in pixels
 	width = mask.shape[1]                        # Size of image in pixels
 	H = hight * resolution                       # Hight of image in micrometers
 	W = width * resolution                       # Width of image in micrometers
-	D = D                                        # Depth of image in micrometers
 	px = np.count_nonzero(mask)/3                # Number of nematode pixels
 	volume_pixel = resolution * resolution * D   # Volume of a single pixel
 	V = volume_pixel * px                        # Volume of nematode
