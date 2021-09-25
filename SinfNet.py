@@ -111,15 +111,13 @@ def main():
 				choice='train',
 				weights='',
 				Train=sys.argv[3],
-				Valid=sys.argv[4],
-				Tests=sys.argv[5],
+				Tests=sys.argv[4],
 				prediction='')
 	elif args.cnn_predict:
 		CNN.CNN(network=sys.argv[2],
 				choice='predict',
 				weights=sys.argv[3],
 				Train='',
-				Valid='',
 				Tests='',
 				prediction=sys.argv[4])
 	elif args.dice_calc:
