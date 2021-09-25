@@ -7,6 +7,7 @@ import sklearn
 import numpy as np
 import pandas as pd
 import seaborn as sn
+import tensorflow as tf
 import matplotlib.pyplot as plt
 from keras.preprocessing import image
 from keras.applications.vgg16 import VGG16
