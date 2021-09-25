@@ -73,13 +73,6 @@ If you would like to add images to our dataset (any type of microscopic organism
 
 Where IMAGE_INPUT is the directory that contains the original images, IMAGE_OUTPUT is the directory to output the augmented images, and NUMBER is the number of augments to each image.
 
-3. Generate three directories: Train, Valid, and Tests. Then shuffle your dataset and randomly split each class into a *Training* (60% of images), *Testing* (20% of images), and *Validation* (20% of images) sets using the following command:
-
-`shuf -n NUMBER -e ./dataset/Train/CLASS | xargs -i mv {} ./dataset/Valid/CLASS`
-`shuf -n NUMBER -e ./dataset/Train/CLASS | xargs -i mv {} ./dataset/Tests/CLASS`
-
-Where NUMBER is the number of images that will be moved (calculated as 60% or 20% of the total images in the dataset), and CLASS is the specific class (label) for the images. This is to ensure that the sets are randomly split before training the neural network.
-
 #### For object detection
 1. Collect images containing your objects. Even though the network can process different image formats, it is best to stick with the .jpg image format. If you can generate a total-slide scan (a single image of an entire slide) you can segment this large image into smaller images to build your dataset, use the following command to segment:
 
@@ -145,9 +138,9 @@ Where IMAGE_INPUT is the directory where the images are located and ANNOTATION_I
 #### For classification
 1. You can train the images on a CNN using the following command:
 
-`python SinfNet.py --cnn_train NETWORK TRAIN VALID TESTS` example `python SinfNet.py -ct CNN ./dataset/Train ./dataset/Valid ./dataset/Tests`
+`python SinfNet.py --cnn_train NETWORK TRAIN TESTS` example `python SinfNet.py -ct CNN ./dataset/Augmented  ./dataset/Original_Images`
 
-Where NETWORK is the name of the convolutional neural network that you want to use. Choose one of the following [VGG16, VGG19, ResNet50, DenseNet201], TRAIN is the directory that contains the training set, VALID is the directory that contains the validation set, and TESTS is the directory that contains the test sets.
+Where NETWORK is the name of the convolutional neural network that you want to use. Choose one of the following [VGG16, VGG19, ResNet50, DenseNet201], TRAIN is the directory that contains the training set and it will be split into a train (75%) and validation (25%) sets, and TESTS is the directory that contains the test sets, if the images were augmented then the test set should be the original un-augmented images.
 
 2. Training, loss, and confusion matrix figures will be generated after the training is done. An evaluation on the test set will be performed and the result printed on the terminal.
 
@@ -222,7 +215,7 @@ Where NETWORK (unet, fcn_8), MODE (binary, multi), LABELS .pkl filename (labels.
 |python SinfNet.py -Cb IMAGE_INPUT ANNOTATION_INPUT                                                                                                  |Check that the bounding boxes got augmented correctly where IMAGE_INPUT is the directory of images and ANNOTATION_INPUT is the directory of .xml annotations|
 |python SinfNet.py -Cp IMAGE_INPUT ANNOTATION_INPUT                                                                                                  |Check that the bounding polygons got augmented correctly where IMAGE_INPUT is the directory of images and ANNOTATION_INPUT is the directory of .json annotations|
 |python SinfNet.py -Cob IMAGE_DIRECTORY BBOX_ANNOTATIONS.csv BBOX_RESULTS.csv                                                                        |Converts the .csv files to COCO's .json files where IMAGES_DIRECTORY is a directory with images, BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file|
-|python SinfNet.py -ct NETWORK TRAIN VALID TESTS                                                                                                     |Train a dataset using a CNN network given the NETWORK type (VGG16, VGG19, ResNet50, DenseNet201) and the locations of the TRAIN VALID TESTS directorie|
+|python SinfNet.py -ct NETWORK TRAIN TESTS                                                                                                           |Train a dataset using a CNN network given the NETWORK type (VGG16, VGG19, ResNet50, DenseNet201) and the locations of the TRAIN VALID TESTS directorie|
 |python SinfNet.py -cp NETWORK WEIGHTS FILENAME                                                                                                      |Predict an image FILENAME using a CNN network given the training  NETWORK type (VGG16, VGG19, ResNet50, DenseNet201) the WEIGHTS|
 |python SinfNet.py -h                                                                                                                                |Help|
 |python SinfNet.py -mAP BBOX_ANNOTATIONS BBOX_RESULTS                                                                                                |Calculates the mean average precision of bounding box predictions, where BBOX_ANNOTATIONS is the ground truth bounding boxes .csv file, and BBOX_RESULTS is the predicted bounding boxes .csv file|
