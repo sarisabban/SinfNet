@@ -124,6 +124,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		df_cm  = pd.DataFrame(matrix, index=classes, columns=classes)
 		plt.figure(figsize=(10, 7))
 		sn.heatmap(df_cm, annot=True)
+		plt.savefig('matrix.png')
 		print(classification_report(tests.classes,y_pred,target_names=classes))
 		model.save_weights('weights.h5')
 	elif choice == 'predict':
