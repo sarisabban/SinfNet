@@ -281,6 +281,7 @@ def augment_poly(image_input='dataset/1.jpg', image_output='/dataset', poly_inpu
 			path = '{}/Aug_{}-{}.jpg'.format(image_output, NewName, str(iters+1))
 			imageData = data['imageData']
 			W, H = Image.open(image_input).size
+			# files have the 'imagePath' value incorrect, it should be '../Train/{}'.format('FILENAME.json')
 			header = '{{"version": "{}",\n"flags": {},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
 			.format(version, flags, lineColor, fillColor, path, imageData, W, H)
 			f.write(header)
