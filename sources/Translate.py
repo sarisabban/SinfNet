@@ -322,6 +322,7 @@ def translate_poly(	image_path='./dataset/Train',
 				path = name[3]
 				imageData = ''
 				W, H = str(name[4]), str(name[5])
+				# files have the 'imagePath' value incorrect, it should be '../Train/{}'.format('FILENAME.json')
 				header = '{{"version": "{}",\n"flags": {{{}}},\n"lineColor": {},\n"fillColor": {},\n"imagePath": "{}",\n"imageData": "{}",\n"imageHeight": {},\n"imageWidth": {},\n"shapes": ['\
 				.format(version, flags, lineColor, fillColor, path, imageData, W, H)
 				f.write(header)
