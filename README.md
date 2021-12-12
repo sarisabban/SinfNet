@@ -10,8 +10,8 @@ Sari Sabban - Tarik Alafif - Abdullah Alotebi - Sally Warring - Zainab Khalifah 
 ![Alt Text](sources/Object_result_2.gif)
 ![Alt Text](sources/Object_result_5.gif)
 ![Alt Text](sources/Object_result_6.gif)
-![Alt Text](sources/Nematode.gif)
-![Alt Text](sources/Semantic_result.gif)
+![Alt Text](sources/Semantic_result_1.gif)
+![Alt Text](sources/Semantic_result_2.gif)
 
 ## Description:
 This is a collection of datasets and neural networks to detect or classify microorganisms from microscope images. Provided here are all the necessary scripts, datasets, and weights. So far this project either detects or classifies the following organisms:
