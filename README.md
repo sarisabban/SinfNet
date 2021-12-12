@@ -245,6 +245,5 @@ When using any part of this project kindly reference the following:
 * 
 
 ## TODO:
-* Add nematode OBJECT result GIFs
 * Make Video -> YouTube -> link here
 * Finish up paper
