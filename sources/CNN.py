@@ -22,7 +22,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 	Train ='./dataset', prediction='./image.jpg'):
 	''' Train images using one of several CNNs '''
 	shape   = (224, 224)
-	epochs  = 80
+	epochs  = 2000
 	batches = 16
 	classes = []
 	for c in os.listdir(Train): classes.append(c)
