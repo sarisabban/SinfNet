@@ -19,8 +19,8 @@ from keras.preprocessing.image import array_to_img, img_to_array, load_img
 from sklearn.metrics import classification_report, confusion_matrix
 
 def CNN(network='VGG16', choice='predict', weights='weights.h5',
-									Train ='./dataset_aug',
-									Tests ='./dataset',
+									Train ='./dataset_train',
+									Tests ='./dataset_tests',
 									prediction='./image.jpg'):
 	''' Train images using one of several CNNs '''
 	shape   = (224, 224)
@@ -32,7 +32,26 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg16.preprocess_input, 
-			validation_split=0.25)
+			validation_split=0.25
+			featurewise_center=False,
+			samplewise_center=False,
+			featurewise_std_normalization=False,
+			samplewise_std_normalization=False,
+			zca_whitening=False,
+			zca_epsilon=1e-06,
+			rotation_range=30,
+			width_shift_range=30,
+			height_shift_range=30,
+			brightness_range=[0.6, 0.8],
+			shear_range=4.0,
+			zoom_range=[0.8, 1.0],
+			channel_shift_range=10,
+			fill_mode='reflect',
+			cval=0.0,
+			horizontal_flip=True,
+			vertical_flip=True,
+			data_format='channels_last',
+			dtype='float32')
 		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes,batch_size=batches,shuffle=True,subset='training')
 		valid =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
@@ -46,7 +65,26 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg19.preprocess_input, 
-			validation_split=0.25)
+			validation_split=0.25
+			featurewise_center=False,
+			samplewise_center=False,
+			featurewise_std_normalization=False,
+			samplewise_std_normalization=False,
+			zca_whitening=False,
+			zca_epsilon=1e-06,
+			rotation_range=30,
+			width_shift_range=30,
+			height_shift_range=30,
+			brightness_range=[0.6, 0.8],
+			shear_range=4.0,
+			zoom_range=[0.8, 1.0],
+			channel_shift_range=10,
+			fill_mode='reflect',
+			cval=0.0,
+			horizontal_flip=True,
+			vertical_flip=True,
+			data_format='channels_last',
+			dtype='float32')
 		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes,batch_size=batches,shuffle=True,subset='training')
 		valid =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
@@ -60,7 +98,26 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.resnet50.preprocess_input, 
-			validation_split=0.25)
+			validation_split=0.25
+			featurewise_center=False,
+			samplewise_center=False,
+			featurewise_std_normalization=False,
+			samplewise_std_normalization=False,
+			zca_whitening=False,
+			zca_epsilon=1e-06,
+			rotation_range=30,
+			width_shift_range=30,
+			height_shift_range=30,
+			brightness_range=[0.6, 0.8],
+			shear_range=4.0,
+			zoom_range=[0.8, 1.0],
+			channel_shift_range=10,
+			fill_mode='reflect',
+			cval=0.0,
+			horizontal_flip=True,
+			vertical_flip=True,
+			data_format='channels_last',
+			dtype='float32')
 		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes,batch_size=batches,shuffle=True,subset='training')
 		valid =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
@@ -74,7 +131,26 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.densenet.preprocess_input, 
-			validation_split=0.25)
+			validation_split=0.25
+			featurewise_center=False,
+			samplewise_center=False,
+			featurewise_std_normalization=False,
+			samplewise_std_normalization=False,
+			zca_whitening=False,
+			zca_epsilon=1e-06,
+			rotation_range=30,
+			width_shift_range=30,
+			height_shift_range=30,
+			brightness_range=[0.6, 0.8],
+			shear_range=4.0,
+			zoom_range=[0.8, 1.0],
+			channel_shift_range=10,
+			fill_mode='reflect',
+			cval=0.0,
+			horizontal_flip=True,
+			vertical_flip=True,
+			data_format='channels_last',
+			dtype='float32')
 		train =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
 			classes=classes,batch_size=batches,shuffle=True,subset='training')
 		valid =IDG.flow_from_directory(Train,target_size=shape,color_mode='rgb',
