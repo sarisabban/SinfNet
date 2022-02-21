@@ -32,7 +32,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg16.preprocess_input, 
-			validation_split=0.25
+			validation_split=0.20,
 			featurewise_center=False,
 			samplewise_center=False,
 			featurewise_std_normalization=False,
@@ -65,7 +65,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.vgg19.preprocess_input, 
-			validation_split=0.25
+			validation_split=0.20,
 			featurewise_center=False,
 			samplewise_center=False,
 			featurewise_std_normalization=False,
@@ -98,7 +98,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.resnet50.preprocess_input, 
-			validation_split=0.25
+			validation_split=0.20,
 			featurewise_center=False,
 			samplewise_center=False,
 			featurewise_std_normalization=False,
@@ -131,7 +131,7 @@ def CNN(network='VGG16', choice='predict', weights='weights.h5',
 		IDG = keras.preprocessing.image.ImageDataGenerator(
 			rescale=1./255,
 			preprocessing_function=keras.applications.densenet.preprocess_input, 
-			validation_split=0.25
+			validation_split=0.20,
 			featurewise_center=False,
 			samplewise_center=False,
 			featurewise_std_normalization=False,
