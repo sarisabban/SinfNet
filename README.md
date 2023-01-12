@@ -240,10 +240,4 @@ Where NETWORK (unet, fcn_8), MODE (binary, multi), LABELS .pkl filename (labels.
 * [Microsoft](https://www.microsoft.com/en-us/ai/ai-for-earth-tech-resources)
 
 ## References:
-When using any part of this project kindly reference the following:
-
-* 
-
-## TODO:
-* Make Video -> YouTube -> link here
-* Finish up paper
+If you used this repository in your work kindly reference it using GitHub referencing
