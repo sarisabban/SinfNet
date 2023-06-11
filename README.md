@@ -44,7 +44,7 @@ All datasets used are available here for download, along with their neural netwo
 This is a [Video]() on how to use this whole setup.
 
 ### Update your system and install libraries.
-This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this script you will need to first update your system and install the dependencies, within a virtual environment, using the following commands:
+This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6.7 only. To use this script you will need to first update your system and install the dependencies, within a virtual environment, using the following commands:
 
 `sudo apt update`
 
