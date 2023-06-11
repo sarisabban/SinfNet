@@ -172,7 +172,7 @@ The WEIGHTS is the name of the output weight.h5 file, TRAIN is the directory of 
 #### For semantic segmentation
 1. Follow the same steps as object detection, use the following command to train:
 
-`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python SinfNet.py -st unet multi ./dataset/Images ./dataset/Annotations Active Inactive`
+`python SinfNet.py --semantic_train NETWORK MODE TRAIN ANNOTATION LABEL1 LABEL2 ...` example `python3 SinfNet.py -st unet multi "Nematodes/Train set/" Nematodes/Train_Semantic.csv Nematode`
 
 Where MODE can be either binary (for single or multiple classes being coloured white with a black background) or multi (for single or multiple classes being coloured differently on a black background), the NETWORK can be wither unet or fcn_8, TRAIN is the directory of the images to train on, ANNOTATION is the directory containing the annotations of these images, and the LABELS is a list of all the labels in the dataset (just the labels written with space between them). As with object detection, including pre-trained weights is possible:
 
