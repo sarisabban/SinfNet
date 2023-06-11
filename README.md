@@ -60,6 +60,11 @@ This setup works on GNU/Linux Ubuntu 18.04+ using Python 3.6+. To use this scrip
 
 `deactivate`
 
+Or for Conda:
+```
+conda install -c anaconda numpy pandas seaborn scipy pillow h5py scikit-learn scikit-image
+conda install -c conda-forge keras tensorflow matplotlib imgaug imutils tqdm opencv pydensecrf
+```
 ### Setting up a dataset
 If you want to develop your own dataset and train it follow these steps, otherwise skip to the **Detection** section. For help use this command:
 
