@@ -29,7 +29,7 @@ This is a collection of datasets and neural networks to detect or classify micro
 <sub>*Either classifies nematodes according to trophic level (CNN), or detects generic nematodes (Object Detection), or detects nematodes pixel wise (Semantic Segmentation) for biomass estimation*</sub>
 
 ## Available datasets and trained weight files
-All datasets are available [here]() for download, along with their trained neural network weights for detection/classification.
+All datasets are available [here](https://doi.org/10.5281/zenodo.14991205) for download, along with their trained neural network weights for detection/classification.
 
 |Dataset Name | Dataset Filename | Neural Network Model | Weights Filename | Labels Filename | Accuracy or mAP or Dice Value|
 |-------------|------------------|----------------------|------------------|-----------------|------------------------------|
