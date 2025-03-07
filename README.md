@@ -29,16 +29,17 @@ This is a collection of datasets and neural networks to detect or classify micro
 <sub>*Either classifies nematodes according to trophic level (CNN), or detects generic nematodes (Object Detection), or detects nematodes pixel wise (Semantic Segmentation) for biomass estimation*</sub>
 
 ## Available datasets and trained weight files
-All datasets used are available here for download, along with their neural network weights for detection/classification.
+All datasets are available [here]() for download, along with their trained neural network weights for detection/classification.
 
-|Dataset Name                                                                                                                    |Network            |Weights                                                                                                                                                                     |Labels                                                                      |Accuracy or mAP or Dice|
-|--------------------------------------------------------------------------------------------------------------------------------|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------|-----------------------|
-|[Amoeba Active/Inactive Dataset](https://www.dropbox.com/s/vf2ftfige4vu0ie/Amoeba.tar.bz2?dl=0)                                 |YOLOv3             |[Weights](https://www.dropbox.com/s/x044cdo7kznoeuf/Amoeba.h5?dl=0)                                                                                                         |[Labels](https://www.dropbox.com/s/wxvy9lhlv2w99l8/Amoeba_labels.pkl?dl=0)  |0.6473                 |
-|[Cell Detection Dataset](https://www.dropbox.com/s/2woe91t03rw9kbm/Cells.tar.bz2?dl=0)                                          |YOLOv3             |[Weights](https://www.dropbox.com/s/yukp34x3gaubd4u/Cells.h5?dl=0)                                                                                                          |[Labels](https://www.dropbox.com/s/dkz3ws6g5b23ceo/Cell_labels.pkl?dl=0)    |0.9549                 |
-|[Nematode Trophic Classification by Head Dataset](https://www.dropbox.com/s/xyuegz9o1qrtki6/Nematodes_Trophic_Head.tar.bz2?dl=0)|VGG16              | -----                                                                                                 | -----                                                                      |Poor accuracy                 |
-|[Nematode Trophic Classification by Body Dataset](https://www.dropbox.com/s/86vh1snh5dg83j7/Nematodes_Trophic_Body.tar.bz2?dl=0)|VGG16              | -----                                                                                                  | -----                                                                      |Poor accuracy                 |
-|[Nematode Object and Semantic Detection Dataset](https://www.dropbox.com/s/fmtuzepjvilxlkj/Nematodes.tar.bz2?dl=0)              |YOLOv3 <br /> UNet |[Object Weights](https://www.dropbox.com/s/pnw7im1qmgfunqd/Nematode_Object.h5?dl=0) <br /> [Semantic Weights](https://www.dropbox.com/s/67h87ck8wtt0g8f/unet_binary.h5?dl=0)|[Labels](https://www.dropbox.com/s/cyc3sjcqt3arxpt/Nematode_labels.pkl?dl=0)|0.8360 <br /> 0.9997 <sub>(Images must be 1440x1056)|
-|[Protist Object and Semantic Detection Dataset](https://www.dropbox.com/s/g1uc99clsl1dnyv/Protists.tar.bz2?dl=0)                |YOLOv3 <br /> UNet|[Object Weights](https://www.dropbox.com/s/uo396owrvnfa1gq/Protists_Object.h5?dl=0) <br /> [Semantic Weights](https://www.dropbox.com/s/phxqdjg0vvrighe/fcn_8_multi.h5?dl=0)|[Labels](https://www.dropbox.com/s/pdhfwtcadf9vbyf/Protist_labels.pkl?dl=0) |0.9625 <br /> 0.9839 <sub>(Images must be 960x704 - model failed)</sub>|
+|Dataset Name | Dataset Filename | Neural Network Model | Weights Filename | Labels Filename | Accuracy or mAP or Dice Value|
+|-------------|------------------|----------------------|------------------|-----------------|------------------------------|
+|Amoeba Active/Inactive Dataset|Amoeba.tar.bz2|YOLOv3|Amoeba.h5|Amoeba_labels.pkl|0.6473|
+|Cell Detection Dataset|Cells.tar.bz2|YOLOv3|Cells.h5|Cell_labels.pkl|0.9549|
+|Nematode Trophic Classification by Head Dataset|Nematodes_Trophic_Head.tar.bz2|VGG16|N/A|N/A|Poor accuracy|
+|Nematode Trophic Classification by Body Dataset|Nematodes_Trophic_Body.tar.bz2|VGG16|N/A|N/A|Poor accuracy|
+|Nematode Object and Semantic Detection Dataset|Nematodes.tar.bz2|YOLOv3 <br /> UNet|Nematode_Object.h5 <br /> unet_binary.h5|Nematode_labels.pkl|0.8360 <br /> 0.9997 <sub>(Images must be 1440x1056)</sub>|
+|Protist Object and Semantic Detection Dataset|Protists.tar.bz2|YOLOv3 <br /> UNet|Protists_Object.h5 <br /> fcn_8_multi.h5|Protist_labels.pkl|0.9625 <br /> 0.9839 <sub>(Images must be 960x704 - model failed)</sub>|
+
 
 ## How to use:
 This is a [Video]() on how to use this whole setup.
